@@ -1,36 +1,36 @@
 [articles]
-    read_more = "Read more"
-    words = "words"
-    readingtime = "minute read"
-    share = "Share"
-    comments = "Comments"
+    read_more = "Xem chi tiết"
+    words = "từ"
+    readingtime = "phút đọc"
+    share = "Chia sẻ"
+    comments = "Ý kiến"
 
 # Linked older/newer posts at the bottom of each one
 [articles.linked_posts]
-    older = "Older"
-    newer = "Newer"
+    older = "Cũ hơn"
+    newer = "Mới hơn"
 
 [search]
-    placeholder = "Search"
+    placeholder = "Tìm kiếm"
 
 [pagination]
-    previous = "Prev"
-    next = "Next"
+    previous = "Trước"
+    next = "Sau"
 
 [profile]
-    follow_button = "Follow"
+    follow_button = "Theo dõi"
     tags = "Tags"
-    posts = "Posts"
+    posts = "Bài viết"
 
 [page_not_found]
-    title = "404 - page not found"
-    subtitle = "The content you're looking for doesn't seem to exist."
+    title = "404 - Trang không tìm thấy"
+    subtitle = "Nội dung bạn đang tìm kiến có lẽ không tồn tại."
 
 [widgets.categories]
-    title = "Categories"
+    title = "Danh mục"
 
 [widgets.recent_articles]
-    title = "Recents"
+    title = "Bài gần đây"
 
 [widgets.tag_cloud]
     title = "Tag cloud"
