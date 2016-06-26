@@ -17,7 +17,7 @@ canonifyurls = true
 
 
 [permalinks]
-    post = "/:year/:month/:day/:slug"
+    #post = "/:year/:month/:day/:filename"
 
 
 [params]

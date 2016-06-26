@@ -1,11 +1,11 @@
 +++
-title = "Introducing Icarus and its features"
-date = "2015-10-10T16:56:43+02:00"
-tags = ["theme", "hugo", "static sites"]
-categories = ["theme"]
+title = "Giới thiệu các tính năng mới trong Docker 1.12"
+date = "2016-06-26T16:56:43+02:00"
+tags = ["Docker", "DockerCon2016", "DevOps"]
+categories = ["DevOps"]
 menu = ""
 images = []
-banner = "banners/placeholder.png"
+banner = "banners/dockercon2016.png"
 +++
 
 Icarus is a responsive and customizable theme for bloggers. It's a port of the same-named theme for [Hexo](//hexo.io) made by [Ruipeng Zhang](https://github.com/ppoffice). Noteworthy features of this Hugo theme are the integration of a comment-system powered by Disqus, localization (l10n) support, syntax highlighting for source code, optional widgets for the sidebar and a handful [shortcodes](http://gohugo.io/extras/shortcodes/) to make your life easier.
