@@ -24,7 +24,7 @@
 
 [page_not_found]
     title = "404 - Trang không tìm thấy"
-    subtitle = "Nội dung bạn đang tìm kiến có lẽ không tồn tại."
+    subtitle = "Nội dung bạn đang tìm kiếm có lẽ không tồn tại."
 
 [widgets.categories]
     title = "Danh mục"
