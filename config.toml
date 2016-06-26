@@ -27,7 +27,7 @@ canonifyurls = true
     bio = "Code cày cuốc - Làm bố"
     location = "Việt Nam"
     site_description = ""
-    copyright  = "Powered by [Hugo](//gohugo.io). Theme by [PPOffice](http://github.com/ppoffice)."
+    copyright  = "Blog sử dụng nền tảng của [Hugo](//gohugo.io). Dùng theme của [PPOffice](http://github.com/ppoffice)."
     avatar = "css/images/avatar.png"
     logo = "css/images/logo.png"
 
