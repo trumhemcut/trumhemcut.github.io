@@ -4,14 +4,49 @@ date = "2016-06-26T16:56:43+02:00"
 tags = ["Docker", "DockerCon2016", "DevOps"]
 categories = ["DevOps"]
 menu = ""
-images = []
+images = ["static/images/dockerswarm01.png"]
 banner = "banners/dockercon2016.png"
 +++
 
-Icarus is a responsive and customizable theme for bloggers. It's a port of the same-named theme for [Hexo](//hexo.io) made by [Ruipeng Zhang](https://github.com/ppoffice). Noteworthy features of this Hugo theme are the integration of a comment-system powered by Disqus, localization (l10n) support, syntax highlighting for source code, optional widgets for the sidebar and a handful [shortcodes](http://gohugo.io/extras/shortcodes/) to make your life easier.
+DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về [Docker Swarm Mode](https://docs.docker.com/engine/swarm/), một tính năng mới có trong Docker Engine (v1.12).
+
+Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm [ở đây](https://docs.docker.com/swarm/).
 
 
-## Get the theme
+## Docker Swarm Mode là gì?
+Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào. Đặc biệt, version này cũng bao gồm việc xử lý về vấn đề Security, Networking, State & Cluster Initialization.
+
+Xem thêm ở đây để được giới thiệu về [Docker Swarm Mode](https://www.youtube.com/watch?v=KC4Ad1DS8xU)
+
+## Cài đặt
+Trong bài này, chúng ta sẽ tạo ra một swarm cluster gồm 1 cluster manager và 3 worker. Nếu như trước đây chúng ta cần thêm các container khác cho service discovery, load balancer, ... để xây dựng một cluster thì bây giờ mấy thứ đó không cần nữa. Tất cả đã được built-in trong Docker Engine. 
+
+![Environment Setup]
+(/images/dockerswarm01.png)
+
+### Mở port để giao tiếp giữa các hosts
+- **TCP port 2377**: port này để cluster mananegement
+- **TCP** và **UDP port 7946** để giao tiếp giữa các nodes
+- **TCP** và **UDP port 4789** dành cho overlay network
+
+Nếu chúng ta sử dụng Boot2Docker phiên bản mới nhất thì nó đã làm sẵn cho chúng ta rồi, nice :)
+
+### Dùng docker-machine để tạo các máy ảo
+Lưu ý là chúng ta phải cài Docker Toolbox để có thể xài lệnh docker-machine nhé. Trước đây tôi cũng đã từng nhầm lẫn giữa Docker for Mac & Docker Toolbox, lưu ý đây là 2 sản phẩm hoàn toàn khác nhau nhé.
+
+Chúng ta tạo ra các máy ảo như sau:
+
+* **swarm-00**: máy này sẽ làm cluster manager
+* **swarm-01**: worker số 1, IP Address sẽ là: 192.168.99.100
+* **swarm-02**: worker số 2
+* **swarm-03**: worker số 3
+
+```
+$ docker-machine create -d virtualbox swarm-00
+$ docker-machine create -d virtualbox swarm-01
+$ docker-machine create -d virtualbox swarm-02
+$ docker-machine create -d virtualbox swarm-03
+```
 
 I assume you've Git installed. Inside the folder of your Hugo site run
 
