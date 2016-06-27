@@ -19,9 +19,11 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
     <meta property="og:title" content="Giới thiệu các tính năng mới trong Docker 1.12" />
-<meta property="og:description" content="Icarus is a responsive and customizable theme for bloggers. It&rsquo;s a port of the same-named theme for Hexo made by Ruipeng Zhang. Noteworthy features of this Hugo theme are the integration of a comment-system powered by Disqus, localization (l10n) support, syntax highlighting for source code, optional widgets for the sidebar and a handful shortcodes to make your life easier. Get the theme I assume you&rsquo;ve Git installed. Inside the folder of your Hugo site run $ mkdir themes $ cd themes $ git clone git@github.com:digitalcraftsman/hugo-icarus-theme.git You should see a folder called hugo-icarus-theme inside the themes directory that we created a few moments ago." />
+<meta property="og:description" content="DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về Docker Swarm Mode, một tính năng mới có trong Docker Engine (v1.12). Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm ở đây. Docker Swarm Mode là gì? Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" />
+
+  <meta property="og:image" content="https://trumhemcut.github.io/static/images/dockerswarm01.png" />
 
 
 <meta property="og:updated_time" content="2016-06-26T16:56:43&#43;02:00"/>
@@ -38,11 +40,13 @@
     
     
 <meta itemprop="name" content="Giới thiệu các tính năng mới trong Docker 1.12">
-<meta itemprop="description" content="Icarus is a responsive and customizable theme for bloggers. It&rsquo;s a port of the same-named theme for Hexo made by Ruipeng Zhang. Noteworthy features of this Hugo theme are the integration of a comment-system powered by Disqus, localization (l10n) support, syntax highlighting for source code, optional widgets for the sidebar and a handful shortcodes to make your life easier. Get the theme I assume you&rsquo;ve Git installed. Inside the folder of your Hugo site run $ mkdir themes $ cd themes $ git clone git@github.com:digitalcraftsman/hugo-icarus-theme.git You should see a folder called hugo-icarus-theme inside the themes directory that we created a few moments ago.">
+<meta itemprop="description" content="DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về Docker Swarm Mode, một tính năng mới có trong Docker Engine (v1.12). Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm ở đây. Docker Swarm Mode là gì? Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào.">
 
 
 <meta itemprop="dateModified" content="2016-06-26T16:56:43&#43;02:00" />
-<meta itemprop="wordCount" content="890">
+<meta itemprop="wordCount" content="1197">
+
+  <meta itemprop="image" content="https://trumhemcut.github.io/static/images/dockerswarm01.png">
 
 
 
@@ -50,12 +54,14 @@
 
     
 
-  <meta name="twitter:card" content="summary"/>
+
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:image:src" content="https://trumhemcut.github.io/static/images/dockerswarm01.png"/>
 
 
 
 <meta name="twitter:title" content="Giới thiệu các tính năng mới trong Docker 1.12"/>
-<meta name="twitter:description" content="Icarus is a responsive and customizable theme for bloggers. It&rsquo;s a port of the same-named theme for Hexo made by Ruipeng Zhang. Noteworthy features of this Hugo theme are the integration of a comment-system powered by Disqus, localization (l10n) support, syntax highlighting for source code, optional widgets for the sidebar and a handful shortcodes to make your life easier. Get the theme I assume you&rsquo;ve Git installed. Inside the folder of your Hugo site run $ mkdir themes $ cd themes $ git clone git@github.com:digitalcraftsman/hugo-icarus-theme.git You should see a folder called hugo-icarus-theme inside the themes directory that we created a few moments ago."/>
+<meta name="twitter:description" content="DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về Docker Swarm Mode, một tính năng mới có trong Docker Engine (v1.12). Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm ở đây. Docker Swarm Mode là gì? Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào."/>
 <meta name="twitter:site" content="@trumhemcut"/>
 
 
@@ -277,10 +283,10 @@
             <i class="fa fa-calendar"></i>
             <time datetime="2016-06-26 16:56:43 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-26</time>
             &middot;
-            890
+            1197
             từ
             &middot;
-            5
+            6
             phút đọc
         </div>
 
@@ -322,9 +328,50 @@
             <div class="article-entry" itemprop="articleBody">
                 
 
-<p>Icarus is a responsive and customizable theme for bloggers. It&rsquo;s a port of the same-named theme for <a href="//hexo.io">Hexo</a> made by <a href="https://github.com/ppoffice">Ruipeng Zhang</a>. Noteworthy features of this Hugo theme are the integration of a comment-system powered by Disqus, localization (l10n) support, syntax highlighting for source code, optional widgets for the sidebar and a handful <a href="http://gohugo.io/extras/shortcodes/">shortcodes</a> to make your life easier.</p>
+<p>DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về <a href="https://docs.docker.com/engine/swarm/">Docker Swarm Mode</a>, một tính năng mới có trong Docker Engine (v1.12).</p>
 
-<h2 id="get-the-theme">Get the theme</h2>
+<p>Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm <a href="https://docs.docker.com/swarm/">ở đây</a>.</p>
+
+<h2 id="docker-swarm-mode-là-gì">Docker Swarm Mode là gì?</h2>
+
+<p>Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào. Đặc biệt, version này cũng bao gồm việc xử lý về vấn đề Security, Networking, State &amp; Cluster Initialization.</p>
+
+<p>Xem thêm ở đây để được giới thiệu về <a href="https://www.youtube.com/watch?v=KC4Ad1DS8xU">Docker Swarm Mode</a></p>
+
+<h2 id="cài-đặt">Cài đặt</h2>
+
+<p>Trong bài này, chúng ta sẽ tạo ra một swarm cluster gồm 1 cluster manager và 3 worker. Nếu như trước đây chúng ta cần thêm các container khác cho service discovery, load balancer, &hellip; để xây dựng một cluster thì bây giờ mấy thứ đó không cần nữa. Tất cả đã được built-in trong Docker Engine.</p>
+
+<p><img src="https://trumhemcut.github.io/images/dockerswarm01.png" alt="Environment Setup" /></p>
+
+<h3 id="mở-port-để-giao-tiếp-giữa-các-hosts">Mở port để giao tiếp giữa các hosts</h3>
+
+<ul>
+<li><strong>TCP port 2377</strong>: port này để cluster mananegement</li>
+<li><strong>TCP</strong> và <strong>UDP port 7946</strong> để giao tiếp giữa các nodes</li>
+<li><strong>TCP</strong> và <strong>UDP port 4789</strong> dành cho overlay network</li>
+</ul>
+
+<p>Nếu chúng ta sử dụng Boot2Docker phiên bản mới nhất thì nó đã làm sẵn cho chúng ta rồi, nice :)</p>
+
+<h3 id="dùng-docker-machine-để-tạo-các-máy-ảo">Dùng docker-machine để tạo các máy ảo</h3>
+
+<p>Lưu ý là chúng ta phải cài Docker Toolbox để có thể xài lệnh docker-machine nhé. Trước đây tôi cũng đã từng nhầm lẫn giữa Docker for Mac &amp; Docker Toolbox, lưu ý đây là 2 sản phẩm hoàn toàn khác nhau nhé.</p>
+
+<p>Chúng ta tạo ra các máy ảo như sau:</p>
+
+<ul>
+<li><strong>swarm-00</strong>: máy này sẽ làm cluster manager</li>
+<li><strong>swarm-01</strong>: worker số 1, IP Address sẽ là: 192.168.99.100</li>
+<li><strong>swarm-02</strong>: worker số 2</li>
+<li><strong>swarm-03</strong>: worker số 3</li>
+</ul>
+
+<pre><code>$ docker-machine create -d virtualbox swarm-00
+$ docker-machine create -d virtualbox swarm-01
+$ docker-machine create -d virtualbox swarm-02
+$ docker-machine create -d virtualbox swarm-03
+</code></pre>
 
 <p>I assume you&rsquo;ve Git installed. Inside the folder of your Hugo site run</p>
 
