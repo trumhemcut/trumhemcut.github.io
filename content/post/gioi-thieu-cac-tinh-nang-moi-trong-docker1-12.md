@@ -36,8 +36,8 @@ Lưu ý là chúng ta phải cài Docker Toolbox để có thể xài lệnh doc
 
 Chúng ta tạo ra các máy ảo như sau, lưu ý là chúng ta phải sử dụng bản Boot2Docker mới nhất nhé, nếu không chắc thì bạn nên chạy lệnh upgrade để tải bảng boot2docker mới nhất:
 
-* **swarm-00**: máy này sẽ làm cluster manager
-* **swarm-01**: worker số 1, IP Address sẽ là: 192.168.99.100
+* **swarm-00**: máy này sẽ làm cluster manager, IP Address sẽ là: 192.168.99.100
+* **swarm-01**: worker số 1
 * **swarm-02**: worker số 2
 * **swarm-03**: worker số 3
 
