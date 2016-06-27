@@ -25,6 +25,12 @@
 
   <meta property="og:image" content="https://trumhemcut.github.io/static/images/dockerswarm01.png" />
 
+  <meta property="og:image" content="https://trumhemcut.github.io/static/images/visualizer01.png" />
+
+  <meta property="og:image" content="https://trumhemcut.github.io/static/images/visualizer02.png" />
+
+  <meta property="og:image" content="https://trumhemcut.github.io/static/images/visualizer03.png" />
+
 
 <meta property="og:updated_time" content="2016-06-26T16:56:43&#43;02:00"/>
 
@@ -44,9 +50,15 @@
 
 
 <meta itemprop="dateModified" content="2016-06-26T16:56:43&#43;02:00" />
-<meta itemprop="wordCount" content="1197">
+<meta itemprop="wordCount" content="1122">
 
   <meta itemprop="image" content="https://trumhemcut.github.io/static/images/dockerswarm01.png">
+
+  <meta itemprop="image" content="https://trumhemcut.github.io/static/images/visualizer01.png">
+
+  <meta itemprop="image" content="https://trumhemcut.github.io/static/images/visualizer02.png">
+
+  <meta itemprop="image" content="https://trumhemcut.github.io/static/images/visualizer03.png">
 
 
 
@@ -283,7 +295,7 @@
             <i class="fa fa-calendar"></i>
             <time datetime="2016-06-26 16:56:43 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-26</time>
             &middot;
-            1197
+            1122
             từ
             &middot;
             6
@@ -358,7 +370,7 @@
 
 <p>Lưu ý là chúng ta phải cài Docker Toolbox để có thể xài lệnh docker-machine nhé. Trước đây tôi cũng đã từng nhầm lẫn giữa Docker for Mac &amp; Docker Toolbox, lưu ý đây là 2 sản phẩm hoàn toàn khác nhau nhé.</p>
 
-<p>Chúng ta tạo ra các máy ảo như sau:</p>
+<p>Chúng ta tạo ra các máy ảo như sau, lưu ý là chúng ta phải sử dụng bản Boot2Docker mới nhất nhé, nếu không chắc thì bạn nên chạy lệnh upgrade để tải bảng boot2docker mới nhất:</p>
 
 <ul>
 <li><strong>swarm-00</strong>: máy này sẽ làm cluster manager</li>
@@ -367,216 +379,174 @@
 <li><strong>swarm-03</strong>: worker số 3</li>
 </ul>
 
-<pre><code>$ docker-machine create -d virtualbox swarm-00
+<pre><code>$ docker-machine upgrade default
+$ docker-machine create -d virtualbox swarm-00
 $ docker-machine create -d virtualbox swarm-01
 $ docker-machine create -d virtualbox swarm-02
 $ docker-machine create -d virtualbox swarm-03
 </code></pre>
 
-<p>I assume you&rsquo;ve Git installed. Inside the folder of your Hugo site run</p>
+<p>Kiểm tra lại địa chỉ IP để chắc chắn là <strong>swarm-00</strong> có địa chỉ là 192.168.99.100</p>
 
-<pre><code>$ mkdir themes
-$ cd themes
-$ git clone git@github.com:digitalcraftsman/hugo-icarus-theme.git
+<pre><code>$ docker-machine ip swarm-00 swarm-01 swarm-02 swarm-03
+192.168.99.103
+192.168.99.102
+192.168.99.101
+192.168.99.100
 </code></pre>
 
-<p>You should see a folder called <code>hugo-icarus-theme</code> inside the <code>themes</code> directory that we created a few moments ago. For more information read the official <a href="https://gohugo.io/overview/installing/">setup guide</a> of Hugo.</p>
+<h2 id="tạo-một-swarm-cluster">Tạo một Swarm Cluster</h2>
 
-<h2 id="setup">Setup</h2>
+<p>Bây giờ chúng ta đã chuẩn bị sẵn sàng môi trường để ta xây dựng một Swarm Cluster.</p>
 
-<p>In the next step navigate to the <code>exampleSite</code> folder at <code>themes/hugo-icarus-theme/exampleSite/</code>. Its structure should look similar to this:</p>
+<ol>
+<li><p>Kết nối vào <strong>swarm-00</strong> để khởi tạo swarm manager</p>
 
-<pre><code>exampleSite
-├── config.toml
-├── content
-│   └── post
-│       ├── creating-a-new-theme.md
-│       ├── go-is-for-lovers.md
-│       ├── hugo-is-for-lovers.md
-│       ├── introducing-icarus-and-its-features.md
-│       ├── linked-post.md
-│       └── migrate-from-jekyll.md
-├── data
-│   └── l10n.toml
-└── static
-    └── banners
-        └── placeholder.png
+<pre><code>$ docker-machine ssh swarm-00
+$ docker swarm init --listen-addr 192.168.99.100:2377
+Swarm initialized: current node (56cqz10j5z5inzzt0rsw877ja) is now a manager.
+</code></pre></li>
+
+<li><p>Chạy lệnh <code>docker info</code> để kiểm tra trạng thái của <strong>swarm manager</strong></p>
+
+<pre><code>docker@swarm-00:~$ docker info
+Containers: 0
+Running: 0
+Paused: 0
+Stopped: 0
+Images: 0
+Server Version: 1.12.0-rc2
+Storage Driver: aufs
+Root Dir: /mnt/sda1/var/lib/docker/aufs
+Backing Filesystem: extfs
+Dirs: 0
+Dirperm1 Supported: true
+Logging Driver: json-file
+...
+</code></pre></li>
+
+<li><p>Chạy lệnh docker node ls để kiểm tra thông tin các node trong cluster</p>
+
+<pre><code>docker@swarm-00:~$ docker node ls
+ID                           NAME      MEMBERSHIP  STATUS  AVAILABILITY  MANAGER STATUS
+56cqz10j5z5inzzt0rsw877ja *  swarm-00  Accepted    Ready   Active        Leader
+</code></pre></li>
+</ol>
+
+<h2 id="thêm-các-node-vào-swarm-cluster">Thêm các node vào Swarm Cluster</h2>
+
+<ol>
+<li><p>Thêm node <strong>swarm-01</strong> vào swarm cluster</p>
+
+<pre><code>$ docker-machine ssh swarm-01
+docker@swarm-01:~$ docker swarm join 192.168.99.100:2377
+This node joined a Swarm as a worker.
+</code></pre></li>
+
+<li><p>Thêm node <strong>swarm-02</strong> vào swarm cluster</p>
+
+<pre><code>$ docker-machine ssh swarm-02
+docker@swarm-02:~$ docker swarm join 192.168.99.100:2377
+This node joined a Swarm as a worker.
+</code></pre></li>
+
+<li><p>Thêm node <strong>swarm-03</strong> vào swarm cluster</p>
+
+<pre><code>$ docker-machine ssh swarm-03
+docker@swarm-03:~$ docker swarm join 192.168.99.100:2377
+This node joined a Swarm as a worker.
+</code></pre></li>
+
+<li><p>Kiểm tra lại trạng thái của các nodes trong cluster</p>
+
+<pre><code>docker@swarm-00:~$ docker node ls
+ID                           NAME      MEMBERSHIP  STATUS  AVAILABILITY  MANAGER STATUS
+0h70dwoxxl5jwx53m1g857jf2    swarm-03  Accepted    Ready   Active        
+2csi90lknok2o5w3539xm48dl    swarm-02  Accepted    Ready   Active        
+56cqz10j5z5inzzt0rsw877ja *  swarm-00  Accepted    Ready   Active        Leader
+5dkujue686ddhm0zui9un77rs    swarm-01  Accepted    Ready   Active 
+</code></pre></li>
+</ol>
+
+<h2 id="dùng-visualizer-để-hiển-thị-trạng-thái-các-nodes-services">Dùng Visualizer để hiển thị trạng thái các nodes &amp; services</h2>
+
+<p>Thật tình là tôi rất thích dùng thằng Visualizer này để hiển thị trạng thái của các nodes &amp; services. Bạn có thể không cần bước này, nhưng mình khuyên là nên dùng.</p>
+
+<p>Bạn có thể tham khảo về Visualzier <a href="https://github.com/ManoMarks/docker-swarm-visualizer">ở đây</a>.</p>
+
+<pre><code>docker@swarm-00:~$ docker run -it -d -p 5000:5000 -e HOST=localhost -e PORT=5000 -v /var/run/docker.sock:/var/run/docker.sock manomarks/visualizer
 </code></pre>
 
-<p>In order to get your site running, you need to copy <code>config.toml</code> and <code>data/l10n.toml</code> into the root folders.</p>
+<p>Sau khi chạy container xong, chúng ta có thể xem trên browser <a href="http://localhost:5000">http://localhost:5000</a> để xem trạng thái các nodes.</p>
 
-<h2 id="the-config-file">The config file</h2>
+<h2 id="deploy-một-service-lên-swarm-cluster">Deploy một service lên swarm cluster</h2>
 
-<p>Now, let us take a look into the <code>config.toml</code>. Feel free to play around with the settings.</p>
+<p>Đơn giản nhất, chúng ta tạo một server chạy trên swarm cluster như sau:</p>
 
-<h3 id="comments">Comments</h3>
-
-<p>The optional comment system is powered by Disqus. Enter your shortname to enable the comment section under your posts.</p>
-
-<pre><code>disqusShortname = &quot;&quot;
+<pre><code>$ docker-machine ssh swarm-00
+$ docker service create --replicas 1 --name helloworld alpine ping docker.com
 </code></pre>
 
-<p>Tip: you can disable the comment section for a single page in its frontmatter:</p>
+<ul>
+<li><code>docker service create</code> để tạo ra service</li>
+<li><code>--replicas</code> chỉ định số instance muốn có, nếu bất kỳ instance nào bị down, cluster sẽ tự động clone số instance bằng số lượng replicas đã cấu hình</li>
+<li><code>--name</code> tên service là helloworld</li>
+<li><code>alpine ping docker.com</code> image tên là alpine và chạy lệnh <code>ping docker.com</code></li>
+</ul>
 
-<pre><code class="language-toml">+++
-disable_comments = true
-+++
+<p>Sau đó mở trình duyệt và truy cập vào <a href="http://localhost:5000">http://localhost:5000</a> chúng ta sẽ thấy một container như trong hình.</p>
+
+<p><img src="https://trumhemcut.github.io/images/visualizer01.png" alt="Container in visualizer" /></p>
+
+<p>Liệt kê danh sách các service trong swarm cluster</p>
+
+<pre><code>$ docker service ls
+708jyxdzqrim  helloworld  1/1       alpine  ping docker.com
 </code></pre>
 
-<h3 id="menu">Menu</h3>
+<p>Xem chi tiết thông tin service</p>
 
-<p>You can also define the items menu entries as you like. First, let us link a post that you&rsquo;ve written. We can do this in the frontmatter of the post&rsquo;s content file by setting <code>menu</code> to <code>main</code>. Take a look at the menu if you want to see a live example.</p>
-
-<pre><code>+++
-menu = &quot;main&quot;
-+++
+<pre><code>$ docker service tasks helloworld
+ID                         NAME          SERVICE     IMAGE   LAST STATE             DESIRED STATE  NODE
+439ypow987o6h0iun9wlm7x1f  helloworld.1  helloworld  alpine  Running About an hour  Running        swarm-00
 </code></pre>
 
-<p>Furthermore, we can add entries that don&rsquo;t link to posts. Back in the <code>config.toml</code> you&rsquo;ll find a section for the menus:</p>
+<h2 id="scale-service-trong-một-cluster-manager">Scale service trong một cluster manager</h2>
 
-<pre><code>[[params.menu]]
-    before = true
-    label  = &quot;Home&quot;
-    link   = &quot;/&quot;
+<p>Ví dụ ta muốn scale out service <strong>helloworld</strong> lên 5 instances, dùng lệnh sau:</p>
+
+<pre><code>docker@swarm-00:~$ docker service scale helloworld=5
+helloworld scaled to 5
 </code></pre>
 
-<p>Define a label and enter the URL to resource you want to link. With <code>before</code> you can decide whether the link should appear before <strong>or</strong> after all linked posts in the menu. <code>Home</code> appears before the linked post, <code>Tags</code> and <code>Categories</code> after them (as in the menu above).</p>
+<p>Chúng ta xem lại danh sách service để kiểm tra xem trạng thái các service</p>
 
-<h3 id="sidebars">Sidebars</h3>
-
-<p>In order to use the full width of the website you can disable the profile on the left and / or the widgets on the right for a single page in the frontmatter:</p>
-
-<pre><code class="language-toml">+++
-disable_profile = true
-disable_widgets = true
-+++
+<pre><code>docker@swarm-00:~$ docker service tasks helloworld
+ID                         NAME          SERVICE     IMAGE   LAST STATE             DESIRED STATE  NODE
+439ypow987o6h0iun9wlm7x1f  helloworld.1  helloworld  alpine  Running About an hour  Running        swarm-00
+39zig0tgnb1fh0f6cocmtgq2c  helloworld.2  helloworld  alpine  Running 2 minutes      Running        swarm-00
+2p9sslerww0pjd3brn52y3zp3  helloworld.3  helloworld  alpine  Running 2 minutes      Running        swarm-02
+9m4p7jsaj0tv3k02ty099cjhd  helloworld.4  helloworld  alpine  Running 2 minutes      Running        swarm-00
+26oj2s6xgnr4wo2zu2zig73uq  helloworld.5  helloworld  alpine  Running 2 minutes      Running        swarm-02
 </code></pre>
 
-<h3 id="tell-me-who-you-are">Tell me who you are</h3>
+<p>Hoặc có thể xem qua visualizer <a href="http://localhost:5000">http://localhost:5000</a></p>
 
-<p>Maybe you noticed the profile section on the left. Add your social network accounts to the profile section on the left by entering your username under <code>social</code>. The links to your account will be create automatically.</p>
+<p><img src="https://trumhemcut.github.io/images/visualizer02.png" alt="Visualizer Viewer" /></p>
 
-<h3 id="widgets">Widgets</h3>
+<p>Như trên hình, chúng ta thấy node <strong>swarm-02</strong> có 2 instances, chúng ta thử stop node này xem chuyện gì sẽ xảy ra.</p>
 
-<p>On the right, you can see some useful widgets that you can activate as you like. You can deactivate them under <code>params.widgets</code>:</p>
-
-<pre><code>[params.widgets]
-    recent_articles = false
-    categories = true
-    tags = true
-    tag_cloud = true
+<pre><code>$ docker-machine stop swarm-02
+Stopping &quot;swarm-02&quot;...
+Machine &quot;swarm-02&quot; was stopped.
 </code></pre>
 
-<h2 id="localization-l10n">Localization (l10n)</h2>
+<p>Chúng ta sẽ thấy swarm cluster sẽ tự động tạo ra thêm 3 nodes trên swarm-00. Tôi cũng không hiểu sao nó không tạo ra trên <strong>swarm-01</strong>.
+<img src="https://trumhemcut.github.io/images/visualizer03.png" alt="Visualizer Viewer" /></p>
 
-<p>You don&rsquo;t blog in English and you want to translate the theme into your native locale? No problem. Take a look in the <code>data</code> folder and you&rsquo;ll find a file <code>l10n.toml</code> that we&rsquo;ve copied at the beginning. It contains all strings related to the theme. Just replace the original strings with your own.</p>
+<h2 id="kết-luận">Kết luận</h2>
 
-<h2 id="linking-thumbnails">Linking thumbnails</h2>
-
-<p>After creating a new post you can define a banner by entering the relative path to the image.</p>
-
-<pre><code>banner = &quot;banners/placeholder.png&quot;
-</code></pre>
-
-<p>This way you can store them either next to the content file or in the <code>static</code> folder.</p>
-
-<h2 id="mathematical-equations">Mathematical equations</h2>
-
-<p>Mathematical equations in form of LaTeX or MathML code can be rendered with the support of <a href="https://www.mathjax.org">MathJax</a>. MathML works out of the box. If you&rsquo;re using LaTeX you need to wrap your equation with <code>$$</code> as shown in the following example:</p>
-
-<pre><code>$$ z = r \cdot (\sin{\phi} + \cos{\phi} \cdot i) $$
-</code></pre>
-
-<p>$$ z = r \cdot (\sin{\phi} + \cos{\phi} \cdot i) $$</p>
-
-<p>You can also print formulas inline: $a^2 + b^2 = c^2$. In this case wrap the formula only once with <code>$</code>.</p>
-
-<h2 id="shortcodes">Shortcodes</h2>
-
-<p>Last but not least I included some useful <a href="http://gohugo.io/extras/shortcodes/">shortcodes</a> to make your life easier.</p>
-
-<h3 id="gallery">Gallery</h3>
-
-<p>This way you can include a gallery into your post. Copy the code below into your content file and enter the relative paths to your images.</p>
-
-<pre><code>{{&lt; gallery
-    &quot;/banners/placeholder.png&quot;
-    &quot;/banners/placeholder.png&quot;
-    &quot;/banners/placeholder.png&quot;
-&gt;}}
-</code></pre>
-
-<p></p>
-
-<div class="article-gallery">
-    <div class="article-gallery-photos">
-        
-        <a class="article-gallery-img fancybox" href="https://trumhemcut.github.io/banners/placeholder.png" rel="group1">
-            <img src="https://trumhemcut.github.io/banners/placeholder.png" itemprop="image">
-        </a>
-        
-        <a class="article-gallery-img fancybox" href="https://trumhemcut.github.io/banners/placeholder.png" rel="group1">
-            <img src="https://trumhemcut.github.io/banners/placeholder.png" itemprop="image">
-        </a>
-        
-        <a class="article-gallery-img fancybox" href="https://trumhemcut.github.io/banners/placeholder.png" rel="group1">
-            <img src="https://trumhemcut.github.io/banners/placeholder.png" itemprop="image">
-        </a>
-        
-    </div>
-</div>
-
-
-<h3 id="jsfiddle">JSFiddle</h3>
-
-<p>It works the same with JSFiddle examples you want to showcase. The parameter <code>id</code> consists of the username and id of the example.</p>
-
-<pre><code>{{&lt; jsfiddle id=&quot;zalun/NmudS&quot; &gt;}}
-</code></pre>
-
-<p></p>
-
-<iframe
-  style="width: 100%; height: auto;" frameBorder="0" allowfullscreen="allowfullscreen"
-  src="https://jsfiddle.net/zalun/NmudS/embedded/">
-</iframe>
-<br><br>
-
-
-<p>As descibed in the <a href="http://doc.jsfiddle.net/use/embedding.html">docs of JSFiddle</a>, you can define which tabs will be shown. Enter the tabs you want to see separated by a comma in the <code>tabs</code> parameter.</p>
-
-<pre><code>{{&lt; jsfiddle id=&quot;zalun/NmudS&quot; tabs=&quot;html,result&quot; &gt;}}
-</code></pre>
-
-<p>Do you see the difference?</p>
-
-<iframe
-  style="width: 100%; height: auto;" frameBorder="0" allowfullscreen="allowfullscreen"
-  src="https://jsfiddle.net/zalun/NmudS/embedded/html,result/">
-</iframe>
-<br><br>
-
-
-<h2 id="nearly-finished">Nearly finished</h2>
-
-<p>In order to see your site in action, run Hugo&rsquo;s built-in local server.</p>
-
-<pre><code>$ hugo server
-</code></pre>
-
-<p>Now enter <a href="http://localhost:1313"><code>localhost:1313</code></a> in the address bar of your browser.</p>
-
-<h2 id="contributing">Contributing</h2>
-
-<p>Have you found a bug or got an idea for a new feature? Feel free to use the <a href="//github.com/digitalcraftsman/hugo-icarus-theme/issues">issue tracker</a> to let me know. Or make directly a <a href="//github.com/digitalcraftsman/hugo-icarus-theme/pulls">pull request</a>.</p>
-
-<h2 id="license">License</h2>
-
-<p>This theme is released under the MIT license. For more information read the <a href="https://github.com/digitalcraftsman/hugo-icarus-theme/blob/master/LICENSE.md">License</a>.</p>
-
-<h2 id="annotations">Annotations</h2>
-
-<p>Thanks to <a href="//github.com/spf13">Steve Francia</a> for creating Hugo and the awesome community around the project.</p>
+<p>Đây là một vài tính năng rất cơ bản mà chúng ta lướt sơ qua, còn rất nhiều tính năng thú vị chúng ta sẽ khám phá dần qua các bài viết tiếp theo.</p>
 
             </div>
             <footer class="article-footer">
