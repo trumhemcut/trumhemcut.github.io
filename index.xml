@@ -50,8 +50,8 @@
 &lt;p&gt;Chúng ta tạo ra các máy ảo như sau, lưu ý là chúng ta phải sử dụng bản Boot2Docker mới nhất nhé, nếu không chắc thì bạn nên chạy lệnh upgrade để tải bảng boot2docker mới nhất:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;swarm-00&lt;/strong&gt;: máy này sẽ làm cluster manager&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;swarm-01&lt;/strong&gt;: worker số 1, IP Address sẽ là: 192.168.99.100&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;swarm-00&lt;/strong&gt;: máy này sẽ làm cluster manager, IP Address sẽ là: 192.168.99.100&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;swarm-01&lt;/strong&gt;: worker số 1&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;swarm-02&lt;/strong&gt;: worker số 2&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;swarm-03&lt;/strong&gt;: worker số 3&lt;/li&gt;
 &lt;/ul&gt;
