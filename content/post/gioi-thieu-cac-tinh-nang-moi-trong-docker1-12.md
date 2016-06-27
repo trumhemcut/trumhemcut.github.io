@@ -4,7 +4,7 @@ date = "2016-06-26T16:56:43+02:00"
 tags = ["Docker", "DockerCon2016", "DevOps"]
 categories = ["DevOps"]
 menu = ""
-images = ["static/images/dockerswarm01.png"]
+images = ["static/images/dockerswarm01.png", "static/images/visualizer01.png", "static/images/visualizer02.png", "static/images/visualizer03.png"]
 banner = "banners/dockercon2016.png"
 +++
 
@@ -34,7 +34,7 @@ Nếu chúng ta sử dụng Boot2Docker phiên bản mới nhất thì nó đã 
 ### Dùng docker-machine để tạo các máy ảo
 Lưu ý là chúng ta phải cài Docker Toolbox để có thể xài lệnh docker-machine nhé. Trước đây tôi cũng đã từng nhầm lẫn giữa Docker for Mac & Docker Toolbox, lưu ý đây là 2 sản phẩm hoàn toàn khác nhau nhé.
 
-Chúng ta tạo ra các máy ảo như sau:
+Chúng ta tạo ra các máy ảo như sau, lưu ý là chúng ta phải sử dụng bản Boot2Docker mới nhất nhé, nếu không chắc thì bạn nên chạy lệnh upgrade để tải bảng boot2docker mới nhất:
 
 * **swarm-00**: máy này sẽ làm cluster manager
 * **swarm-01**: worker số 1, IP Address sẽ là: 192.168.99.100
@@ -42,192 +42,160 @@ Chúng ta tạo ra các máy ảo như sau:
 * **swarm-03**: worker số 3
 
 ```
+$ docker-machine upgrade default
 $ docker-machine create -d virtualbox swarm-00
 $ docker-machine create -d virtualbox swarm-01
 $ docker-machine create -d virtualbox swarm-02
 $ docker-machine create -d virtualbox swarm-03
 ```
 
-I assume you've Git installed. Inside the folder of your Hugo site run
+Kiểm tra lại địa chỉ IP để chắc chắn là **swarm-00** có địa chỉ là 192.168.99.100
 
-    $ mkdir themes
-    $ cd themes
-    $ git clone git@github.com:digitalcraftsman/hugo-icarus-theme.git
-
-You should see a folder called `hugo-icarus-theme` inside the `themes` directory that we created a few moments ago. For more information read the official [setup guide](https://gohugo.io/overview/installing/) of Hugo.
-
-
-## Setup
-
-In the next step navigate to the `exampleSite` folder at `themes/hugo-icarus-theme/exampleSite/`. Its structure should look similar to this:
-
-    exampleSite
-    ├── config.toml
-    ├── content
-    │   └── post
-    │       ├── creating-a-new-theme.md
-    │       ├── go-is-for-lovers.md
-    │       ├── hugo-is-for-lovers.md
-    │       ├── introducing-icarus-and-its-features.md
-    │       ├── linked-post.md
-    │       └── migrate-from-jekyll.md
-    ├── data
-    │   └── l10n.toml
-    └── static
-        └── banners
-            └── placeholder.png
-
-In order to get your site running, you need to copy `config.toml` and `data/l10n.toml` into the root folders.
-
-
-## The config file
-
-Now, let us take a look into the `config.toml`. Feel free to play around with the settings.
-
-
-### Comments
-
-The optional comment system is powered by Disqus. Enter your shortname to enable the comment section under your posts.
-
-    disqusShortname = ""
-
-Tip: you can disable the comment section for a single page in its frontmatter:
-
-```toml
-+++
-disable_comments = true
-+++
+```
+$ docker-machine ip swarm-00 swarm-01 swarm-02 swarm-03
+192.168.99.103
+192.168.99.102
+192.168.99.101
+192.168.99.100
 ```
 
+## Tạo một Swarm Cluster
+Bây giờ chúng ta đã chuẩn bị sẵn sàng môi trường để ta xây dựng một Swarm Cluster.
 
-### Menu
-
-You can also define the items menu entries as you like. First, let us link a post that you've written. We can do this in the frontmatter of the post's content file by setting `menu` to `main`. Take a look at the menu if you want to see a live example.
-
-    +++
-    menu = "main"
-    +++
-
-Furthermore, we can add entries that don't link to posts. Back in the `config.toml` you'll find a section for the menus:
-
-    [[params.menu]]
-        before = true
-        label  = "Home"
-        link   = "/"
-
-Define a label and enter the URL to resource you want to link. With `before` you can decide whether the link should appear before **or** after all linked posts in the menu. `Home` appears before the linked post, `Tags` and `Categories` after them (as in the menu above).
-
-
-### Sidebars
-
-In order to use the full width of the website you can disable the profile on the left and / or the widgets on the right for a single page in the frontmatter:
-
-```toml
-+++
-disable_profile = true
-disable_widgets = true
-+++
+1. Kết nối vào **swarm-00** để khởi tạo swarm manager
+```
+$ docker-machine ssh swarm-00
+$ docker swarm init --listen-addr 192.168.99.100:2377
+Swarm initialized: current node (56cqz10j5z5inzzt0rsw877ja) is now a manager.
 ```
 
+2. Chạy lệnh ```docker info``` để kiểm tra trạng thái của **swarm manager**
+```
+docker@swarm-00:~$ docker info
+Containers: 0
+ Running: 0
+ Paused: 0
+ Stopped: 0
+Images: 0
+Server Version: 1.12.0-rc2
+Storage Driver: aufs
+ Root Dir: /mnt/sda1/var/lib/docker/aufs
+ Backing Filesystem: extfs
+ Dirs: 0
+ Dirperm1 Supported: true
+Logging Driver: json-file
+...
+```
 
-### Tell me who you are
+3. Chạy lệnh docker node ls để kiểm tra thông tin các node trong cluster
+```
+docker@swarm-00:~$ docker node ls
+ID                           NAME      MEMBERSHIP  STATUS  AVAILABILITY  MANAGER STATUS
+56cqz10j5z5inzzt0rsw877ja *  swarm-00  Accepted    Ready   Active        Leader
+```
 
-Maybe you noticed the profile section on the left. Add your social network accounts to the profile section on the left by entering your username under `social`. The links to your account will be create automatically.
+## Thêm các node vào Swarm Cluster
+1. Thêm node **swarm-01** vào swarm cluster
+```
+$ docker-machine ssh swarm-01
+docker@swarm-01:~$ docker swarm join 192.168.99.100:2377
+This node joined a Swarm as a worker.
+```
 
+2. Thêm node **swarm-02** vào swarm cluster
+```
+$ docker-machine ssh swarm-02
+docker@swarm-02:~$ docker swarm join 192.168.99.100:2377
+This node joined a Swarm as a worker.
+```
 
-### Widgets
+3. Thêm node **swarm-03** vào swarm cluster
+```
+$ docker-machine ssh swarm-03
+docker@swarm-03:~$ docker swarm join 192.168.99.100:2377
+This node joined a Swarm as a worker.
+```
 
-On the right, you can see some useful widgets that you can activate as you like. You can deactivate them under `params.widgets`:
+4. Kiểm tra lại trạng thái của các nodes trong cluster
+```
+docker@swarm-00:~$ docker node ls
+ID                           NAME      MEMBERSHIP  STATUS  AVAILABILITY  MANAGER STATUS
+0h70dwoxxl5jwx53m1g857jf2    swarm-03  Accepted    Ready   Active        
+2csi90lknok2o5w3539xm48dl    swarm-02  Accepted    Ready   Active        
+56cqz10j5z5inzzt0rsw877ja *  swarm-00  Accepted    Ready   Active        Leader
+5dkujue686ddhm0zui9un77rs    swarm-01  Accepted    Ready   Active 
+```
 
-    [params.widgets]
-        recent_articles = false
-        categories = true
-        tags = true
-        tag_cloud = true
+## Dùng Visualizer để hiển thị trạng thái các nodes & services
+Thật tình là tôi rất thích dùng thằng Visualizer này để hiển thị trạng thái của các nodes & services. Bạn có thể không cần bước này, nhưng mình khuyên là nên dùng.
 
+Bạn có thể tham khảo về Visualzier [ở đây](https://github.com/ManoMarks/docker-swarm-visualizer).
+```
+docker@swarm-00:~$ docker run -it -d -p 5000:5000 -e HOST=localhost -e PORT=5000 -v /var/run/docker.sock:/var/run/docker.sock manomarks/visualizer
+```
 
-## Localization (l10n)
+Sau khi chạy container xong, chúng ta có thể xem trên browser http://localhost:5000 để xem trạng thái các nodes. 
 
-You don't blog in English and you want to translate the theme into your native locale? No problem. Take a look in the `data` folder and you'll find a file `l10n.toml` that we've copied at the beginning. It contains all strings related to the theme. Just replace the original strings with your own.
+## Deploy một service lên swarm cluster
+Đơn giản nhất, chúng ta tạo một server chạy trên swarm cluster như sau:
+```
+$ docker-machine ssh swarm-00
+$ docker service create --replicas 1 --name helloworld alpine ping docker.com
+```
 
+* ```docker service create``` để tạo ra service
+* ```--replicas``` chỉ định số instance muốn có, nếu bất kỳ instance nào bị down, cluster sẽ tự động clone số instance bằng số lượng replicas đã cấu hình
+* ```--name``` tên service là helloworld
+* ```alpine ping docker.com``` image tên là alpine và chạy lệnh ```ping docker.com```
 
-## Linking thumbnails
+Sau đó mở trình duyệt và truy cập vào http://localhost:5000 chúng ta sẽ thấy một container như trong hình.
 
-After creating a new post you can define a banner by entering the relative path to the image.
+![Container in visualizer](/images/visualizer01.png)
 
-    banner = "banners/placeholder.png"
+Liệt kê danh sách các service trong swarm cluster
+```
+$ docker service ls
+708jyxdzqrim  helloworld  1/1       alpine  ping docker.com
+```
 
-This way you can store them either next to the content file or in the `static` folder.
+Xem chi tiết thông tin service
+```
+$ docker service tasks helloworld
+ID                         NAME          SERVICE     IMAGE   LAST STATE             DESIRED STATE  NODE
+439ypow987o6h0iun9wlm7x1f  helloworld.1  helloworld  alpine  Running About an hour  Running        swarm-00
+```
 
+## Scale service trong một cluster manager
+Ví dụ ta muốn scale out service **helloworld** lên 5 instances, dùng lệnh sau:
+```
+docker@swarm-00:~$ docker service scale helloworld=5
+helloworld scaled to 5
+```
 
-## Mathematical equations
+Chúng ta xem lại danh sách service để kiểm tra xem trạng thái các service
+```
+docker@swarm-00:~$ docker service tasks helloworld
+ID                         NAME          SERVICE     IMAGE   LAST STATE             DESIRED STATE  NODE
+439ypow987o6h0iun9wlm7x1f  helloworld.1  helloworld  alpine  Running About an hour  Running        swarm-00
+39zig0tgnb1fh0f6cocmtgq2c  helloworld.2  helloworld  alpine  Running 2 minutes      Running        swarm-00
+2p9sslerww0pjd3brn52y3zp3  helloworld.3  helloworld  alpine  Running 2 minutes      Running        swarm-02
+9m4p7jsaj0tv3k02ty099cjhd  helloworld.4  helloworld  alpine  Running 2 minutes      Running        swarm-00
+26oj2s6xgnr4wo2zu2zig73uq  helloworld.5  helloworld  alpine  Running 2 minutes      Running        swarm-02
+```
 
-Mathematical equations in form of LaTeX or MathML code can be rendered with the support of [MathJax](https://www.mathjax.org). MathML works out of the box. If you're using LaTeX you need to wrap your equation with `$$` as shown in the following example:
+Hoặc có thể xem qua visualizer http://localhost:5000
 
-    $$ z = r \cdot (\sin{\phi} + \cos{\phi} \cdot i) $$
+![Visualizer Viewer](/images/visualizer02.png)
 
-$$ z = r \cdot (\sin{\phi} + \cos{\phi} \cdot i) $$
+Như trên hình, chúng ta thấy node **swarm-02** có 2 instances, chúng ta thử stop node này xem chuyện gì sẽ xảy ra.
+```
+$ docker-machine stop swarm-02
+Stopping "swarm-02"...
+Machine "swarm-02" was stopped.
+```
 
-You can also print formulas inline: $a^2 + b^2 = c^2$. In this case wrap the formula only once with `$`.
+Chúng ta sẽ thấy swarm cluster sẽ tự động tạo ra thêm 3 nodes trên swarm-00. Tôi cũng không hiểu sao nó không tạo ra trên **swarm-01**.
+![Visualizer Viewer](/images/visualizer03.png)
 
-
-## Shortcodes
-
-Last but not least I included some useful [shortcodes](http://gohugo.io/extras/shortcodes/) to make your life easier.
-
-### Gallery
-
-This way you can include a gallery into your post. Copy the code below into your content file and enter the relative paths to your images.
-
-    {{</* gallery
-        "/banners/placeholder.png"
-        "/banners/placeholder.png"
-        "/banners/placeholder.png"
-    */>}}
-
-<p></p>
-
-{{< gallery "/banners/placeholder.png" "/banners/placeholder.png" "/banners/placeholder.png" >}}
-
-
-### JSFiddle
-
-It works the same with JSFiddle examples you want to showcase. The parameter `id` consists of the username and id of the example.
-
-    {{</* jsfiddle id="zalun/NmudS" */>}}
-
-<p></p>
-
-{{< jsfiddle id="zalun/NmudS" >}}
-
-As descibed in the [docs of JSFiddle](http://doc.jsfiddle.net/use/embedding.html), you can define which tabs will be shown. Enter the tabs you want to see separated by a comma in the `tabs` parameter.
-
-    {{</* jsfiddle id="zalun/NmudS" tabs="html,result" */>}}
-
-Do you see the difference?
-
-{{< jsfiddle id="zalun/NmudS" tabs="html,result" >}}
-
-
-## Nearly finished
-
-In order to see your site in action, run Hugo's built-in local server.
-
-    $ hugo server
-
-Now enter [`localhost:1313`](http://localhost:1313) in the address bar of your browser.
-
-
-## Contributing
-
-Have you found a bug or got an idea for a new feature? Feel free to use the [issue tracker](//github.com/digitalcraftsman/hugo-icarus-theme/issues) to let me know. Or make directly a [pull request](//github.com/digitalcraftsman/hugo-icarus-theme/pulls).
-
-
-## License
-
-This theme is released under the MIT license. For more information read the [License](https://github.com/digitalcraftsman/hugo-icarus-theme/blob/master/LICENSE.md).
-
-
-## Annotations
-
-Thanks to [Steve Francia](//github.com/spf13) for creating Hugo and the awesome community around the project.
+## Kết luận
+Đây là một vài tính năng rất cơ bản mà chúng ta lướt sơ qua, còn rất nhiều tính năng thú vị chúng ta sẽ khám phá dần qua các bài viết tiếp theo.
