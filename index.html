@@ -27,7 +27,7 @@
 <meta property="og:url" content="https://trumhemcut.github.io/" />
 
 
-<meta property="og:updated_time" content="2016-06-26T16:56:43&#43;02:00"/>
+<meta property="og:updated_time" content="2016-06-28T11:20:46&#43;02:00"/>
 
 
 
@@ -163,7 +163,7 @@
       </div>
       <div class="article-info-block">
         
-          9
+          10
         
         <span>
             Tags
@@ -243,6 +243,89 @@
 
     <section id="main">
     
+    
+    <article class="article article-type-post" itemscope="" itemprop="blogPost">
+        <div class="article-inner">
+            
+            <a href="https://trumhemcut.github.io/2016/06/28/creating-a-new-theme" itemprop="url">
+                <img src="https://trumhemcut.github.io/banners/portforward.png" class="article-banner">
+            
+            </a>
+
+            <header class="article-header">
+    <a href="https://trumhemcut.github.io/2016/06/28/creating-a-new-theme">
+    <h1 class="article-title" itemprop="name">
+        Mở port cho Docker Machine
+    </h1>
+    </a>
+    <div class="article-meta">
+        <div class="article-date">
+            <i class="fa fa-calendar"></i>
+            <time datetime="2016-06-28 11:20:46 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-28</time>
+            &middot;
+            200
+            từ
+            &middot;
+            1
+            phút đọc
+        </div>
+
+        
+        
+            
+            
+            <div class="article-category">
+                <i class="fa fa-folder"></i>
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
+                
+                
+            </div>
+            
+        
+
+        
+            
+            
+            <div class="article-category">
+                <i class="fa fa-tags"></i>
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker">Docker</a>
+                &middot;
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker-machine">Docker Machine</a>
+                
+                
+            </div>
+            
+        
+    </div>
+</header>
+
+            <div class="article-entry" itemprop="articleBody">
+                <p>
+                    Giới thiệu Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address. Ví dụ: docker run -it -p 8080:8080 &ndash;name dotnetapp microsoft/dotnet:latest Để truy cập vào website, chúng ta sẽ dùng địa chỉ <a href="http://192.168.99.100:8080">http://192.168.99.100:8080</a> với 192.168.99.100 chính là địa chỉ máy ảo (mặc định) trên Docker Machine.
+                    <br>
+                </p>
+                <p class="article-more-link">
+                    <a href="https://trumhemcut.github.io/2016/06/28/creating-a-new-theme">
+                        Xem chi tiết
+                    </a>
+                </p>
+            </div>
+            <footer class="article-footer">
+    <a data-url="https://trumhemcut.github.io/2016/06/28/creating-a-new-theme" data-id="203afb8fdc074e80a6a8cddc7dc8ce70" class="article-share-link">
+        Chia sẻ
+    </a>
+    
+    <a href="https://trumhemcut.github.io/2016/06/28/creating-a-new-theme/#disqus_thread" class="article-comment-link">
+        Ý kiến
+    </a>
+    
+</footer>
+
+        </div>
+    </article>
     
     <article class="article article-type-post" itemscope="" itemprop="blogPost">
         <div class="article-inner">
@@ -659,86 +742,6 @@
         </div>
     </article>
     
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
-        <div class="article-inner">
-            
-            <a href="https://trumhemcut.github.io/2015/06/24/creating-a-new-theme" itemprop="url">
-                <img src="https://trumhemcut.github.io/banners/placeholder.png" class="article-banner">
-            
-            </a>
-
-            <header class="article-header">
-    <a href="https://trumhemcut.github.io/2015/06/24/creating-a-new-theme">
-    <h1 class="article-title" itemprop="name">
-        Creating a new theme
-    </h1>
-    </a>
-    <div class="article-meta">
-        <div class="article-date">
-            <i class="fa fa-calendar"></i>
-            <time datetime="2015-06-24 13:50:46 &#43;0200 &#43;0200" itemprop="datePublished">2015-06-24</time>
-            &middot;
-            7232
-            từ
-            &middot;
-            34
-            phút đọc
-        </div>
-
-        
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-folder"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/starting">starting</a>
-                
-                
-            </div>
-            
-        
-
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-tags"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/theme">theme</a>
-                
-                
-            </div>
-            
-        
-    </div>
-</header>
-
-            <div class="article-entry" itemprop="articleBody">
-                <p>
-                    Introduction This tutorial will show you how to create a simple theme in Hugo. I assume that you are familiar with HTML, the bash command line, and that you are comfortable using Markdown to format content. I&rsquo;ll explain how Hugo uses templates and how you can organize your templates to create a theme. I won&rsquo;t cover using CSS to style your theme. We&rsquo;ll start with creating a new site with a very basic template.
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2015/06/24/creating-a-new-theme">
-                        Xem chi tiết
-                    </a>
-                </p>
-            </div>
-            <footer class="article-footer">
-    <a data-url="https://trumhemcut.github.io/2015/06/24/creating-a-new-theme" data-id="203afb8fdc074e80a6a8cddc7dc8ce70" class="article-share-link">
-        Chia sẻ
-    </a>
-    
-    <a href="https://trumhemcut.github.io/2015/06/24/creating-a-new-theme/#disqus_thread" class="article-comment-link">
-        Ý kiến
-    </a>
-    
-</footer>
-
-        </div>
-    </article>
-    
 
     <nav id="page-nav">
 
@@ -755,6 +758,31 @@
     </h3>
     <div class="widget">
         <ul id="recent-post">
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/06/28/creating-a-new-theme" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/06/28/creating-a-new-theme" class="title">Mở port cho Docker Machine</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-06-28 11:20:46 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-28</time>
+                    </p>
+                </div>
+            </li>
             
             <li>
                 <div class="item-thumbnail">
@@ -856,31 +884,6 @@
                 </div>
             </li>
             
-            <li>
-                <div class="item-thumbnail">
-                    <a href="https://trumhemcut.github.io/2015/08/03/hugo-is-for-lovers" class="thumbnail">
-                    
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/placeholder.png)" alt="Phi Huỳnh" class="thumbnail-image"></span>
-                    
-                    </a>
-                </div>
-                <div class="item-inner">
-                    
-                    
-                    <p class="item-category">
-                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/pseudo">
-                        pseudo
-                        </a>
-                    </p>
-                    
-                    
-                    <p class="item-title"><a href="https://trumhemcut.github.io/2015/08/03/hugo-is-for-lovers" class="title">Hugo is for lovers</a></p>
-                    <p class="item-date">
-                        <time datetime="2015-08-03 13:39:46 &#43;0200 &#43;0200" itemprop="datePublished">2015-08-03</time>
-                    </p>
-                </div>
-            </li>
-            
         </ul>
     </div>
 </div>
@@ -898,7 +901,7 @@
                 <a class="category-list-link" href="https://trumhemcut.github.io/categories/devops">
                     devops
                 </a>
-                <span class="category-list-count">1</span>
+                <span class="category-list-count">2</span>
             </li>
             
             <li class="category-list-item">
@@ -918,13 +921,6 @@
             <li class="category-list-item">
                 <a class="category-list-link" href="https://trumhemcut.github.io/categories/pseudo">
                     pseudo
-                </a>
-                <span class="category-list-count">1</span>
-            </li>
-            
-            <li class="category-list-item">
-                <a class="category-list-link" href="https://trumhemcut.github.io/categories/starting">
-                    starting
                 </a>
                 <span class="category-list-count">1</span>
             </li>
@@ -955,6 +951,13 @@
             <li class="category-list-item">
                 <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker">
                     docker
+                </a>
+                <span class="category-list-count">2</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-machine">
+                    docker-machine
                 </a>
                 <span class="category-list-count">1</span>
             </li>
@@ -1005,7 +1008,7 @@
                 <a class="category-list-link" href="https://trumhemcut.github.io/tags/theme">
                     theme
                 </a>
-                <span class="category-list-count">2</span>
+                <span class="category-list-count">1</span>
             </li>
             
         </ul>
@@ -1026,6 +1029,8 @@
         <a href="https://trumhemcut.github.io/tags/devops" style="font-size: 12px;">devops</a>
         
         <a href="https://trumhemcut.github.io/tags/docker" style="font-size: 12px;">docker</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-machine" style="font-size: 12px;">docker-machine</a>
         
         <a href="https://trumhemcut.github.io/tags/dockercon2016" style="font-size: 12px;">dockercon2016</a>
         
