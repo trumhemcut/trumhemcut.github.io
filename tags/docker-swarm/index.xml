@@ -1,13 +1,214 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Programming on Phi Huỳnh</title>
-    <link>https://trumhemcut.github.io/categories/programming/</link>
-    <description>Recent content in Programming on Phi Huỳnh</description>
+    <title>Docker Swarm on Phi Huỳnh</title>
+    <link>https://trumhemcut.github.io/tags/docker-swarm/</link>
+    <description>Recent content in Docker Swarm on Phi Huỳnh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 29 Jun 2016 11:44:08 +0200</lastBuildDate>
-    <atom:link href="https://trumhemcut.github.io/categories/programming/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 03 Jul 2016 13:27:20 +0200</lastBuildDate>
+    <atom:link href="https://trumhemcut.github.io/tags/docker-swarm/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Docker networking &amp; Docker Swarm Mode Demo</title>
+      <link>https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo</link>
+      <pubDate>Sun, 03 Jul 2016 13:27:20 +0200</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo</guid>
+      <description>
+
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;This post is a step by step introduction about Docker Networking and new features of Docker Swarm Mode which has just been introduced in #DockerCon 2016.&lt;/p&gt;
+
+&lt;p&gt;We will walk through by examples to understand the Docker Networking. Then will swich to Docker Swarm Mode, demo about the features such as:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The new way to create services&lt;/li&gt;
+&lt;li&gt;Scale the services&lt;/li&gt;
+&lt;li&gt;Load balancing with Rounting Mesh&lt;/li&gt;
+&lt;li&gt;Self-Healing&lt;/li&gt;
+&lt;li&gt;Self-Organizing&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;pre-requisites&#34;&gt;Pre-requisites&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine create -d virtualbox node-0
+$ docker-machine create -d virtualbox node-1
+$ docker-machine create -d virtualbox node-2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Double check to make sure of IP Address of nodes&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ip node-0
+$ docker-machine ip node-1
+$ docker-machine ip node-2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Change &lt;strong&gt;/etc/hosts&lt;/strong&gt; file with these above IP Addresses &amp;amp; nodes&lt;/p&gt;
+
+&lt;h2 id=&#34;docker-networking-demo&#34;&gt;Docker Networking Demo&lt;/h2&gt;
+
+&lt;p&gt;SSH to the node-0 node&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker-machine ssh node-0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Create a bridge network&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker network create -d bridge --subnet 10.10.0.0/16  vnet-1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Create containers within that network&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker run -d -p 8001:8000 --net=vnet-1 --name c1 jwilder/whoami
+docker run -d -p 8002:8000 --net=vnet-1 --name c2 jwilder/whoami
+docker run -d -p 8003:8000 --net=vnet-1 --name c3 jwilder/whoami
+docker run -d -p 8004:8000 --net=vnet-1 --name c4 jwilder/whoami
+docker run -d -p 8005:8000 --net=vnet-1 --name c5 jwilder/whoami
+docker run -d -p 8006:8000 --net=vnet-1 --name c6 jwilder/whoami
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Check the containers in the network&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker network inspect vnet-1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ping each others&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker exec -it c1 bash
+$ ping c2
+$ ping c3
+$ ping c4
+$ # and for the others...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Multiple bridge networks demo
+Create frontend &amp;amp; backend networks&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker network create -d bridge --subnet 10.11.0.0/16 frontend
+$ docker network create -d bridge --subnet 10.12.0.0/16 backend
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Remove containers off the vnet-1 network&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker network disconnect vnet-1 c1
+$ docker network disconnect vnet-1 c2
+$ docker network disconnect vnet-1 c3
+$ docker network disconnect vnet-1 c4
+$ docker network disconnect vnet-1 c5
+$ docker network disconnect vnet-1 c6
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Connect to frontend network&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker network connect frontend c1
+$ docker network connect frontend c2
+$ docker network connect frontend c3
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Connect to backend network&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker network connect backend c4
+$ docker network connect backend c5
+$ docker network connect backend c6
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ping each other&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker exec -it c1 bash
+$ ping c2
+$ ping c3
+$ ping c4
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Connect &lt;strong&gt;c3&lt;/strong&gt; to backend&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker network connect backend c3
+$ docker exec -it c3 bash
+$ ping c4
+$ ping c5
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;docker-swarm-mode-demo&#34;&gt;Docker Swarm Mode Demo&lt;/h2&gt;
+
+&lt;p&gt;Create a swarm cluster
+Initial swarm manager&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ssh node-0
+$ docker swarm init
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Node-1 joins the swarm cluster&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ssh node-1
+$ docker swarm join --listen-addr 192.168.99.101:2377 192.168.99.100:2377
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Node-2 joins the swarm cluster&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ssh node-2
+$ docker swarm join --listen-addr 192.168.99.102:2377 192.168.99.100:2377
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Go to the node-0 and check the status of nodes&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker node ls
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Create a service
+From node-0, create a service&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker service create -p 5000:5000 --name=cat mikesir87/cats
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Testing the service by browsing at &lt;a href=&#34;http://node-0:5000&#34;&gt;http://node-0:5000&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;scaling-the-service&#34;&gt;Scaling the service&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker service scale web=2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Testing the service by browsing at &lt;a href=&#34;http://node-0:5000&#34;&gt;http://node-0:5000&lt;/a&gt;
+Testing the service by browsing at &lt;a href=&#34;http://node-1:5000&#34;&gt;http://node-1:5000&lt;/a&gt;
+Testing the service by browsing at &lt;a href=&#34;http://node-2:5000&#34;&gt;http://node-2:5000&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;All works, why this happens, we have only two nodes, but three endpoints are working fine? Will discuss further?&amp;hellip;&lt;/p&gt;
+
+&lt;h3 id=&#34;routing-mesh&#34;&gt;Routing Mesh&lt;/h3&gt;
+
+&lt;p&gt;Ingress Load Balancing to allow the services exposing port to the outsite world. Only the services has the port published with -p option will join this &lt;strong&gt;ingress network&lt;/strong&gt;. Otherwise, it&amp;rsquo;s only added to &lt;strong&gt;default_gwbridge&lt;/strong&gt; network.&lt;/p&gt;
+
+&lt;p&gt;Try to scale the services to 10 instances as follow:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker service scale web=10
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It&amp;rsquo;s great if we have time to use a overlay user-defined network and attach the service to this network.&lt;/p&gt;
+
+&lt;h3 id=&#34;blue-print-releasing&#34;&gt;Blue-print Releasing&lt;/h3&gt;
+
+&lt;p&gt;When we need to deploy a new version, Docker 1.12 helps us to easily gain blue-print releasing with following command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker service update \ 
+    --image trumhemcut/aspnetcore:2.0 aspnet
+    --update-parallelism=2 \
+    --update-delay=10
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;self-healing&#34;&gt;Self-Healing&lt;/h3&gt;
+
+&lt;p&gt;Go to any nodes and try to stop one container. It will create another container for us.&lt;/p&gt;
+
+&lt;h3 id=&#34;self-organization&#34;&gt;Self-Organization&lt;/h3&gt;
+
+&lt;p&gt;Try to shut down a node, it will create containers on another node for us.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;Hopefully the demo can illustrate the idea of how we&amp;rsquo;re working with the new Docker (v1.12) &amp;amp; Docker Networking.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Docker Swarm, aspnet core 1.0 in action</title>

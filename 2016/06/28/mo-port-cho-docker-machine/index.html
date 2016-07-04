@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-    <title>Phi Huỳnh</title>
+    <title>Mở port cho Docker Machine &middot; Phi Huỳnh</title>
     <meta name="generator" content="Hugo 0.16" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -9,9 +9,6 @@
     
       <meta name="description" content="">
     
-    
-      <link href="https://trumhemcut.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Phi Huỳnh" />
-      <link href="https://trumhemcut.github.io/index.xml" rel="feed" type="application/rss+xml" title="Phi Huỳnh" />
     
     <link rel="icon" href="https://trumhemcut.github.io/favicon.ico">
     <link rel="apple-touch-icon" href="https://trumhemcut.github.io/apple-touch-icon.png" />
@@ -21,29 +18,47 @@
     <link rel="stylesheet" href="https://trumhemcut.github.io/fancybox/jquery.fancybox.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
-    <meta property="og:title" content="Phi Huỳnh" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://trumhemcut.github.io/" />
+    <meta property="og:title" content="Mở port cho Docker Machine" />
+<meta property="og:description" content="Giới thiệu Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address. Ví dụ: docker run -it -p 8080:8080 --name dotnetapp microsoft/dotnet:latest Để truy cập vào website, chúng ta sẽ dùng địa chỉ http://192.168.99.100:8080 với 192.168.99.100 chính là địa chỉ máy ảo (mặc định) trên Docker Machine." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" />
 
 
-<meta property="og:updated_time" content="2016-07-03T13:27:20&#43;02:00"/>
-
-
-
+<meta property="og:updated_time" content="2016-06-28T11:20:46&#43;02:00"/>
 
 
 
 
 
 
-    
-    
-<meta itemprop="name" content="Phi Huỳnh">
-<meta itemprop="description" content="">
+
+
 
 
     
+    
+<meta itemprop="name" content="Mở port cho Docker Machine">
+<meta itemprop="description" content="Giới thiệu Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address. Ví dụ: docker run -it -p 8080:8080 --name dotnetapp microsoft/dotnet:latest Để truy cập vào website, chúng ta sẽ dùng địa chỉ http://192.168.99.100:8080 với 192.168.99.100 chính là địa chỉ máy ảo (mặc định) trên Docker Machine.">
+
+
+<meta itemprop="dateModified" content="2016-06-28T11:20:46&#43;02:00" />
+<meta itemprop="wordCount" content="200">
+
+
+
+<meta itemprop="keywords" content="devops,docker,programming,asp.net-core,devops,docker,docker-compose,docker-machine,docker-networking,docker-swarm,dockercon2016,swarm-mode," />
+
+    
+
+  <meta name="twitter:card" content="summary"/>
+
+
+
+<meta name="twitter:title" content="Mở port cho Docker Machine"/>
+<meta name="twitter:description" content="Giới thiệu Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address. Ví dụ: docker run -it -p 8080:8080 --name dotnetapp microsoft/dotnet:latest Để truy cập vào website, chúng ta sẽ dùng địa chỉ http://192.168.99.100:8080 với 192.168.99.100 chính là địa chỉ máy ảo (mặc định) trên Docker Machine."/>
+<meta name="twitter:site" content="@trumhemcut"/>
+
+
     
 
     
@@ -53,7 +68,7 @@
 
 
 <div id="container">
-    <header id="header">
+	<header id="header">
   <div id="header-main" class="header-inner">
     <div class="outer">
       <a href="https://trumhemcut.github.io/" id="logo">
@@ -141,9 +156,10 @@
   </div>
 </header>
 
-
-    <div class="outer">
-    <aside id="profile">
+   	
+   	<div class="outer">
+   		
+	    <aside id="profile">
   <div class="inner profile-inner">
     <div class="base-info profile-block">
       <img id="avatar" src="https://trumhemcut.github.io/css/images/avatar.png">
@@ -234,204 +250,23 @@
 <td><a href="//twitter.com/trumhemcut" target="_blank" title="Twitter"><i class="fa fa-twitter"></i></a></td>
 
 
-          <td><a href="https://trumhemcut.github.io/index.xml" target="_blank" title="RSS"><i class="fa fa-rss"></i></a></td>
+          <td><a href="" target="_blank" title="RSS"><i class="fa fa-rss"></i></a></td>
         </tr>
       </table>
     </div>
   </div>
 </aside>
 
-    <section id="main">
-    
-    
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
+	    
+
+	    
+<section id="main">
+
+    <article id="page-undefined" class="article article-type-page" itemscope="" itemprop="blogPost">
         <div class="article-inner">
             
-            <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" itemprop="url">
-                <img src="https://trumhemcut.github.io/banners/dockerswarm.png" class="article-banner">
-            
-            </a>
-
-            <header class="article-header">
-    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo">
-    <h1 class="article-title" itemprop="name">
-        Docker networking &amp; Docker Swarm Mode Demo
-    </h1>
-    </a>
-    <div class="article-meta">
-        <div class="article-date">
-            <i class="fa fa-calendar"></i>
-            <time datetime="2016-07-03 13:27:20 &#43;0200 &#43;0200" itemprop="datePublished">2016-07-03</time>
-            &middot;
-            681
-            từ
-            &middot;
-            4
-            phút đọc
-        </div>
-
-        
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-folder"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
-                
-                
-            </div>
-            
-        
-
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-tags"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker">Docker</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker-swarm">Docker Swarm</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/swarm-mode">Swarm Mode</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker-networking">Docker Networking</a>
-                
-                
-            </div>
-            
-        
-    </div>
-</header>
-
-            <div class="article-entry" itemprop="articleBody">
-                <p>
-                    Introduction This post is a step by step introduction about Docker Networking and new features of Docker Swarm Mode which has just been introduced in #DockerCon 2016. We will walk through by examples to understand the Docker Networking. Then will swich to Docker Swarm Mode, demo about the features such as: The new way to create services Scale the services Load balancing with Rounting Mesh Self-Healing Self-Organizing Pre-requisites $ docker-machine create -d virtualbox node-0 $ docker-machine create -d virtualbox node-1 $ docker-machine create -d virtualbox node-2 Double check to make sure of IP Address of nodes $ docker-machine ip node-0 $ docker-machine ip node-1 $ docker-machine ip node-2 Change /etc/hosts file with these above IP Addresses &amp; nodes Docker Networking Demo SSH to the node-0 node docker-machine ssh node-0 Create a bridge network docker network create -d bridge &ndash;subnet 10.10.0.0/16 vnet-1 Create containers within that network docker run -d -p 8001:8000 &ndash;net=vnet-1 &ndash;name c1 jwilder/whoami docker run -d -p 8002:8000 &ndash;net=vnet-1 &ndash;name c2 jwilder/whoami docker run -d -p 8003:8000 &ndash;net=vnet-1 &ndash;name c3 jwilder/whoami docker run -d -p 8004:8000 &ndash;net=vnet-1 &ndash;name c4 jwilder/whoami docker run -d -p 8005:8000 &ndash;net=vnet-1 &ndash;name c5 jwilder/whoami docker run -d -p 8006:8000 &ndash;net=vnet-1 &ndash;name c6 jwilder/whoami Check the containers in the network docker network inspect vnet-1 Ping each others $ docker exec -it c1 bash $ ping c2 $ ping c3 $ ping c4 $ # and for the others&hellip;
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo">
-                        Xem chi tiết
-                    </a>
-                </p>
-            </div>
-            <footer class="article-footer">
-    <a data-url="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" data-id="24851430a7ff484e254cada500f51dc7" class="article-share-link">
-        Chia sẻ
-    </a>
-    
-    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo/#disqus_thread" class="article-comment-link">
-        Ý kiến
-    </a>
-    
-</footer>
-
-        </div>
-    </article>
-    
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
-        <div class="article-inner">
-            
-            <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" itemprop="url">
-                <img src="https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg" class="article-banner">
-            
-            </a>
-
-            <header class="article-header">
-    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action">
-    <h1 class="article-title" itemprop="name">
-        Docker Swarm, aspnet core 1.0 in action
-    </h1>
-    </a>
-    <div class="article-meta">
-        <div class="article-date">
-            <i class="fa fa-calendar"></i>
-            <time datetime="2016-06-29 11:44:08 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-29</time>
-            &middot;
-            783
-            từ
-            &middot;
-            4
-            phút đọc
-        </div>
-
-        
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-folder"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/programming">Programming</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/docker">Docker</a>
-                
-                
-            </div>
-            
-        
-
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-tags"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/asp.net-core">asp.net core</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker-swarm">Docker Swarm</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker-compose">Docker Compose</a>
-                
-                
-            </div>
-            
-        
-    </div>
-</header>
-
-            <div class="article-entry" itemprop="articleBody">
-                <p>
-                    Cuối cùng thì Microsoft cũng ra mắt aspnet core 1.0, sau một thời gian dài trải qua các version RC1, RC2. Như các bạn cũng biết asp.net core có nhiều tính năng được built-in mà chúng ta không phải tìm kiếm &amp; sử dụng nhiều libraries ngoài như asp.net 5. Có thể kể ra một vài tính năng như sau: Chạy cross-platform trên Windows, Mac và Linux Xây dựng trên .NET core, hỗ trợ side-by-side versioning Hỗ trợ built-in dependency injection Tag Helper kiểu tự nhiên như HTML data attributes (bắt chước Angular 1 :v ) Có thể host trên IIS hoặc self-host Không còn phân biệt giữa MVC/API nữa Có nhiều cách / tools để bắt đầu một dự án dùng aspnet core 1.0.
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action">
-                        Xem chi tiết
-                    </a>
-                </p>
-            </div>
-            <footer class="article-footer">
-    <a data-url="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" data-id="bac1403f914aa6b851ca0ec25f6db510" class="article-share-link">
-        Chia sẻ
-    </a>
-    
-    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action/#disqus_thread" class="article-comment-link">
-        Ý kiến
-    </a>
-    
-</footer>
-
-        </div>
-    </article>
-    
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
-        <div class="article-inner">
-            
-            <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" itemprop="url">
                 <img src="https://trumhemcut.github.io/banners/portforward.png" class="article-banner">
             
-            </a>
 
             <header class="article-header">
     <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine">
@@ -484,15 +319,53 @@
 </header>
 
             <div class="article-entry" itemprop="articleBody">
-                <p>
-                    Giới thiệu Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address. Ví dụ: docker run -it -p 8080:8080 &ndash;name dotnetapp microsoft/dotnet:latest Để truy cập vào website, chúng ta sẽ dùng địa chỉ <a href="http://192.168.99.100:8080">http://192.168.99.100:8080</a> với 192.168.99.100 chính là địa chỉ máy ảo (mặc định) trên Docker Machine.
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine">
-                        Xem chi tiết
-                    </a>
-                </p>
+                
+
+<h2 id="giới-thiệu">Giới thiệu</h2>
+
+<p>Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address.</p>
+
+<p>Ví dụ:</p>
+
+<pre><code>docker run -it -p 8080:8080 --name dotnetapp microsoft/dotnet:latest
+</code></pre>
+
+<p>Để truy cập vào website, chúng ta sẽ dùng địa chỉ <code>http://192.168.99.100:8080</code> với <strong>192.168.99.100</strong> chính là địa chỉ máy ảo (mặc định) trên Docker Machine.</p>
+
+<p>Để có thể truy cập bằng địa chỉ localhost, chúng ta phải forward port từ máy ảo sang máy host. Từ đó chúng ta có thể truy cập bằng địa chỉ <code>http://localhost:8080</code></p>
+
+<p>Có nhiều cách để forward port, nhưng tôi thấy bạn Johan Haleby làm là cách dễ nhớ nhất. Đó là dùng tool <strong>pf</strong></p>
+
+<h4 id="download-bash-script">Download bash script</h4>
+
+<pre><code>git clone https://github.com/johanhaleby/docker-machine-port-forwarder &amp;&amp; cd docker-machine-port-forwarder
+</code></pre>
+
+<h4 id="mở-port-8080-cho-máy-default">Mở port 8080 cho máy default</h4>
+
+<pre><code>./pf 8080
+</code></pre>
+
+<h4 id="hoặc-mở-port-8080-cho-một-máy-docker-machine-có-tên-là-swarm-00">Hoặc mở port 8080 cho một máy docker machine có tên là <strong>swarm-00</strong></h4>
+
+<pre><code>./pf 8080 -e swarm-00
+</code></pre>
+
+<h4 id="hoặc-là-forward-port-8080-sang-port-80-trên-máy-host">Hoặc là forward port 8080 sang port 80 trên máy host</h4>
+
+<pre><code>./pf 80:8080 -e swarm-00
+</code></pre>
+
+<h4 id="stop-port-forwarding">Stop port forwarding</h4>
+
+<pre><code>./pf 8080 -s
+</code></pre>
+
+<h4 id="chạy-ở-chế-độ-foreground">Chạy ở chế độ foreground</h4>
+
+<pre><code>./pf 8080 -f
+</code></pre>
+
             </div>
             <footer class="article-footer">
     <a data-url="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" data-id="0390dae821d96cc6638577d09f1dfad9" class="article-share-link">
@@ -506,103 +379,57 @@
 </footer>
 
         </div>
-    </article>
+
+        
+<nav id="article-nav">
     
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
-        <div class="article-inner">
-            
-            <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" itemprop="url">
-                <img src="https://trumhemcut.github.io/banners/dockercon2016.png" class="article-banner">
-            
-            </a>
-
-            <header class="article-header">
-    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12">
-    <h1 class="article-title" itemprop="name">
-        Giới thiệu các tính năng mới trong Docker 1.12
-    </h1>
-    </a>
-    <div class="article-meta">
-        <div class="article-date">
-            <i class="fa fa-calendar"></i>
-            <time datetime="2016-06-26 16:56:43 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-26</time>
-            &middot;
-            1122
-            từ
-            &middot;
-            6
-            phút đọc
-        </div>
-
-        
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-folder"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
-                
-                
-            </div>
-            
-        
-
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-tags"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker">Docker</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/dockercon2016">DockerCon2016</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/devops">DevOps</a>
-                
-                
-            </div>
-            
-        
-    </div>
-</header>
-
-            <div class="article-entry" itemprop="articleBody">
-                <p>
-                    DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về Docker Swarm Mode, một tính năng mới có trong Docker Engine (v1.12). Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm ở đây. Docker Swarm Mode là gì? Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào.
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12">
-                        Xem chi tiết
-                    </a>
-                </p>
-            </div>
-            <footer class="article-footer">
-    <a data-url="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" data-id="31be51e29caf4a64b8ece2b151534552" class="article-share-link">
-        Chia sẻ
+    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">
+          Cũ hơn
+      </strong>
+      <div class="article-nav-title">Giới thiệu các tính năng mới trong Docker 1.12</div>
     </a>
     
-    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12/#disqus_thread" class="article-comment-link">
-        Ý kiến
+
+    
+    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">
+          Mới hơn
+      </strong>
+      <div class="article-nav-title">Docker Swarm, aspnet core 1.0 in action</div>
     </a>
     
-</footer>
-
-        </div>
-    </article>
-    
-
-    <nav id="page-nav">
-
 </nav>
 
+
+    </article>
+
+    
+    <section id="comments">
+        <div id="disqus_thread">
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'trumhemcut';
+    var disqus_identifier = 'https:\/\/trumhemcut.github.io\/2016\/06\/28\/mo-port-cho-docker-machine';
+    var disqus_title = 'Mở port cho Docker Machine';
+    var disqus_url = 'https:\/\/trumhemcut.github.io\/2016\/06\/28\/mo-port-cho-docker-machine';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </div>
+    </section>
+    
 </section>
 
 
-    <aside id="sidebar">
+	    
+	    <aside id="sidebar">
     
 <div class="widget-wrap">
     <h3 class="widget-title">
@@ -615,7 +442,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Mở port cho Docker Machine" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -640,7 +467,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg)" alt="Mở port cho Docker Machine" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -665,7 +492,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Mở port cho Docker Machine" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -690,7 +517,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockercon2016.png)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockercon2016.png)" alt="Mở port cho Docker Machine" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -866,7 +693,8 @@
     <div id="toTop" class="fa fa-chevron-up"></div>
 </aside>
 
-    </div>
+	    
+	</div>
 </div>
 
 <footer id="footer">

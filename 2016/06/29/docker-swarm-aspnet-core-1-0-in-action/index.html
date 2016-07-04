@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-    <title>Phi Huỳnh</title>
+    <title>Docker Swarm, aspnet core 1.0 in action &middot; Phi Huỳnh</title>
     <meta name="generator" content="Hugo 0.16" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -9,9 +9,6 @@
     
       <meta name="description" content="">
     
-    
-      <link href="https://trumhemcut.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Phi Huỳnh" />
-      <link href="https://trumhemcut.github.io/index.xml" rel="feed" type="application/rss+xml" title="Phi Huỳnh" />
     
     <link rel="icon" href="https://trumhemcut.github.io/favicon.ico">
     <link rel="apple-touch-icon" href="https://trumhemcut.github.io/apple-touch-icon.png" />
@@ -21,29 +18,53 @@
     <link rel="stylesheet" href="https://trumhemcut.github.io/fancybox/jquery.fancybox.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
-    <meta property="og:title" content="Phi Huỳnh" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://trumhemcut.github.io/" />
+    <meta property="og:title" content="Docker Swarm, aspnet core 1.0 in action" />
+<meta property="og:description" content="Cuối cùng thì Microsoft cũng ra mắt aspnet core 1.0, sau một thời gian dài trải qua các version RC1, RC2. Như các bạn cũng biết asp.net core có nhiều tính năng được built-in mà chúng ta không phải tìm kiếm &amp; sử dụng nhiều libraries ngoài như asp.net 5. Có thể kể ra một vài tính năng như sau: Chạy cross-platform trên Windows, Mac và Linux Xây dựng trên .NET core, hỗ trợ side-by-side versioning Hỗ trợ built-in dependency injection Tag Helper kiểu tự nhiên như HTML data attributes (bắt chước Angular 1 :v ) Có thể host trên IIS hoặc self-host Không còn phân biệt giữa MVC/API nữa Có nhiều cách / tools để bắt đầu một dự án dùng aspnet core 1.0." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" />
+
+  <meta property="og:image" content="https://trumhemcut.github.io/static/images/aspnetcore01.png" />
 
 
-<meta property="og:updated_time" content="2016-07-03T13:27:20&#43;02:00"/>
-
-
-
-
-
+<meta property="og:updated_time" content="2016-06-29T11:44:08&#43;02:00"/>
 
 
 
 
-    
-    
-<meta itemprop="name" content="Phi Huỳnh">
-<meta itemprop="description" content="">
+
+
+
+
 
 
     
+    
+<meta itemprop="name" content="Docker Swarm, aspnet core 1.0 in action">
+<meta itemprop="description" content="Cuối cùng thì Microsoft cũng ra mắt aspnet core 1.0, sau một thời gian dài trải qua các version RC1, RC2. Như các bạn cũng biết asp.net core có nhiều tính năng được built-in mà chúng ta không phải tìm kiếm &amp; sử dụng nhiều libraries ngoài như asp.net 5. Có thể kể ra một vài tính năng như sau: Chạy cross-platform trên Windows, Mac và Linux Xây dựng trên .NET core, hỗ trợ side-by-side versioning Hỗ trợ built-in dependency injection Tag Helper kiểu tự nhiên như HTML data attributes (bắt chước Angular 1 :v ) Có thể host trên IIS hoặc self-host Không còn phân biệt giữa MVC/API nữa Có nhiều cách / tools để bắt đầu một dự án dùng aspnet core 1.0.">
+
+
+<meta itemprop="dateModified" content="2016-06-29T11:44:08&#43;02:00" />
+<meta itemprop="wordCount" content="783">
+
+  <meta itemprop="image" content="https://trumhemcut.github.io/static/images/aspnetcore01.png">
+
+
+
+<meta itemprop="keywords" content="devops,docker,programming,asp.net-core,devops,docker,docker-compose,docker-machine,docker-networking,docker-swarm,dockercon2016,swarm-mode," />
+
+    
+
+
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:image:src" content="https://trumhemcut.github.io/static/images/aspnetcore01.png"/>
+
+
+
+<meta name="twitter:title" content="Docker Swarm, aspnet core 1.0 in action"/>
+<meta name="twitter:description" content="Cuối cùng thì Microsoft cũng ra mắt aspnet core 1.0, sau một thời gian dài trải qua các version RC1, RC2. Như các bạn cũng biết asp.net core có nhiều tính năng được built-in mà chúng ta không phải tìm kiếm &amp; sử dụng nhiều libraries ngoài như asp.net 5. Có thể kể ra một vài tính năng như sau: Chạy cross-platform trên Windows, Mac và Linux Xây dựng trên .NET core, hỗ trợ side-by-side versioning Hỗ trợ built-in dependency injection Tag Helper kiểu tự nhiên như HTML data attributes (bắt chước Angular 1 :v ) Có thể host trên IIS hoặc self-host Không còn phân biệt giữa MVC/API nữa Có nhiều cách / tools để bắt đầu một dự án dùng aspnet core 1.0."/>
+<meta name="twitter:site" content="@trumhemcut"/>
+
+
     
 
     
@@ -53,7 +74,7 @@
 
 
 <div id="container">
-    <header id="header">
+	<header id="header">
   <div id="header-main" class="header-inner">
     <div class="outer">
       <a href="https://trumhemcut.github.io/" id="logo">
@@ -141,9 +162,10 @@
   </div>
 </header>
 
-
-    <div class="outer">
-    <aside id="profile">
+   	
+   	<div class="outer">
+   		
+	    <aside id="profile">
   <div class="inner profile-inner">
     <div class="base-info profile-block">
       <img id="avatar" src="https://trumhemcut.github.io/css/images/avatar.png">
@@ -234,112 +256,23 @@
 <td><a href="//twitter.com/trumhemcut" target="_blank" title="Twitter"><i class="fa fa-twitter"></i></a></td>
 
 
-          <td><a href="https://trumhemcut.github.io/index.xml" target="_blank" title="RSS"><i class="fa fa-rss"></i></a></td>
+          <td><a href="" target="_blank" title="RSS"><i class="fa fa-rss"></i></a></td>
         </tr>
       </table>
     </div>
   </div>
 </aside>
 
-    <section id="main">
-    
-    
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
+	    
+
+	    
+<section id="main">
+
+    <article id="page-undefined" class="article article-type-page" itemscope="" itemprop="blogPost">
         <div class="article-inner">
             
-            <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" itemprop="url">
-                <img src="https://trumhemcut.github.io/banners/dockerswarm.png" class="article-banner">
-            
-            </a>
-
-            <header class="article-header">
-    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo">
-    <h1 class="article-title" itemprop="name">
-        Docker networking &amp; Docker Swarm Mode Demo
-    </h1>
-    </a>
-    <div class="article-meta">
-        <div class="article-date">
-            <i class="fa fa-calendar"></i>
-            <time datetime="2016-07-03 13:27:20 &#43;0200 &#43;0200" itemprop="datePublished">2016-07-03</time>
-            &middot;
-            681
-            từ
-            &middot;
-            4
-            phút đọc
-        </div>
-
-        
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-folder"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
-                
-                
-            </div>
-            
-        
-
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-tags"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker">Docker</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker-swarm">Docker Swarm</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/swarm-mode">Swarm Mode</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker-networking">Docker Networking</a>
-                
-                
-            </div>
-            
-        
-    </div>
-</header>
-
-            <div class="article-entry" itemprop="articleBody">
-                <p>
-                    Introduction This post is a step by step introduction about Docker Networking and new features of Docker Swarm Mode which has just been introduced in #DockerCon 2016. We will walk through by examples to understand the Docker Networking. Then will swich to Docker Swarm Mode, demo about the features such as: The new way to create services Scale the services Load balancing with Rounting Mesh Self-Healing Self-Organizing Pre-requisites $ docker-machine create -d virtualbox node-0 $ docker-machine create -d virtualbox node-1 $ docker-machine create -d virtualbox node-2 Double check to make sure of IP Address of nodes $ docker-machine ip node-0 $ docker-machine ip node-1 $ docker-machine ip node-2 Change /etc/hosts file with these above IP Addresses &amp; nodes Docker Networking Demo SSH to the node-0 node docker-machine ssh node-0 Create a bridge network docker network create -d bridge &ndash;subnet 10.10.0.0/16 vnet-1 Create containers within that network docker run -d -p 8001:8000 &ndash;net=vnet-1 &ndash;name c1 jwilder/whoami docker run -d -p 8002:8000 &ndash;net=vnet-1 &ndash;name c2 jwilder/whoami docker run -d -p 8003:8000 &ndash;net=vnet-1 &ndash;name c3 jwilder/whoami docker run -d -p 8004:8000 &ndash;net=vnet-1 &ndash;name c4 jwilder/whoami docker run -d -p 8005:8000 &ndash;net=vnet-1 &ndash;name c5 jwilder/whoami docker run -d -p 8006:8000 &ndash;net=vnet-1 &ndash;name c6 jwilder/whoami Check the containers in the network docker network inspect vnet-1 Ping each others $ docker exec -it c1 bash $ ping c2 $ ping c3 $ ping c4 $ # and for the others&hellip;
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo">
-                        Xem chi tiết
-                    </a>
-                </p>
-            </div>
-            <footer class="article-footer">
-    <a data-url="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" data-id="24851430a7ff484e254cada500f51dc7" class="article-share-link">
-        Chia sẻ
-    </a>
-    
-    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo/#disqus_thread" class="article-comment-link">
-        Ý kiến
-    </a>
-    
-</footer>
-
-        </div>
-    </article>
-    
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
-        <div class="article-inner">
-            
-            <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" itemprop="url">
                 <img src="https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg" class="article-banner">
             
-            </a>
 
             <header class="article-header">
     <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action">
@@ -401,15 +334,111 @@
 </header>
 
             <div class="article-entry" itemprop="articleBody">
-                <p>
-                    Cuối cùng thì Microsoft cũng ra mắt aspnet core 1.0, sau một thời gian dài trải qua các version RC1, RC2. Như các bạn cũng biết asp.net core có nhiều tính năng được built-in mà chúng ta không phải tìm kiếm &amp; sử dụng nhiều libraries ngoài như asp.net 5. Có thể kể ra một vài tính năng như sau: Chạy cross-platform trên Windows, Mac và Linux Xây dựng trên .NET core, hỗ trợ side-by-side versioning Hỗ trợ built-in dependency injection Tag Helper kiểu tự nhiên như HTML data attributes (bắt chước Angular 1 :v ) Có thể host trên IIS hoặc self-host Không còn phân biệt giữa MVC/API nữa Có nhiều cách / tools để bắt đầu một dự án dùng aspnet core 1.0.
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action">
-                        Xem chi tiết
-                    </a>
-                </p>
+                
+
+<p>Cuối cùng thì Microsoft cũng ra mắt <a href="https://blogs.msdn.microsoft.com/webdev/2016/06/27/announcing-asp-net-core-1-0/">aspnet core 1.0</a>, sau một thời gian dài trải qua các version RC1, RC2. Như các bạn cũng biết asp.net core có nhiều tính năng được built-in mà chúng ta không phải tìm kiếm &amp; sử dụng nhiều libraries ngoài như asp.net 5. Có thể kể ra một vài tính năng như sau:</p>
+
+<ul>
+<li>Chạy cross-platform trên Windows, Mac và Linux</li>
+<li>Xây dựng trên .NET core, hỗ trợ side-by-side versioning</li>
+<li>Hỗ trợ built-in dependency injection</li>
+<li>Tag Helper kiểu tự nhiên như HTML data attributes (bắt chước Angular 1 :v )</li>
+<li>Có thể host trên IIS hoặc self-host</li>
+<li>Không còn phân biệt giữa MVC/API nữa</li>
+</ul>
+
+<p>Có nhiều cách / tools để bắt đầu một dự án dùng aspnet core 1.0. Chúng ta có thể dùng <a href="https://www.visualstudio.com/downloads/visual-studio-prerelease-downloads#sec1">Visual Studio 2015 RC3</a>, <a href="https://code.visualstudio.com/">Visual Studio Code</a> hoặc <a href="https://eclipse-che.readme.io/">Eclipse Che</a> để viết code, deploy lên Windows / Linux / Mac hay Docker tùy thích. Nói chung là có máy nào xài máy đó, thích tool nào xài tool đó :), không còn phụ thuộc vào tools hay environment nữa.</p>
+
+<p>Trong bài này, tôi sẽ giới thiệu cách develop một dự án aspnet core 1.0 dùng Visual Studio Code trên Mac, deploy lên Docker Swarm Cluster và dùng Docker Compose để scale các service trên Swarm Cluster.</p>
+
+<h2 id="cài-đặt-net-core-1-0-visual-studio-code-trên-mac">Cài đặt .NET Core 1.0, Visual Studio Code trên Mac</h2>
+
+<p>Để bắt đầu một dự án aspnet core 1.0 trên Mac, chúng ta phải chuẩn bị environment như sau:</p>
+
+<ul>
+<li>Cài đặt .NET Core 1.0 theo hướng dẫn <a href="https://www.microsoft.com/net/core#macos">ở đây</a>. Sau khi cài đặt xong, dùng terminal chạy lệnh <code>dotnet --version</code> để kiểm tra version của dotnet tool và nếu thấy giá trị là <strong>1.0.0-preview2-003121</strong> nghĩa là chúng ta đã on track.</li>
+<li>Cài đặt Visual Studio Code</li>
+<li>Cài đặt <a href="https://nodejs.org/en/">NodeJS</a> và <a href="http://yeoman.io/">Yeoman</a> (optional): bước này không bắt buộc, tuy nhiên tôi khuyến khích sử dụng Yeoman vì rất thuận tiện để tạo project structure. Sau khi cài Yeoman xong thì cài thêm <a href="https://www.npmjs.com/package/generator-aspnet">aspnet generator</a> là chúng ta đã sẵn sàng. Nếu đã cài yeoman &amp; aspnet generator trước đó thì cần update generator để có bộ aspnet generator mới nhất.</li>
+</ul>
+
+<h2 id="xin-chào-aspnet-core-1-0">Xin chào aspnet core 1.0</h2>
+
+<p>Khá dễ dàng để bắt đầu với aspnet core 1.0. Trên Mac, mở terminal và gõ lệnh <code>yo aspnet</code>, chọn <strong>Empty Web Application</strong>, đặt tên dự án là <strong>hello-aspnet</strong> và nhấn enter. Yeoman sẽ tạo ra một project structure cho chúng ta.</p>
+
+<pre><code>$ mkdir ~/projects &amp; cd ~/projects
+$ yo aspnet
+
+     _-----_     ╭──────────────────────────╮
+    |       |    │      Welcome to the      │
+    |--(o)--|    │  marvellous ASP.NET Core │
+   `---------´   │        generator!        │
+    ( _´U`_ )    ╰──────────────────────────╯
+    /___A___\   /
+     |  ~  |     
+   __'.___.'__   
+ ´   `  |° ´ Y ` 
+
+? What type of application do you want to create? Empty Web Application
+? What's the name of your ASP.NET application? hello-aspnet
+   create hello-aspnet/.gitignore
+   create hello-aspnet/Program.cs
+   create hello-aspnet/Startup.cs
+   create hello-aspnet/project.json
+   create hello-aspnet/web.config
+   create hello-aspnet/Dockerfile
+   create hello-aspnet/Properties/launchSettings.json
+   create hello-aspnet/README.md
+
+
+Your project is now created, you can use the following commands to get going
+    cd &quot;hello-aspnet&quot;
+    dotnet restore
+    dotnet build (optional, build will also happen when it's run)
+    dotnet run
+</code></pre>
+
+<p>Sau đó chúng tao vào thư mục <strong>hello-aspnet</strong> và chạy các lệnh <code>dotnet restore</code>, <code>dotnet build</code> và <code>dotnet run</code> để chạy dự án.</p>
+
+<pre><code>➜  hello-aspnet dotnet run
+Project hello-aspnet (.NETCoreApp,Version=v1.0) was previously compiled. Skipping compilation.
+Hosting environment: Production
+Content root path: /Users/phihuynh/projects/hello-aspnet
+Now listening on: http://localhost:5000
+Application started. Press Ctrl+C to shut down.
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:5000/  
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 88.3022ms 20
+</code></pre>
+
+<p>Sau đó, mở trình duyệt và nhập vào địa chỉ <code>http://localhost:5000</code> là chúng ta đã có web app đầu tiên chạy trên aspnet core 1.0.</p>
+
+<p><img src="https://trumhemcut.github.io/images/aspnetcore01.png" alt="say hello to aspnet core" /></p>
+
+<h2 id="xin-chào-docker">Xin chào Docker</h2>
+
+<p>Chúng ta đã có thể say hello với aspnet core 1.0 trên Mac, giờ chúng ta tiếp tục bắt đầu với Docker. Tôi giả sử là chúng ta đã là quen sơ sơ với Docker rồi nên sẽ không nói nhiều về benefits của Docker nữa.</p>
+
+<p>Để chạy hello-aspnet app vừa rồi trên Docker, cơ bản chúng ta sẽ đi qua các bước như sau:</p>
+
+<ol>
+<li>Cài đặt Docker Toolbox, bộ Docker Toolbox sẽ bao gồm Docker Machine, Kitematic &amp; VirtualBox</li>
+<li>Dùng <strong>docker-machine</strong> để tạo ra một máy ảo boot2docker</li>
+<li>Build image cho app hello-aspnet</li>
+<li>Deploy hello-aspnet app lên Docker bằng docker commands<br /></li>
+</ol>
+
+<h3 id="cài-đặt-docker-toolbox">Cài đặt Docker Toolbox</h3>
+
+<p><a href="https://www.docker.com/products/docker-toolbox">Docker Toolbox</a> có 2 phiên bản cho Windows &amp; Mac. Chúng ta lựa chọn phiên bản phù hợp với OS của mình. Sau khi cài xong, chúng ta sẽ có Docker Machine, Kitematic &amp; Virtualbox để sẳn sàng tạo máy ảo.</p>
+
+<h3 id="tạo-máy-ảo-bằng-docker-machine">Tạo máy ảo bằng docker-machine</h3>
+
+<p>Sau khi đã cài Docker Toolbox, mở terminal lên, dùng lệnh sau để tạo máy ảo</p>
+
+<pre><code>$ docker-machine create -d virtualbox docker00 
+</code></pre>
+
             </div>
             <footer class="article-footer">
     <a data-url="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" data-id="bac1403f914aa6b851ca0ec25f6db510" class="article-share-link">
@@ -423,186 +452,57 @@
 </footer>
 
         </div>
-    </article>
+
+        
+<nav id="article-nav">
     
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
-        <div class="article-inner">
-            
-            <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" itemprop="url">
-                <img src="https://trumhemcut.github.io/banners/portforward.png" class="article-banner">
-            
-            </a>
-
-            <header class="article-header">
-    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine">
-    <h1 class="article-title" itemprop="name">
-        Mở port cho Docker Machine
-    </h1>
-    </a>
-    <div class="article-meta">
-        <div class="article-date">
-            <i class="fa fa-calendar"></i>
-            <time datetime="2016-06-28 11:20:46 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-28</time>
-            &middot;
-            200
-            từ
-            &middot;
-            1
-            phút đọc
-        </div>
-
-        
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-folder"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
-                
-                
-            </div>
-            
-        
-
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-tags"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker">Docker</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker-machine">Docker Machine</a>
-                
-                
-            </div>
-            
-        
-    </div>
-</header>
-
-            <div class="article-entry" itemprop="articleBody">
-                <p>
-                    Giới thiệu Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address. Ví dụ: docker run -it -p 8080:8080 &ndash;name dotnetapp microsoft/dotnet:latest Để truy cập vào website, chúng ta sẽ dùng địa chỉ <a href="http://192.168.99.100:8080">http://192.168.99.100:8080</a> với 192.168.99.100 chính là địa chỉ máy ảo (mặc định) trên Docker Machine.
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine">
-                        Xem chi tiết
-                    </a>
-                </p>
-            </div>
-            <footer class="article-footer">
-    <a data-url="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" data-id="0390dae821d96cc6638577d09f1dfad9" class="article-share-link">
-        Chia sẻ
+    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">
+          Cũ hơn
+      </strong>
+      <div class="article-nav-title">Mở port cho Docker Machine</div>
     </a>
     
-    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine/#disqus_thread" class="article-comment-link">
-        Ý kiến
+
+    
+    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">
+          Mới hơn
+      </strong>
+      <div class="article-nav-title">Docker networking &amp; Docker Swarm Mode Demo</div>
     </a>
     
-</footer>
-
-        </div>
-    </article>
-    
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
-        <div class="article-inner">
-            
-            <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" itemprop="url">
-                <img src="https://trumhemcut.github.io/banners/dockercon2016.png" class="article-banner">
-            
-            </a>
-
-            <header class="article-header">
-    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12">
-    <h1 class="article-title" itemprop="name">
-        Giới thiệu các tính năng mới trong Docker 1.12
-    </h1>
-    </a>
-    <div class="article-meta">
-        <div class="article-date">
-            <i class="fa fa-calendar"></i>
-            <time datetime="2016-06-26 16:56:43 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-26</time>
-            &middot;
-            1122
-            từ
-            &middot;
-            6
-            phút đọc
-        </div>
-
-        
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-folder"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
-                
-                
-            </div>
-            
-        
-
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-tags"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker">Docker</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/dockercon2016">DockerCon2016</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/devops">DevOps</a>
-                
-                
-            </div>
-            
-        
-    </div>
-</header>
-
-            <div class="article-entry" itemprop="articleBody">
-                <p>
-                    DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về Docker Swarm Mode, một tính năng mới có trong Docker Engine (v1.12). Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm ở đây. Docker Swarm Mode là gì? Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào.
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12">
-                        Xem chi tiết
-                    </a>
-                </p>
-            </div>
-            <footer class="article-footer">
-    <a data-url="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" data-id="31be51e29caf4a64b8ece2b151534552" class="article-share-link">
-        Chia sẻ
-    </a>
-    
-    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12/#disqus_thread" class="article-comment-link">
-        Ý kiến
-    </a>
-    
-</footer>
-
-        </div>
-    </article>
-    
-
-    <nav id="page-nav">
-
 </nav>
 
+
+    </article>
+
+    
+    <section id="comments">
+        <div id="disqus_thread">
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'trumhemcut';
+    var disqus_identifier = 'https:\/\/trumhemcut.github.io\/2016\/06\/29\/docker-swarm-aspnet-core-1-0-in-action';
+    var disqus_title = 'Docker Swarm, aspnet core 1.0 in action';
+    var disqus_url = 'https:\/\/trumhemcut.github.io\/2016\/06\/29\/docker-swarm-aspnet-core-1-0-in-action';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </div>
+    </section>
+    
 </section>
 
 
-    <aside id="sidebar">
+	    
+	    <aside id="sidebar">
     
 <div class="widget-wrap">
     <h3 class="widget-title">
@@ -615,7 +515,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Docker Swarm, aspnet core 1.0 in action" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -640,7 +540,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg)" alt="Docker Swarm, aspnet core 1.0 in action" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -665,7 +565,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Docker Swarm, aspnet core 1.0 in action" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -690,7 +590,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockercon2016.png)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockercon2016.png)" alt="Docker Swarm, aspnet core 1.0 in action" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -866,7 +766,8 @@
     <div id="toTop" class="fa fa-chevron-up"></div>
 </aside>
 
-    </div>
+	    
+	</div>
 </div>
 
 <footer id="footer">

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-    <title>Phi Huỳnh</title>
+    <title>Docker networking &amp; Docker Swarm Mode Demo &middot; Phi Huỳnh</title>
     <meta name="generator" content="Hugo 0.16" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -9,9 +9,6 @@
     
       <meta name="description" content="">
     
-    
-      <link href="https://trumhemcut.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Phi Huỳnh" />
-      <link href="https://trumhemcut.github.io/index.xml" rel="feed" type="application/rss+xml" title="Phi Huỳnh" />
     
     <link rel="icon" href="https://trumhemcut.github.io/favicon.ico">
     <link rel="apple-touch-icon" href="https://trumhemcut.github.io/apple-touch-icon.png" />
@@ -21,10 +18,10 @@
     <link rel="stylesheet" href="https://trumhemcut.github.io/fancybox/jquery.fancybox.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
-    <meta property="og:title" content="Phi Huỳnh" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://trumhemcut.github.io/" />
+    <meta property="og:title" content="Docker networking &amp; Docker Swarm Mode Demo" />
+<meta property="og:description" content="Introduction This post is a step by step introduction about Docker Networking and new features of Docker Swarm Mode which has just been introduced in #DockerCon 2016. We will walk through by examples to understand the Docker Networking. Then will swich to Docker Swarm Mode, demo about the features such as: The new way to create services Scale the services Load balancing with Rounting Mesh Self-Healing Self-Organizing Pre-requisites $ docker-machine create -d virtualbox node-0 $ docker-machine create -d virtualbox node-1 $ docker-machine create -d virtualbox node-2 Double check to make sure of IP Address of nodes $ docker-machine ip node-0 $ docker-machine ip node-1 $ docker-machine ip node-2 Change /etc/hosts file with these above IP Addresses &amp; nodes Docker Networking Demo SSH to the node-0 node docker-machine ssh node-0 Create a bridge network docker network create -d bridge --subnet 10.10.0.0/16 vnet-1 Create containers within that network docker run -d -p 8001:8000 --net=vnet-1 --name c1 jwilder/whoami docker run -d -p 8002:8000 --net=vnet-1 --name c2 jwilder/whoami docker run -d -p 8003:8000 --net=vnet-1 --name c3 jwilder/whoami docker run -d -p 8004:8000 --net=vnet-1 --name c4 jwilder/whoami docker run -d -p 8005:8000 --net=vnet-1 --name c5 jwilder/whoami docker run -d -p 8006:8000 --net=vnet-1 --name c6 jwilder/whoami Check the containers in the network docker network inspect vnet-1 Ping each others $ docker exec -it c1 bash $ ping c2 $ ping c3 $ ping c4 $ # and for the others..." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" />
 
 
 <meta property="og:updated_time" content="2016-07-03T13:27:20&#43;02:00"/>
@@ -37,13 +34,31 @@
 
 
 
-    
-    
-<meta itemprop="name" content="Phi Huỳnh">
-<meta itemprop="description" content="">
-
 
     
+    
+<meta itemprop="name" content="Docker networking &amp; Docker Swarm Mode Demo">
+<meta itemprop="description" content="Introduction This post is a step by step introduction about Docker Networking and new features of Docker Swarm Mode which has just been introduced in #DockerCon 2016. We will walk through by examples to understand the Docker Networking. Then will swich to Docker Swarm Mode, demo about the features such as: The new way to create services Scale the services Load balancing with Rounting Mesh Self-Healing Self-Organizing Pre-requisites $ docker-machine create -d virtualbox node-0 $ docker-machine create -d virtualbox node-1 $ docker-machine create -d virtualbox node-2 Double check to make sure of IP Address of nodes $ docker-machine ip node-0 $ docker-machine ip node-1 $ docker-machine ip node-2 Change /etc/hosts file with these above IP Addresses &amp; nodes Docker Networking Demo SSH to the node-0 node docker-machine ssh node-0 Create a bridge network docker network create -d bridge --subnet 10.10.0.0/16 vnet-1 Create containers within that network docker run -d -p 8001:8000 --net=vnet-1 --name c1 jwilder/whoami docker run -d -p 8002:8000 --net=vnet-1 --name c2 jwilder/whoami docker run -d -p 8003:8000 --net=vnet-1 --name c3 jwilder/whoami docker run -d -p 8004:8000 --net=vnet-1 --name c4 jwilder/whoami docker run -d -p 8005:8000 --net=vnet-1 --name c5 jwilder/whoami docker run -d -p 8006:8000 --net=vnet-1 --name c6 jwilder/whoami Check the containers in the network docker network inspect vnet-1 Ping each others $ docker exec -it c1 bash $ ping c2 $ ping c3 $ ping c4 $ # and for the others...">
+
+
+<meta itemprop="dateModified" content="2016-07-03T13:27:20&#43;02:00" />
+<meta itemprop="wordCount" content="681">
+
+
+
+<meta itemprop="keywords" content="devops,docker,programming,asp.net-core,devops,docker,docker-compose,docker-machine,docker-networking,docker-swarm,dockercon2016,swarm-mode," />
+
+    
+
+  <meta name="twitter:card" content="summary"/>
+
+
+
+<meta name="twitter:title" content="Docker networking &amp; Docker Swarm Mode Demo"/>
+<meta name="twitter:description" content="Introduction This post is a step by step introduction about Docker Networking and new features of Docker Swarm Mode which has just been introduced in #DockerCon 2016. We will walk through by examples to understand the Docker Networking. Then will swich to Docker Swarm Mode, demo about the features such as: The new way to create services Scale the services Load balancing with Rounting Mesh Self-Healing Self-Organizing Pre-requisites $ docker-machine create -d virtualbox node-0 $ docker-machine create -d virtualbox node-1 $ docker-machine create -d virtualbox node-2 Double check to make sure of IP Address of nodes $ docker-machine ip node-0 $ docker-machine ip node-1 $ docker-machine ip node-2 Change /etc/hosts file with these above IP Addresses &amp; nodes Docker Networking Demo SSH to the node-0 node docker-machine ssh node-0 Create a bridge network docker network create -d bridge --subnet 10.10.0.0/16 vnet-1 Create containers within that network docker run -d -p 8001:8000 --net=vnet-1 --name c1 jwilder/whoami docker run -d -p 8002:8000 --net=vnet-1 --name c2 jwilder/whoami docker run -d -p 8003:8000 --net=vnet-1 --name c3 jwilder/whoami docker run -d -p 8004:8000 --net=vnet-1 --name c4 jwilder/whoami docker run -d -p 8005:8000 --net=vnet-1 --name c5 jwilder/whoami docker run -d -p 8006:8000 --net=vnet-1 --name c6 jwilder/whoami Check the containers in the network docker network inspect vnet-1 Ping each others $ docker exec -it c1 bash $ ping c2 $ ping c3 $ ping c4 $ # and for the others..."/>
+<meta name="twitter:site" content="@trumhemcut"/>
+
+
     
 
     
@@ -53,7 +68,7 @@
 
 
 <div id="container">
-    <header id="header">
+	<header id="header">
   <div id="header-main" class="header-inner">
     <div class="outer">
       <a href="https://trumhemcut.github.io/" id="logo">
@@ -141,9 +156,10 @@
   </div>
 </header>
 
-
-    <div class="outer">
-    <aside id="profile">
+   	
+   	<div class="outer">
+   		
+	    <aside id="profile">
   <div class="inner profile-inner">
     <div class="base-info profile-block">
       <img id="avatar" src="https://trumhemcut.github.io/css/images/avatar.png">
@@ -234,23 +250,23 @@
 <td><a href="//twitter.com/trumhemcut" target="_blank" title="Twitter"><i class="fa fa-twitter"></i></a></td>
 
 
-          <td><a href="https://trumhemcut.github.io/index.xml" target="_blank" title="RSS"><i class="fa fa-rss"></i></a></td>
+          <td><a href="" target="_blank" title="RSS"><i class="fa fa-rss"></i></a></td>
         </tr>
       </table>
     </div>
   </div>
 </aside>
 
-    <section id="main">
-    
-    
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
+	    
+
+	    
+<section id="main">
+
+    <article id="page-undefined" class="article article-type-page" itemscope="" itemprop="blogPost">
         <div class="article-inner">
             
-            <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" itemprop="url">
                 <img src="https://trumhemcut.github.io/banners/dockerswarm.png" class="article-banner">
             
-            </a>
 
             <header class="article-header">
     <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo">
@@ -309,15 +325,199 @@
 </header>
 
             <div class="article-entry" itemprop="articleBody">
-                <p>
-                    Introduction This post is a step by step introduction about Docker Networking and new features of Docker Swarm Mode which has just been introduced in #DockerCon 2016. We will walk through by examples to understand the Docker Networking. Then will swich to Docker Swarm Mode, demo about the features such as: The new way to create services Scale the services Load balancing with Rounting Mesh Self-Healing Self-Organizing Pre-requisites $ docker-machine create -d virtualbox node-0 $ docker-machine create -d virtualbox node-1 $ docker-machine create -d virtualbox node-2 Double check to make sure of IP Address of nodes $ docker-machine ip node-0 $ docker-machine ip node-1 $ docker-machine ip node-2 Change /etc/hosts file with these above IP Addresses &amp; nodes Docker Networking Demo SSH to the node-0 node docker-machine ssh node-0 Create a bridge network docker network create -d bridge &ndash;subnet 10.10.0.0/16 vnet-1 Create containers within that network docker run -d -p 8001:8000 &ndash;net=vnet-1 &ndash;name c1 jwilder/whoami docker run -d -p 8002:8000 &ndash;net=vnet-1 &ndash;name c2 jwilder/whoami docker run -d -p 8003:8000 &ndash;net=vnet-1 &ndash;name c3 jwilder/whoami docker run -d -p 8004:8000 &ndash;net=vnet-1 &ndash;name c4 jwilder/whoami docker run -d -p 8005:8000 &ndash;net=vnet-1 &ndash;name c5 jwilder/whoami docker run -d -p 8006:8000 &ndash;net=vnet-1 &ndash;name c6 jwilder/whoami Check the containers in the network docker network inspect vnet-1 Ping each others $ docker exec -it c1 bash $ ping c2 $ ping c3 $ ping c4 $ # and for the others&hellip;
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo">
-                        Xem chi tiết
-                    </a>
-                </p>
+                
+
+<h2 id="introduction">Introduction</h2>
+
+<p>This post is a step by step introduction about Docker Networking and new features of Docker Swarm Mode which has just been introduced in #DockerCon 2016.</p>
+
+<p>We will walk through by examples to understand the Docker Networking. Then will swich to Docker Swarm Mode, demo about the features such as:</p>
+
+<ul>
+<li>The new way to create services</li>
+<li>Scale the services</li>
+<li>Load balancing with Rounting Mesh</li>
+<li>Self-Healing</li>
+<li>Self-Organizing</li>
+</ul>
+
+<h2 id="pre-requisites">Pre-requisites</h2>
+
+<pre><code>$ docker-machine create -d virtualbox node-0
+$ docker-machine create -d virtualbox node-1
+$ docker-machine create -d virtualbox node-2
+</code></pre>
+
+<p>Double check to make sure of IP Address of nodes</p>
+
+<pre><code>$ docker-machine ip node-0
+$ docker-machine ip node-1
+$ docker-machine ip node-2
+</code></pre>
+
+<p>Change <strong>/etc/hosts</strong> file with these above IP Addresses &amp; nodes</p>
+
+<h2 id="docker-networking-demo">Docker Networking Demo</h2>
+
+<p>SSH to the node-0 node</p>
+
+<pre><code>docker-machine ssh node-0
+</code></pre>
+
+<p>Create a bridge network</p>
+
+<pre><code>docker network create -d bridge --subnet 10.10.0.0/16  vnet-1
+</code></pre>
+
+<p>Create containers within that network</p>
+
+<pre><code>docker run -d -p 8001:8000 --net=vnet-1 --name c1 jwilder/whoami
+docker run -d -p 8002:8000 --net=vnet-1 --name c2 jwilder/whoami
+docker run -d -p 8003:8000 --net=vnet-1 --name c3 jwilder/whoami
+docker run -d -p 8004:8000 --net=vnet-1 --name c4 jwilder/whoami
+docker run -d -p 8005:8000 --net=vnet-1 --name c5 jwilder/whoami
+docker run -d -p 8006:8000 --net=vnet-1 --name c6 jwilder/whoami
+</code></pre>
+
+<p>Check the containers in the network</p>
+
+<pre><code>docker network inspect vnet-1
+</code></pre>
+
+<p>Ping each others</p>
+
+<pre><code>$ docker exec -it c1 bash
+$ ping c2
+$ ping c3
+$ ping c4
+$ # and for the others...
+</code></pre>
+
+<p>Multiple bridge networks demo
+Create frontend &amp; backend networks</p>
+
+<pre><code>$ docker network create -d bridge --subnet 10.11.0.0/16 frontend
+$ docker network create -d bridge --subnet 10.12.0.0/16 backend
+</code></pre>
+
+<p>Remove containers off the vnet-1 network</p>
+
+<pre><code>$ docker network disconnect vnet-1 c1
+$ docker network disconnect vnet-1 c2
+$ docker network disconnect vnet-1 c3
+$ docker network disconnect vnet-1 c4
+$ docker network disconnect vnet-1 c5
+$ docker network disconnect vnet-1 c6
+</code></pre>
+
+<p>Connect to frontend network</p>
+
+<pre><code>$ docker network connect frontend c1
+$ docker network connect frontend c2
+$ docker network connect frontend c3
+</code></pre>
+
+<p>Connect to backend network</p>
+
+<pre><code>$ docker network connect backend c4
+$ docker network connect backend c5
+$ docker network connect backend c6
+</code></pre>
+
+<p>Ping each other</p>
+
+<pre><code>$ docker exec -it c1 bash
+$ ping c2
+$ ping c3
+$ ping c4
+</code></pre>
+
+<p>Connect <strong>c3</strong> to backend</p>
+
+<pre><code>$ docker network connect backend c3
+$ docker exec -it c3 bash
+$ ping c4
+$ ping c5
+</code></pre>
+
+<h2 id="docker-swarm-mode-demo">Docker Swarm Mode Demo</h2>
+
+<p>Create a swarm cluster
+Initial swarm manager</p>
+
+<pre><code>$ docker-machine ssh node-0
+$ docker swarm init
+</code></pre>
+
+<p>Node-1 joins the swarm cluster</p>
+
+<pre><code>$ docker-machine ssh node-1
+$ docker swarm join --listen-addr 192.168.99.101:2377 192.168.99.100:2377
+</code></pre>
+
+<p>Node-2 joins the swarm cluster</p>
+
+<pre><code>$ docker-machine ssh node-2
+$ docker swarm join --listen-addr 192.168.99.102:2377 192.168.99.100:2377
+</code></pre>
+
+<p>Go to the node-0 and check the status of nodes</p>
+
+<pre><code>$ docker node ls
+</code></pre>
+
+<p>Create a service
+From node-0, create a service</p>
+
+<pre><code>$ docker service create -p 5000:5000 --name=cat mikesir87/cats
+</code></pre>
+
+<p>Testing the service by browsing at <a href="http://node-0:5000">http://node-0:5000</a></p>
+
+<h3 id="scaling-the-service">Scaling the service</h3>
+
+<pre><code>$ docker service scale web=2
+</code></pre>
+
+<p>Testing the service by browsing at <a href="http://node-0:5000">http://node-0:5000</a>
+Testing the service by browsing at <a href="http://node-1:5000">http://node-1:5000</a>
+Testing the service by browsing at <a href="http://node-2:5000">http://node-2:5000</a></p>
+
+<p>All works, why this happens, we have only two nodes, but three endpoints are working fine? Will discuss further?&hellip;</p>
+
+<h3 id="routing-mesh">Routing Mesh</h3>
+
+<p>Ingress Load Balancing to allow the services exposing port to the outsite world. Only the services has the port published with -p option will join this <strong>ingress network</strong>. Otherwise, it&rsquo;s only added to <strong>default_gwbridge</strong> network.</p>
+
+<p>Try to scale the services to 10 instances as follow:</p>
+
+<pre><code>$ docker service scale web=10
+</code></pre>
+
+<p>It&rsquo;s great if we have time to use a overlay user-defined network and attach the service to this network.</p>
+
+<h3 id="blue-print-releasing">Blue-print Releasing</h3>
+
+<p>When we need to deploy a new version, Docker 1.12 helps us to easily gain blue-print releasing with following command:</p>
+
+<pre><code>$ docker service update \ 
+    --image trumhemcut/aspnetcore:2.0 aspnet
+    --update-parallelism=2 \
+    --update-delay=10
+</code></pre>
+
+<h3 id="self-healing">Self-Healing</h3>
+
+<p>Go to any nodes and try to stop one container. It will create another container for us.</p>
+
+<h3 id="self-organization">Self-Organization</h3>
+
+<p>Try to shut down a node, it will create containers on another node for us.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Hopefully the demo can illustrate the idea of how we&rsquo;re working with the new Docker (v1.12) &amp; Docker Networking.</p>
+
             </div>
             <footer class="article-footer">
     <a data-url="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" data-id="24851430a7ff484e254cada500f51dc7" class="article-share-link">
@@ -331,278 +531,50 @@
 </footer>
 
         </div>
-    </article>
+
+        
+<nav id="article-nav">
     
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
-        <div class="article-inner">
-            
-            <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" itemprop="url">
-                <img src="https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg" class="article-banner">
-            
-            </a>
-
-            <header class="article-header">
-    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action">
-    <h1 class="article-title" itemprop="name">
-        Docker Swarm, aspnet core 1.0 in action
-    </h1>
-    </a>
-    <div class="article-meta">
-        <div class="article-date">
-            <i class="fa fa-calendar"></i>
-            <time datetime="2016-06-29 11:44:08 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-29</time>
-            &middot;
-            783
-            từ
-            &middot;
-            4
-            phút đọc
-        </div>
-
-        
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-folder"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/programming">Programming</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/docker">Docker</a>
-                
-                
-            </div>
-            
-        
-
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-tags"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/asp.net-core">asp.net core</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker-swarm">Docker Swarm</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker-compose">Docker Compose</a>
-                
-                
-            </div>
-            
-        
-    </div>
-</header>
-
-            <div class="article-entry" itemprop="articleBody">
-                <p>
-                    Cuối cùng thì Microsoft cũng ra mắt aspnet core 1.0, sau một thời gian dài trải qua các version RC1, RC2. Như các bạn cũng biết asp.net core có nhiều tính năng được built-in mà chúng ta không phải tìm kiếm &amp; sử dụng nhiều libraries ngoài như asp.net 5. Có thể kể ra một vài tính năng như sau: Chạy cross-platform trên Windows, Mac và Linux Xây dựng trên .NET core, hỗ trợ side-by-side versioning Hỗ trợ built-in dependency injection Tag Helper kiểu tự nhiên như HTML data attributes (bắt chước Angular 1 :v ) Có thể host trên IIS hoặc self-host Không còn phân biệt giữa MVC/API nữa Có nhiều cách / tools để bắt đầu một dự án dùng aspnet core 1.0.
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action">
-                        Xem chi tiết
-                    </a>
-                </p>
-            </div>
-            <footer class="article-footer">
-    <a data-url="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" data-id="bac1403f914aa6b851ca0ec25f6db510" class="article-share-link">
-        Chia sẻ
+    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">
+          Cũ hơn
+      </strong>
+      <div class="article-nav-title">Docker Swarm, aspnet core 1.0 in action</div>
     </a>
     
-    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action/#disqus_thread" class="article-comment-link">
-        Ý kiến
-    </a>
+
     
-</footer>
-
-        </div>
-    </article>
-    
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
-        <div class="article-inner">
-            
-            <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" itemprop="url">
-                <img src="https://trumhemcut.github.io/banners/portforward.png" class="article-banner">
-            
-            </a>
-
-            <header class="article-header">
-    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine">
-    <h1 class="article-title" itemprop="name">
-        Mở port cho Docker Machine
-    </h1>
-    </a>
-    <div class="article-meta">
-        <div class="article-date">
-            <i class="fa fa-calendar"></i>
-            <time datetime="2016-06-28 11:20:46 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-28</time>
-            &middot;
-            200
-            từ
-            &middot;
-            1
-            phút đọc
-        </div>
-
-        
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-folder"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
-                
-                
-            </div>
-            
-        
-
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-tags"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker">Docker</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker-machine">Docker Machine</a>
-                
-                
-            </div>
-            
-        
-    </div>
-</header>
-
-            <div class="article-entry" itemprop="articleBody">
-                <p>
-                    Giới thiệu Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address. Ví dụ: docker run -it -p 8080:8080 &ndash;name dotnetapp microsoft/dotnet:latest Để truy cập vào website, chúng ta sẽ dùng địa chỉ <a href="http://192.168.99.100:8080">http://192.168.99.100:8080</a> với 192.168.99.100 chính là địa chỉ máy ảo (mặc định) trên Docker Machine.
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine">
-                        Xem chi tiết
-                    </a>
-                </p>
-            </div>
-            <footer class="article-footer">
-    <a data-url="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" data-id="0390dae821d96cc6638577d09f1dfad9" class="article-share-link">
-        Chia sẻ
-    </a>
-    
-    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine/#disqus_thread" class="article-comment-link">
-        Ý kiến
-    </a>
-    
-</footer>
-
-        </div>
-    </article>
-    
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
-        <div class="article-inner">
-            
-            <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" itemprop="url">
-                <img src="https://trumhemcut.github.io/banners/dockercon2016.png" class="article-banner">
-            
-            </a>
-
-            <header class="article-header">
-    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12">
-    <h1 class="article-title" itemprop="name">
-        Giới thiệu các tính năng mới trong Docker 1.12
-    </h1>
-    </a>
-    <div class="article-meta">
-        <div class="article-date">
-            <i class="fa fa-calendar"></i>
-            <time datetime="2016-06-26 16:56:43 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-26</time>
-            &middot;
-            1122
-            từ
-            &middot;
-            6
-            phút đọc
-        </div>
-
-        
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-folder"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
-                
-                
-            </div>
-            
-        
-
-        
-            
-            
-            <div class="article-category">
-                <i class="fa fa-tags"></i>
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker">Docker</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/dockercon2016">DockerCon2016</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/devops">DevOps</a>
-                
-                
-            </div>
-            
-        
-    </div>
-</header>
-
-            <div class="article-entry" itemprop="articleBody">
-                <p>
-                    DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về Docker Swarm Mode, một tính năng mới có trong Docker Engine (v1.12). Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm ở đây. Docker Swarm Mode là gì? Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào.
-                    <br>
-                </p>
-                <p class="article-more-link">
-                    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12">
-                        Xem chi tiết
-                    </a>
-                </p>
-            </div>
-            <footer class="article-footer">
-    <a data-url="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" data-id="31be51e29caf4a64b8ece2b151534552" class="article-share-link">
-        Chia sẻ
-    </a>
-    
-    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12/#disqus_thread" class="article-comment-link">
-        Ý kiến
-    </a>
-    
-</footer>
-
-        </div>
-    </article>
-    
-
-    <nav id="page-nav">
-
 </nav>
 
+
+    </article>
+
+    
+    <section id="comments">
+        <div id="disqus_thread">
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'trumhemcut';
+    var disqus_identifier = 'https:\/\/trumhemcut.github.io\/2016\/07\/03\/docker-networking-docker-swarm-mode-demo';
+    var disqus_title = 'Docker networking \x26 Docker Swarm Mode Demo';
+    var disqus_url = 'https:\/\/trumhemcut.github.io\/2016\/07\/03\/docker-networking-docker-swarm-mode-demo';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </div>
+    </section>
+    
 </section>
 
 
-    <aside id="sidebar">
+	    
+	    <aside id="sidebar">
     
 <div class="widget-wrap">
     <h3 class="widget-title">
@@ -615,7 +587,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Docker networking &amp; Docker Swarm Mode Demo" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -640,7 +612,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg)" alt="Docker networking &amp; Docker Swarm Mode Demo" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -665,7 +637,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Docker networking &amp; Docker Swarm Mode Demo" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -690,7 +662,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockercon2016.png)" alt="Phi Huỳnh" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockercon2016.png)" alt="Docker networking &amp; Docker Swarm Mode Demo" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -866,7 +838,8 @@
     <div id="toTop" class="fa fa-chevron-up"></div>
 </aside>
 
-    </div>
+	    
+	</div>
 </div>
 
 <footer id="footer">

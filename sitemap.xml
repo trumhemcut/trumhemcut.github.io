@@ -3,37 +3,27 @@
   
   <url>
     <loc>https://trumhemcut.github.io/</loc>
-    <lastmod>2016-06-28T11:20:46+02:00</lastmod>
+    <lastmod>2016-07-03T13:27:20+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://trumhemcut.github.io/2016/06/28/creating-a-new-theme</loc>
+    <loc>https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo</loc>
+    <lastmod>2016-07-03T13:27:20+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action</loc>
+    <lastmod>2016-06-29T11:44:08+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine</loc>
     <lastmod>2016-06-28T11:20:46+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12</loc>
     <lastmod>2016-06-26T16:56:43+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://trumhemcut.github.io/2015/10/10/migrate-from-jekyll</loc>
-    <lastmod>2015-10-10T13:07:31+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://trumhemcut.github.io/2015/10/02/linked-post</loc>
-    <lastmod>2015-10-02T21:49:20+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://trumhemcut.github.io/2015/09/17/go-is-for-lovers</loc>
-    <lastmod>2015-09-17T13:47:08+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://trumhemcut.github.io/2015/08/03/hugo-is-for-lovers</loc>
-    <lastmod>2015-08-03T13:39:46+02:00</lastmod>
   </url>
   
 </urlset>
