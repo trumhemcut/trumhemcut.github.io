@@ -6,8 +6,63 @@
     <description>Recent content on Phi Huỳnh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 03 Jul 2016 13:27:20 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 17 Aug 2016 11:17:34 +0000</lastBuildDate>
     <atom:link href="https://trumhemcut.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Continuous Delivery for dotnet core apps using Jenkins and Docker</title>
+      <link>https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker</link>
+      <pubDate>Wed, 17 Aug 2016 11:17:34 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;
+
+&lt;p&gt;Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address.&lt;/p&gt;
+
+&lt;p&gt;Ví dụ:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker run -it -p 8080:8080 --name dotnetapp microsoft/dotnet:latest
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Để truy cập vào website, chúng ta sẽ dùng địa chỉ &lt;code&gt;http://192.168.99.100:8080&lt;/code&gt; với &lt;strong&gt;192.168.99.100&lt;/strong&gt; chính là địa chỉ máy ảo (mặc định) trên Docker Machine.&lt;/p&gt;
+
+&lt;p&gt;Để có thể truy cập bằng địa chỉ localhost, chúng ta phải forward port từ máy ảo sang máy host. Từ đó chúng ta có thể truy cập bằng địa chỉ &lt;code&gt;http://localhost:8080&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Có nhiều cách để forward port, nhưng tôi thấy bạn Johan Haleby làm là cách dễ nhớ nhất. Đó là dùng tool &lt;strong&gt;pf&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;download-bash-script&#34;&gt;Download bash script&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;git clone https://github.com/johanhaleby/docker-machine-port-forwarder &amp;amp;&amp;amp; cd docker-machine-port-forwarder
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;mở-port-8080-cho-máy-default&#34;&gt;Mở port 8080 cho máy default&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 8080
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;hoặc-mở-port-8080-cho-một-máy-docker-machine-có-tên-là-swarm-00&#34;&gt;Hoặc mở port 8080 cho một máy docker machine có tên là &lt;strong&gt;swarm-00&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 8080 -e swarm-00
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;hoặc-là-forward-port-8080-sang-port-80-trên-máy-host&#34;&gt;Hoặc là forward port 8080 sang port 80 trên máy host&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 80:8080 -e swarm-00
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;stop-port-forwarding&#34;&gt;Stop port forwarding&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 8080 -s
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;chạy-ở-chế-độ-foreground&#34;&gt;Chạy ở chế độ foreground&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 8080 -f
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>Docker networking &amp; Docker Swarm Mode Demo</title>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-    <title>Linked post &middot; Phi Huỳnh</title>
+    <title>Continuous Delivery for dotnet core apps using Jenkins and Docker &middot; Phi Huỳnh</title>
     <meta name="generator" content="Hugo 0.16" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -18,13 +18,13 @@
     <link rel="stylesheet" href="https://trumhemcut.github.io/fancybox/jquery.fancybox.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
-    <meta property="og:title" content="Linked post" />
-<meta property="og:description" content="I&rsquo;m a linked post in the menu. You can add other posts by adding the following line to the frontmatter: menu = &quot;main&quot; Lorem ipsum dolor sit amet, consectetur adipiscing elit. In mauris nulla, vestibulum vel auctor sed, posuere eu lorem. Aliquam consequat augue ut accumsan mollis. Suspendisse malesuada sodales tincidunt. Vivamus sed erat ac augue bibendum porta sed id ipsum. Ut mollis mauris eget ligula sagittis cursus. Aliquam id pharetra tellus." />
+    <meta property="og:title" content="Continuous Delivery for dotnet core apps using Jenkins and Docker" />
+<meta property="og:description" content="Giới thiệu Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address. Ví dụ: docker run -it -p 8080:8080 --name dotnetapp microsoft/dotnet:latest Để truy cập vào website, chúng ta sẽ dùng địa chỉ http://192.168.99.100:8080 với 192.168.99.100 chính là địa chỉ máy ảo (mặc định) trên Docker Machine." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://trumhemcut.github.io/post/linked-post/" />
+<meta property="og:url" content="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" />
 
 
-<meta property="og:updated_time" content="2015-10-02T21:49:20&#43;02:00"/>
+<meta property="og:updated_time" content="2016-08-17T11:17:34&#43;00:00"/>
 
 
 
@@ -37,16 +37,16 @@
 
     
     
-<meta itemprop="name" content="Linked post">
-<meta itemprop="description" content="I&rsquo;m a linked post in the menu. You can add other posts by adding the following line to the frontmatter: menu = &quot;main&quot; Lorem ipsum dolor sit amet, consectetur adipiscing elit. In mauris nulla, vestibulum vel auctor sed, posuere eu lorem. Aliquam consequat augue ut accumsan mollis. Suspendisse malesuada sodales tincidunt. Vivamus sed erat ac augue bibendum porta sed id ipsum. Ut mollis mauris eget ligula sagittis cursus. Aliquam id pharetra tellus.">
+<meta itemprop="name" content="Continuous Delivery for dotnet core apps using Jenkins and Docker">
+<meta itemprop="description" content="Giới thiệu Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address. Ví dụ: docker run -it -p 8080:8080 --name dotnetapp microsoft/dotnet:latest Để truy cập vào website, chúng ta sẽ dùng địa chỉ http://192.168.99.100:8080 với 192.168.99.100 chính là địa chỉ máy ảo (mặc định) trên Docker Machine.">
 
 
-<meta itemprop="dateModified" content="2015-10-02T21:49:20&#43;02:00" />
-<meta itemprop="wordCount" content="291">
+<meta itemprop="dateModified" content="2016-08-17T11:17:34&#43;00:00" />
+<meta itemprop="wordCount" content="200">
 
 
 
-<meta itemprop="keywords" content="devops,lorem,programming,pseudo,starting,devops,docker,dockercon2016,go,golang,hugo,ipsum,programming,theme," />
+<meta itemprop="keywords" content="devops,docker,programming,asp.net-core,devops,docker,docker-compose,docker-machine,docker-networking,docker-swarm,dockercon2016,swarm-mode," />
 
     
 
@@ -54,8 +54,8 @@
 
 
 
-<meta name="twitter:title" content="Linked post"/>
-<meta name="twitter:description" content="I&rsquo;m a linked post in the menu. You can add other posts by adding the following line to the frontmatter: menu = &quot;main&quot; Lorem ipsum dolor sit amet, consectetur adipiscing elit. In mauris nulla, vestibulum vel auctor sed, posuere eu lorem. Aliquam consequat augue ut accumsan mollis. Suspendisse malesuada sodales tincidunt. Vivamus sed erat ac augue bibendum porta sed id ipsum. Ut mollis mauris eget ligula sagittis cursus. Aliquam id pharetra tellus."/>
+<meta name="twitter:title" content="Continuous Delivery for dotnet core apps using Jenkins and Docker"/>
+<meta name="twitter:description" content="Giới thiệu Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address. Ví dụ: docker run -it -p 8080:8080 --name dotnetapp microsoft/dotnet:latest Để truy cập vào website, chúng ta sẽ dùng địa chỉ http://192.168.99.100:8080 với 192.168.99.100 chính là địa chỉ máy ảo (mặc định) trên Docker Machine."/>
 <meta name="twitter:site" content="@trumhemcut"/>
 
 
@@ -89,8 +89,6 @@
           
 
           
-          <a class="main-nav-link" href="https://trumhemcut.github.io/post/linked-post/">Linked post</a>
-          
 
           
           
@@ -111,7 +109,7 @@
         </nav>
         <div id="search-form-wrap">
           <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form">
-              <input type="search" name="q" results="0" class="search-form-input" placeholder="Search">
+              <input type="search" name="q" results="0" class="search-form-input" placeholder="Tìm kiếm">
               <button type="submit" class="search-form-submit">
               </button>
               <input type="hidden" name="q" value="site:https://trumhemcut.github.io/">
@@ -133,8 +131,6 @@
           
           
 
-          
-          <td><a class="main-nav-link" href="https://trumhemcut.github.io/post/linked-post/">Linked post</a></td>
           
 
           
@@ -172,14 +168,14 @@
       <span id="location"><i class="fa fa-map-marker"></i>Việt Nam</span>
       
           <a id="follow" href="https://github.com/trumhemcut">
-              Follow
+              Theo dõi
           </a>
       
     </div>
     <div class="article-info profile-block">
       <div class="article-info-block">
-        6
-        <span>Posts</span>
+        5
+        <span>Bài viết</span>
       </div>
       <div class="article-info-block">
         
@@ -233,7 +229,7 @@
 
 
 
-<td><a href="//linkedin.com/in/trumhemcut" target="_blank" title="LinkedIn"><i class="fa fa-linkedin"></i></a></td>
+<td><a href="//linkedin.com/in/phi-huynh-82a31040" target="_blank" title="LinkedIn"><i class="fa fa-linkedin"></i></a></td>
 
 
 
@@ -246,6 +242,8 @@
 
 
 
+
+<td><a href="//facebook.com/trumxomcui" target="_blank" title="Facebook"><i class="fa fa-facebook"></i></a></td>
 
 
 
@@ -267,25 +265,25 @@
     <article id="page-undefined" class="article article-type-page" itemscope="" itemprop="blogPost">
         <div class="article-inner">
             
-                <img src="https://trumhemcut.github.io/banners/placeholder.png" class="article-banner">
+                <img src="https://trumhemcut.github.io/banners/cd-docker-jenkins.png" class="article-banner">
             
 
             <header class="article-header">
-    <a href="https://trumhemcut.github.io/post/linked-post/">
+    <a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker">
     <h1 class="article-title" itemprop="name">
-        Linked post
+        Continuous Delivery for dotnet core apps using Jenkins and Docker
     </h1>
     </a>
     <div class="article-meta">
         <div class="article-date">
             <i class="fa fa-calendar"></i>
-            <time datetime="2015-10-02 21:49:20 &#43;0200 &#43;0200" itemprop="datePublished">2015-10-02</time>
+            <time datetime="2016-08-17 11:17:34 &#43;0000 UTC" itemprop="datePublished">2016-08-17</time>
             &middot;
-            291
-            words
+            200
+            từ
             &middot;
-            2
-            minute read
+            1
+            phút đọc
         </div>
 
         
@@ -295,7 +293,7 @@
             <div class="article-category">
                 <i class="fa fa-folder"></i>
                 
-                <a class="article-category-link" href="https://trumhemcut.github.io/categories/programming">programming</a>
+                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
                 
                 
             </div>
@@ -308,16 +306,10 @@
             <div class="article-category">
                 <i class="fa fa-tags"></i>
                 
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/golang">golang</a>
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker">Docker</a>
                 &middot;
                 
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/programming">programming</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/theme">theme</a>
-                &middot;
-                
-                <a class="article-category-link" href="https://trumhemcut.github.io/tags/hugo">hugo</a>
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker-machine">Docker Machine</a>
                 
                 
             </div>
@@ -327,25 +319,61 @@
 </header>
 
             <div class="article-entry" itemprop="articleBody">
-                <p>I&rsquo;m a linked post in the menu. You can add other posts by adding the following line to the frontmatter:</p>
+                
 
-<pre><code>menu = &quot;main&quot;
+<h2 id="giới-thiệu">Giới thiệu</h2>
+
+<p>Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address.</p>
+
+<p>Ví dụ:</p>
+
+<pre><code>docker run -it -p 8080:8080 --name dotnetapp microsoft/dotnet:latest
 </code></pre>
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In mauris nulla, vestibulum vel auctor sed, posuere eu lorem. Aliquam consequat augue ut accumsan mollis. Suspendisse malesuada sodales tincidunt. Vivamus sed erat ac augue bibendum porta sed id ipsum. Ut mollis mauris eget ligula sagittis cursus. Aliquam id pharetra tellus. Pellentesque sed tempus risus. Proin id hendrerit ante. Vestibulum vitae urna ut mauris ultricies dignissim. Ut ante turpis, tristique vitae sagittis quis, sagittis nec diam. Fusce pulvinar cursus porta. Vivamus maximus leo dolor, ut pellentesque lorem fringilla nec. Mauris faucibus turpis posuere sapien euismod, a ullamcorper mi maximus.</p>
+<p>Để truy cập vào website, chúng ta sẽ dùng địa chỉ <code>http://192.168.99.100:8080</code> với <strong>192.168.99.100</strong> chính là địa chỉ máy ảo (mặc định) trên Docker Machine.</p>
 
-<p>Morbi varius ex vel justo dictum placerat. Sed ac arcu pretium, varius elit eget, gravida purus. Fusce sit amet massa mollis eros tincidunt sollicitudin. Suspendisse iaculis cursus mauris ut sagittis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Maecenas elit ligula, molestie quis magna eu, semper posuere lorem. Mauris a justo pharetra, congue ex eget, tincidunt massa. Maecenas sit amet neque lorem.</p>
+<p>Để có thể truy cập bằng địa chỉ localhost, chúng ta phải forward port từ máy ảo sang máy host. Từ đó chúng ta có thể truy cập bằng địa chỉ <code>http://localhost:8080</code></p>
 
-<p>Curabitur at elementum quam. Curabitur tristique elit non sapien aliquam vulputate. Vivamus in odio tincidunt, tempor sem quis, tincidunt lacus. Mauris pulvinar nunc sed tempus dictum. Nam vel arcu quis mi fermentum ullamcorper non ac lacus. Donec aliquet vitae ante at imperdiet. Aenean scelerisque venenatis urna, eget elementum risus convallis ac. Nullam gravida arcu lacus, non consectetur augue pretium non. Duis dignissim eros id urna pretium congue. Nullam eu magna in sem sollicitudin tempor. Pellentesque vel convallis ligula. Quisque semper, turpis a rhoncus efficitur, magna nibh iaculis elit, eget tempor dolor eros ut mi. Maecenas eu placerat lacus. Praesent congue pretium nulla, sed suscipit metus rutrum vel.</p>
+<p>Có nhiều cách để forward port, nhưng tôi thấy bạn Johan Haleby làm là cách dễ nhớ nhất. Đó là dùng tool <strong>pf</strong></p>
+
+<h4 id="download-bash-script">Download bash script</h4>
+
+<pre><code>git clone https://github.com/johanhaleby/docker-machine-port-forwarder &amp;&amp; cd docker-machine-port-forwarder
+</code></pre>
+
+<h4 id="mở-port-8080-cho-máy-default">Mở port 8080 cho máy default</h4>
+
+<pre><code>./pf 8080
+</code></pre>
+
+<h4 id="hoặc-mở-port-8080-cho-một-máy-docker-machine-có-tên-là-swarm-00">Hoặc mở port 8080 cho một máy docker machine có tên là <strong>swarm-00</strong></h4>
+
+<pre><code>./pf 8080 -e swarm-00
+</code></pre>
+
+<h4 id="hoặc-là-forward-port-8080-sang-port-80-trên-máy-host">Hoặc là forward port 8080 sang port 80 trên máy host</h4>
+
+<pre><code>./pf 80:8080 -e swarm-00
+</code></pre>
+
+<h4 id="stop-port-forwarding">Stop port forwarding</h4>
+
+<pre><code>./pf 8080 -s
+</code></pre>
+
+<h4 id="chạy-ở-chế-độ-foreground">Chạy ở chế độ foreground</h4>
+
+<pre><code>./pf 8080 -f
+</code></pre>
 
             </div>
             <footer class="article-footer">
-    <a data-url="https://trumhemcut.github.io/post/linked-post/" data-id="c66b7a6b08bf288d0d6e6c920d66d9d6" class="article-share-link">
-        Share
+    <a data-url="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" data-id="e62130c98c19832fdfd035f5aaf874cc" class="article-share-link">
+        Chia sẻ
     </a>
     
-    <a href="https://trumhemcut.github.io/post/linked-post//#disqus_thread" class="article-comment-link">
-        Comments
+    <a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker/#disqus_thread" class="article-comment-link">
+        Ý kiến
     </a>
     
 </footer>
@@ -355,21 +383,14 @@
         
 <nav id="article-nav">
     
-    <a href="https://trumhemcut.github.io/post/go-is-for-lovers/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">
-          Older
+          Cũ hơn
       </strong>
-      <div class="article-nav-title">Go is for lovers</div>
+      <div class="article-nav-title">Docker networking &amp; Docker Swarm Mode Demo</div>
     </a>
     
 
-    
-    <a href="https://trumhemcut.github.io/post/migrate-from-jekyll/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">
-          Newer
-      </strong>
-      <div class="article-nav-title">Migrate from Jekyll</div>
-    </a>
     
 </nav>
 
@@ -381,10 +402,10 @@
         <div id="disqus_thread">
             <div id="disqus_thread"></div>
 <script type="text/javascript">
-    var disqus_shortname = 'spf13';
-    var disqus_identifier = 'https:\/\/trumhemcut.github.io\/post\/linked-post\/';
-    var disqus_title = 'Linked post';
-    var disqus_url = 'https:\/\/trumhemcut.github.io\/post\/linked-post\/';
+    var disqus_shortname = 'trumhemcut';
+    var disqus_identifier = 'https:\/\/trumhemcut.github.io\/2016\/08\/17\/continuous-delivery-for-dotnet-core-app-using-jenkins--docker';
+    var disqus_title = 'Continuous Delivery for dotnet core apps using Jenkins and Docker';
+    var disqus_url = 'https:\/\/trumhemcut.github.io\/2016\/08\/17\/continuous-delivery-for-dotnet-core-app-using-jenkins--docker';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -405,16 +426,16 @@
     
 <div class="widget-wrap">
     <h3 class="widget-title">
-        Recents
+        Bài gần đây
     </h3>
     <div class="widget">
         <ul id="recent-post">
             
             <li>
                 <div class="item-thumbnail">
-                    <a href="https://trumhemcut.github.io/post/gio%CC%9B%CC%81i-thie%CC%A3%CC%82u-ca%CC%81c-ti%CC%81nh-na%CC%86ng-mo%CC%9B%CC%81i-trong-docker-1-12/" class="thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockercon2016.png)" alt="Linked post" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/cd-docker-jenkins.png)" alt="Continuous Delivery for dotnet core apps using Jenkins and Docker" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -428,109 +449,109 @@
                     </p>
                     
                     
-                    <p class="item-title"><a href="https://trumhemcut.github.io/post/gio%CC%9B%CC%81i-thie%CC%A3%CC%82u-ca%CC%81c-ti%CC%81nh-na%CC%86ng-mo%CC%9B%CC%81i-trong-docker-1-12/" class="title">Giới thiệu các tính năng mới trong Docker 1.12</a></p>
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" class="title">Continuous Delivery for dotnet core apps using Jenkins and Docker</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-08-17 11:17:34 &#43;0000 UTC" itemprop="datePublished">2016-08-17</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Continuous Delivery for dotnet core apps using Jenkins and Docker" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="title">Docker networking &amp; Docker Swarm Mode Demo</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-07-03 13:27:20 &#43;0200 &#43;0200" itemprop="datePublished">2016-07-03</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg)" alt="Continuous Delivery for dotnet core apps using Jenkins and Docker" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/programming">
+                        Programming
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" class="title">Docker Swarm, aspnet core 1.0 in action</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-06-29 11:44:08 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-29</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Continuous Delivery for dotnet core apps using Jenkins and Docker" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="title">Mở port cho Docker Machine</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-06-28 11:20:46 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-28</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockercon2016.png)" alt="Continuous Delivery for dotnet core apps using Jenkins and Docker" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" class="title">Giới thiệu các tính năng mới trong Docker 1.12</a></p>
                     <p class="item-date">
                         <time datetime="2016-06-26 16:56:43 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-26</time>
-                    </p>
-                </div>
-            </li>
-            
-            <li>
-                <div class="item-thumbnail">
-                    <a href="https://trumhemcut.github.io/post/migrate-from-jekyll/" class="thumbnail">
-                    
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/placeholder.png)" alt="Linked post" class="thumbnail-image"></span>
-                    
-                    </a>
-                </div>
-                <div class="item-inner">
-                    
-                    
-                    <p class="item-category">
-                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/lorem">
-                        lorem
-                        </a>
-                    </p>
-                    
-                    
-                    <p class="item-title"><a href="https://trumhemcut.github.io/post/migrate-from-jekyll/" class="title">Migrate from Jekyll</a></p>
-                    <p class="item-date">
-                        <time datetime="2015-10-10 13:07:31 &#43;0200 &#43;0200" itemprop="datePublished">2015-10-10</time>
-                    </p>
-                </div>
-            </li>
-            
-            <li>
-                <div class="item-thumbnail">
-                    <a href="https://trumhemcut.github.io/post/linked-post/" class="thumbnail">
-                    
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/placeholder.png)" alt="Linked post" class="thumbnail-image"></span>
-                    
-                    </a>
-                </div>
-                <div class="item-inner">
-                    
-                    
-                    <p class="item-category">
-                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/programming">
-                        programming
-                        </a>
-                    </p>
-                    
-                    
-                    <p class="item-title"><a href="https://trumhemcut.github.io/post/linked-post/" class="title">Linked post</a></p>
-                    <p class="item-date">
-                        <time datetime="2015-10-02 21:49:20 &#43;0200 &#43;0200" itemprop="datePublished">2015-10-02</time>
-                    </p>
-                </div>
-            </li>
-            
-            <li>
-                <div class="item-thumbnail">
-                    <a href="https://trumhemcut.github.io/post/go-is-for-lovers/" class="thumbnail">
-                    
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/placeholder.png)" alt="Linked post" class="thumbnail-image"></span>
-                    
-                    </a>
-                </div>
-                <div class="item-inner">
-                    
-                    
-                    <p class="item-category">
-                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/programming">
-                        programming
-                        </a>
-                    </p>
-                    
-                    
-                    <p class="item-title"><a href="https://trumhemcut.github.io/post/go-is-for-lovers/" class="title">Go is for lovers</a></p>
-                    <p class="item-date">
-                        <time datetime="2015-09-17 13:47:08 &#43;0200 &#43;0200" itemprop="datePublished">2015-09-17</time>
-                    </p>
-                </div>
-            </li>
-            
-            <li>
-                <div class="item-thumbnail">
-                    <a href="https://trumhemcut.github.io/post/hugo-is-for-lovers/" class="thumbnail">
-                    
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/placeholder.png)" alt="Linked post" class="thumbnail-image"></span>
-                    
-                    </a>
-                </div>
-                <div class="item-inner">
-                    
-                    
-                    <p class="item-category">
-                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/pseudo">
-                        pseudo
-                        </a>
-                    </p>
-                    
-                    
-                    <p class="item-title"><a href="https://trumhemcut.github.io/post/hugo-is-for-lovers/" class="title">Hugo is for lovers</a></p>
-                    <p class="item-date">
-                        <time datetime="2015-08-03 13:39:46 &#43;0200 &#43;0200" itemprop="datePublished">2015-08-03</time>
                     </p>
                 </div>
             </li>
@@ -544,7 +565,7 @@
 
 
 <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
+    <h3 class="widget-title">Danh mục</h3>
     <div class="widget">
         <ul class="category-list">
             
@@ -552,12 +573,12 @@
                 <a class="category-list-link" href="https://trumhemcut.github.io/categories/devops">
                     devops
                 </a>
-                <span class="category-list-count">1</span>
+                <span class="category-list-count">5</span>
             </li>
             
             <li class="category-list-item">
-                <a class="category-list-link" href="https://trumhemcut.github.io/categories/lorem">
-                    lorem
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/docker">
+                    docker
                 </a>
                 <span class="category-list-count">1</span>
             </li>
@@ -565,20 +586,6 @@
             <li class="category-list-item">
                 <a class="category-list-link" href="https://trumhemcut.github.io/categories/programming">
                     programming
-                </a>
-                <span class="category-list-count">2</span>
-            </li>
-            
-            <li class="category-list-item">
-                <a class="category-list-link" href="https://trumhemcut.github.io/categories/pseudo">
-                    pseudo
-                </a>
-                <span class="category-list-count">1</span>
-            </li>
-            
-            <li class="category-list-item">
-                <a class="category-list-link" href="https://trumhemcut.github.io/categories/starting">
-                    starting
                 </a>
                 <span class="category-list-count">1</span>
             </li>
@@ -600,6 +607,13 @@
         <ul class="category-list">
             
             <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/asp.net-core">
+                    asp.net-core
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
                 <a class="category-list-link" href="https://trumhemcut.github.io/tags/devops">
                     devops
                 </a>
@@ -610,7 +624,35 @@
                 <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker">
                     docker
                 </a>
+                <span class="category-list-count">4</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-compose">
+                    docker-compose
+                </a>
                 <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-machine">
+                    docker-machine
+                </a>
+                <span class="category-list-count">2</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-networking">
+                    docker-networking
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-swarm">
+                    docker-swarm
+                </a>
+                <span class="category-list-count">2</span>
             </li>
             
             <li class="category-list-item">
@@ -621,45 +663,10 @@
             </li>
             
             <li class="category-list-item">
-                <a class="category-list-link" href="https://trumhemcut.github.io/tags/go">
-                    go
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/swarm-mode">
+                    swarm-mode
                 </a>
                 <span class="category-list-count">1</span>
-            </li>
-            
-            <li class="category-list-item">
-                <a class="category-list-link" href="https://trumhemcut.github.io/tags/golang">
-                    golang
-                </a>
-                <span class="category-list-count">1</span>
-            </li>
-            
-            <li class="category-list-item">
-                <a class="category-list-link" href="https://trumhemcut.github.io/tags/hugo">
-                    hugo
-                </a>
-                <span class="category-list-count">2</span>
-            </li>
-            
-            <li class="category-list-item">
-                <a class="category-list-link" href="https://trumhemcut.github.io/tags/ipsum">
-                    ipsum
-                </a>
-                <span class="category-list-count">1</span>
-            </li>
-            
-            <li class="category-list-item">
-                <a class="category-list-link" href="https://trumhemcut.github.io/tags/programming">
-                    programming
-                </a>
-                <span class="category-list-count">1</span>
-            </li>
-            
-            <li class="category-list-item">
-                <a class="category-list-link" href="https://trumhemcut.github.io/tags/theme">
-                    theme
-                </a>
-                <span class="category-list-count">2</span>
             </li>
             
         </ul>
@@ -677,23 +684,23 @@
     </h3>
     <div class="widget tagcloud">
         
+        <a href="https://trumhemcut.github.io/tags/asp.net-core" style="font-size: 12px;">asp.net-core</a>
+        
         <a href="https://trumhemcut.github.io/tags/devops" style="font-size: 12px;">devops</a>
         
         <a href="https://trumhemcut.github.io/tags/docker" style="font-size: 12px;">docker</a>
         
+        <a href="https://trumhemcut.github.io/tags/docker-compose" style="font-size: 12px;">docker-compose</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-machine" style="font-size: 12px;">docker-machine</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-networking" style="font-size: 12px;">docker-networking</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-swarm" style="font-size: 12px;">docker-swarm</a>
+        
         <a href="https://trumhemcut.github.io/tags/dockercon2016" style="font-size: 12px;">dockercon2016</a>
         
-        <a href="https://trumhemcut.github.io/tags/go" style="font-size: 12px;">go</a>
-        
-        <a href="https://trumhemcut.github.io/tags/golang" style="font-size: 12px;">golang</a>
-        
-        <a href="https://trumhemcut.github.io/tags/hugo" style="font-size: 12px;">hugo</a>
-        
-        <a href="https://trumhemcut.github.io/tags/ipsum" style="font-size: 12px;">ipsum</a>
-        
-        <a href="https://trumhemcut.github.io/tags/programming" style="font-size: 12px;">programming</a>
-        
-        <a href="https://trumhemcut.github.io/tags/theme" style="font-size: 12px;">theme</a>
+        <a href="https://trumhemcut.github.io/tags/swarm-mode" style="font-size: 12px;">swarm-mode</a>
         
     </div>
 </div>
@@ -712,7 +719,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016
-      Powered by <a href="//gohugo.io">Hugo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>.
+      Blog sử dụng nền tảng của <a href="//gohugo.io">Hugo</a>. Dùng theme của <a href="http://github.com/ppoffice">PPOffice</a>.
     </div>
   </div>
 </footer>
