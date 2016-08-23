@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker Compose on Phi Huỳnh</title>
+    <link>https://trumhemcut.github.io/tags/docker-compose/</link>
+    <description>Recent content in Docker Compose on Phi Huỳnh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 29 Jun 2016 11:44:08 +0200</lastBuildDate>
+    <atom:link href="https://trumhemcut.github.io/tags/docker-compose/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Docker Swarm, aspnet core 1.0 in action</title>
+      <link>https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action</link>
+      <pubDate>Wed, 29 Jun 2016 11:44:08 +0200</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action</guid>
+      <description>
+
+&lt;p&gt;Cuối cùng thì Microsoft cũng ra mắt &lt;a href=&#34;https://blogs.msdn.microsoft.com/webdev/2016/06/27/announcing-asp-net-core-1-0/&#34;&gt;aspnet core 1.0&lt;/a&gt;, sau một thời gian dài trải qua các version RC1, RC2. Như các bạn cũng biết asp.net core có nhiều tính năng được built-in mà chúng ta không phải tìm kiếm &amp;amp; sử dụng nhiều libraries ngoài như asp.net 5. Có thể kể ra một vài tính năng như sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Chạy cross-platform trên Windows, Mac và Linux&lt;/li&gt;
+&lt;li&gt;Xây dựng trên .NET core, hỗ trợ side-by-side versioning&lt;/li&gt;
+&lt;li&gt;Hỗ trợ built-in dependency injection&lt;/li&gt;
+&lt;li&gt;Tag Helper kiểu tự nhiên như HTML data attributes (bắt chước Angular 1 :v )&lt;/li&gt;
+&lt;li&gt;Có thể host trên IIS hoặc self-host&lt;/li&gt;
+&lt;li&gt;Không còn phân biệt giữa MVC/API nữa&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Có nhiều cách / tools để bắt đầu một dự án dùng aspnet core 1.0. Chúng ta có thể dùng &lt;a href=&#34;https://www.visualstudio.com/downloads/visual-studio-prerelease-downloads#sec1&#34;&gt;Visual Studio 2015 RC3&lt;/a&gt;, &lt;a href=&#34;https://code.visualstudio.com/&#34;&gt;Visual Studio Code&lt;/a&gt; hoặc &lt;a href=&#34;https://eclipse-che.readme.io/&#34;&gt;Eclipse Che&lt;/a&gt; để viết code, deploy lên Windows / Linux / Mac hay Docker tùy thích. Nói chung là có máy nào xài máy đó, thích tool nào xài tool đó :), không còn phụ thuộc vào tools hay environment nữa.&lt;/p&gt;
+
+&lt;p&gt;Trong bài này, tôi sẽ giới thiệu cách develop một dự án aspnet core 1.0 dùng Visual Studio Code trên Mac, deploy lên Docker Swarm Cluster và dùng Docker Compose để scale các service trên Swarm Cluster.&lt;/p&gt;
+
+&lt;h2 id=&#34;cài-đặt-net-core-1-0-visual-studio-code-trên-mac&#34;&gt;Cài đặt .NET Core 1.0, Visual Studio Code trên Mac&lt;/h2&gt;
+
+&lt;p&gt;Để bắt đầu một dự án aspnet core 1.0 trên Mac, chúng ta phải chuẩn bị environment như sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Cài đặt .NET Core 1.0 theo hướng dẫn &lt;a href=&#34;https://www.microsoft.com/net/core#macos&#34;&gt;ở đây&lt;/a&gt;. Sau khi cài đặt xong, dùng terminal chạy lệnh &lt;code&gt;dotnet --version&lt;/code&gt; để kiểm tra version của dotnet tool và nếu thấy giá trị là &lt;strong&gt;1.0.0-preview2-003121&lt;/strong&gt; nghĩa là chúng ta đã on track.&lt;/li&gt;
+&lt;li&gt;Cài đặt Visual Studio Code&lt;/li&gt;
+&lt;li&gt;Cài đặt &lt;a href=&#34;https://nodejs.org/en/&#34;&gt;NodeJS&lt;/a&gt; và &lt;a href=&#34;http://yeoman.io/&#34;&gt;Yeoman&lt;/a&gt; (optional): bước này không bắt buộc, tuy nhiên tôi khuyến khích sử dụng Yeoman vì rất thuận tiện để tạo project structure. Sau khi cài Yeoman xong thì cài thêm &lt;a href=&#34;https://www.npmjs.com/package/generator-aspnet&#34;&gt;aspnet generator&lt;/a&gt; là chúng ta đã sẵn sàng. Nếu đã cài yeoman &amp;amp; aspnet generator trước đó thì cần update generator để có bộ aspnet generator mới nhất.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;xin-chào-aspnet-core-1-0&#34;&gt;Xin chào aspnet core 1.0&lt;/h2&gt;
+
+&lt;p&gt;Khá dễ dàng để bắt đầu với aspnet core 1.0. Trên Mac, mở terminal và gõ lệnh &lt;code&gt;yo aspnet&lt;/code&gt;, chọn &lt;strong&gt;Empty Web Application&lt;/strong&gt;, đặt tên dự án là &lt;strong&gt;hello-aspnet&lt;/strong&gt; và nhấn enter. Yeoman sẽ tạo ra một project structure cho chúng ta.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ mkdir ~/projects &amp;amp; cd ~/projects
+$ yo aspnet
+
+     _-----_     ╭──────────────────────────╮
+    |       |    │      Welcome to the      │
+    |--(o)--|    │  marvellous ASP.NET Core │
+   `---------´   │        generator!        │
+    ( _´U`_ )    ╰──────────────────────────╯
+    /___A___\   /
+     |  ~  |     
+   __&#39;.___.&#39;__   
+ ´   `  |° ´ Y ` 
+
+? What type of application do you want to create? Empty Web Application
+? What&#39;s the name of your ASP.NET application? hello-aspnet
+   create hello-aspnet/.gitignore
+   create hello-aspnet/Program.cs
+   create hello-aspnet/Startup.cs
+   create hello-aspnet/project.json
+   create hello-aspnet/web.config
+   create hello-aspnet/Dockerfile
+   create hello-aspnet/Properties/launchSettings.json
+   create hello-aspnet/README.md
+
+
+Your project is now created, you can use the following commands to get going
+    cd &amp;quot;hello-aspnet&amp;quot;
+    dotnet restore
+    dotnet build (optional, build will also happen when it&#39;s run)
+    dotnet run
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sau đó chúng tao vào thư mục &lt;strong&gt;hello-aspnet&lt;/strong&gt; và chạy các lệnh &lt;code&gt;dotnet restore&lt;/code&gt;, &lt;code&gt;dotnet build&lt;/code&gt; và &lt;code&gt;dotnet run&lt;/code&gt; để chạy dự án.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;➜  hello-aspnet dotnet run
+Project hello-aspnet (.NETCoreApp,Version=v1.0) was previously compiled. Skipping compilation.
+Hosting environment: Production
+Content root path: /Users/phihuynh/projects/hello-aspnet
+Now listening on: http://localhost:5000
+Application started. Press Ctrl+C to shut down.
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:5000/  
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 88.3022ms 20
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sau đó, mở trình duyệt và nhập vào địa chỉ &lt;code&gt;http://localhost:5000&lt;/code&gt; là chúng ta đã có web app đầu tiên chạy trên aspnet core 1.0.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/aspnetcore01.png&#34; alt=&#34;say hello to aspnet core&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;xin-chào-docker&#34;&gt;Xin chào Docker&lt;/h2&gt;
+
+&lt;p&gt;Chúng ta đã có thể say hello với aspnet core 1.0 trên Mac, giờ chúng ta tiếp tục bắt đầu với Docker. Tôi giả sử là chúng ta đã là quen sơ sơ với Docker rồi nên sẽ không nói nhiều về benefits của Docker nữa.&lt;/p&gt;
+
+&lt;p&gt;Để chạy hello-aspnet app vừa rồi trên Docker, cơ bản chúng ta sẽ đi qua các bước như sau:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Cài đặt Docker Toolbox, bộ Docker Toolbox sẽ bao gồm Docker Machine, Kitematic &amp;amp; VirtualBox&lt;/li&gt;
+&lt;li&gt;Dùng &lt;strong&gt;docker-machine&lt;/strong&gt; để tạo ra một máy ảo boot2docker&lt;/li&gt;
+&lt;li&gt;Build image cho app hello-aspnet&lt;/li&gt;
+&lt;li&gt;Deploy hello-aspnet app lên Docker bằng docker commands&lt;br /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;cài-đặt-docker-toolbox&#34;&gt;Cài đặt Docker Toolbox&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.docker.com/products/docker-toolbox&#34;&gt;Docker Toolbox&lt;/a&gt; có 2 phiên bản cho Windows &amp;amp; Mac. Chúng ta lựa chọn phiên bản phù hợp với OS của mình. Sau khi cài xong, chúng ta sẽ có Docker Machine, Kitematic &amp;amp; Virtualbox để sẳn sàng tạo máy ảo.&lt;/p&gt;
+
+&lt;h3 id=&#34;tạo-máy-ảo-bằng-docker-machine&#34;&gt;Tạo máy ảo bằng docker-machine&lt;/h3&gt;
+
+&lt;p&gt;Sau khi đã cài Docker Toolbox, mở terminal lên, dùng lệnh sau để tạo máy ảo&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine create -d virtualbox docker00 
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

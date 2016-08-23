@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <title>Giới thiệu các tính năng mới trong Docker 1.12 &middot; Phi Huỳnh</title>
+    <meta name="generator" content="Hugo 0.16" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="Phi Huỳnh">
+    
+      <meta name="description" content="">
+    
+    
+    <link rel="icon" href="https://trumhemcut.github.io/favicon.ico">
+    <link rel="apple-touch-icon" href="https://trumhemcut.github.io/apple-touch-icon.png" />
+    <link rel="stylesheet" href="https://trumhemcut.github.io/css/style.css">
+    <link rel="stylesheet" href="https://trumhemcut.github.io/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://trumhemcut.github.io/css/monokai.css">
+    <link rel="stylesheet" href="https://trumhemcut.github.io/fancybox/jquery.fancybox.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+    <meta property="og:title" content="Giới thiệu các tính năng mới trong Docker 1.12" />
+<meta property="og:description" content="DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về Docker Swarm Mode, một tính năng mới có trong Docker Engine (v1.12). Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm ở đây. Docker Swarm Mode là gì? Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" />
+
+  <meta property="og:image" content="https://trumhemcut.github.io/static/images/dockerswarm01.png" />
+
+  <meta property="og:image" content="https://trumhemcut.github.io/static/images/visualizer01.png" />
+
+  <meta property="og:image" content="https://trumhemcut.github.io/static/images/visualizer02.png" />
+
+  <meta property="og:image" content="https://trumhemcut.github.io/static/images/visualizer03.png" />
+
+
+<meta property="og:updated_time" content="2016-06-26T16:56:43&#43;02:00"/>
+
+
+
+
+
+
+
+
+
+
+    
+    
+<meta itemprop="name" content="Giới thiệu các tính năng mới trong Docker 1.12">
+<meta itemprop="description" content="DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về Docker Swarm Mode, một tính năng mới có trong Docker Engine (v1.12). Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm ở đây. Docker Swarm Mode là gì? Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào.">
+
+
+<meta itemprop="dateModified" content="2016-06-26T16:56:43&#43;02:00" />
+<meta itemprop="wordCount" content="1122">
+
+  <meta itemprop="image" content="https://trumhemcut.github.io/static/images/dockerswarm01.png">
+
+  <meta itemprop="image" content="https://trumhemcut.github.io/static/images/visualizer01.png">
+
+  <meta itemprop="image" content="https://trumhemcut.github.io/static/images/visualizer02.png">
+
+  <meta itemprop="image" content="https://trumhemcut.github.io/static/images/visualizer03.png">
+
+
+
+<meta itemprop="keywords" content="devops,docker,programming,asp.net-core,devops,docker,docker-compose,docker-machine,docker-networking,docker-swarm,dockercon2016,swarm-mode," />
+
+    
+
+
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:image:src" content="https://trumhemcut.github.io/static/images/dockerswarm01.png"/>
+
+
+
+<meta name="twitter:title" content="Giới thiệu các tính năng mới trong Docker 1.12"/>
+<meta name="twitter:description" content="DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về Docker Swarm Mode, một tính năng mới có trong Docker Engine (v1.12). Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm ở đây. Docker Swarm Mode là gì? Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào."/>
+<meta name="twitter:site" content="@trumhemcut"/>
+
+
+    
+
+    
+</head>
+<body>
+<div class="container">
+
+
+<div id="container">
+	<header id="header">
+  <div id="header-main" class="header-inner">
+    <div class="outer">
+      <a href="https://trumhemcut.github.io/" id="logo">
+          
+          <i class="logo" style="background-image: url('https://trumhemcut.github.io/css/images/logo.png')"></i>
+          
+          <span class="site-title">Phi Huỳnh</span>
+      </a>
+      <nav id="main-nav">
+          
+          
+          <a class="main-nav-link" href="https://trumhemcut.github.io/">Trang chủ</a>
+          
+          
+          
+          
+          
+          
+
+          
+
+          
+          
+          
+          
+          <a class="main-nav-link" href="https://trumhemcut.github.io/tags/">Tags</a>
+          
+          
+          
+          <a class="main-nav-link" href="https://trumhemcut.github.io/categories/">Danh mục</a>
+          
+          
+      </nav>
+        <nav id="sub-nav">
+          <div class="profile" id="profile-nav">
+            <a id="profile-anchor" href="javascript:;"><img class="avatar" src="https://trumhemcut.github.io/css/images/avatar.png"><i class="fa fa-caret-down"></i></a>
+          </div>
+        </nav>
+        <div id="search-form-wrap">
+          <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form">
+              <input type="search" name="q" results="0" class="search-form-input" placeholder="Tìm kiếm">
+              <button type="submit" class="search-form-submit">
+              </button>
+              <input type="hidden" name="q" value="site:https://trumhemcut.github.io/">
+         </form>
+        </div>
+    </div>
+  </div>
+  <div id="main-nav-mobile" class="header-sub header-inner">
+    <table class="menu outer">
+      <tbody>
+          <tr>
+          
+          
+          <td><a class="main-nav-link" href="https://trumhemcut.github.io/">Trang chủ</a></td>
+          
+          
+          
+          
+          
+          
+
+          
+
+          
+          
+          
+          
+          <td><a class="main-nav-link" href="https://trumhemcut.github.io/tags/">Tags</a></td>
+          
+          
+          
+          <td><a class="main-nav-link" href="https://trumhemcut.github.io/categories/">Danh mục</a></td>
+          
+          
+          <td>
+          <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form">
+          <input type="search" name="q" results="0" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" value="site:https://trumhemcut.github.io/">
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</header>
+
+   	
+   	<div class="outer">
+   		
+	    <aside id="profile">
+  <div class="inner profile-inner">
+    <div class="base-info profile-block">
+      <img id="avatar" src="https://trumhemcut.github.io/css/images/avatar.png">
+      <h2 id="name">Phi Huỳnh</h2>
+      <h3 id="title">Code cày cuốc - Làm bố</h3>
+      <span id="location"><i class="fa fa-map-marker"></i>Việt Nam</span>
+      
+          <a id="follow" href="https://github.com/trumhemcut">
+              Theo dõi
+          </a>
+      
+    </div>
+    <div class="article-info profile-block">
+      <div class="article-info-block">
+        5
+        <span>Bài viết</span>
+      </div>
+      <div class="article-info-block">
+        
+          9
+        
+        <span>
+            Tags
+        </span>
+      </div>
+    </div>
+    <div class="contact-info profile-block">
+      <table class="contact-list">
+        <tr>
+          
+<td><a href="//github.com/trumhemcut" target="_blank" title="GitHub"><i class="fa fa-github"></i></a></td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<td><a href="//linkedin.com/in/phi-huynh-82a31040" target="_blank" title="LinkedIn"><i class="fa fa-linkedin"></i></a></td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<td><a href="//facebook.com/trumxomcui" target="_blank" title="Facebook"><i class="fa fa-facebook"></i></a></td>
+
+
+
+<td><a href="//twitter.com/trumhemcut" target="_blank" title="Twitter"><i class="fa fa-twitter"></i></a></td>
+
+
+          <td><a href="" target="_blank" title="RSS"><i class="fa fa-rss"></i></a></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</aside>
+
+	    
+
+	    
+<section id="main">
+
+    <article id="page-undefined" class="article article-type-page" itemscope="" itemprop="blogPost">
+        <div class="article-inner">
+            
+                <img src="https://trumhemcut.github.io/banners/dockercon2016.png" class="article-banner">
+            
+
+            <header class="article-header">
+    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12">
+    <h1 class="article-title" itemprop="name">
+        Giới thiệu các tính năng mới trong Docker 1.12
+    </h1>
+    </a>
+    <div class="article-meta">
+        <div class="article-date">
+            <i class="fa fa-calendar"></i>
+            <time datetime="2016-06-26 16:56:43 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-26</time>
+            &middot;
+            1122
+            từ
+            &middot;
+            6
+            phút đọc
+        </div>
+
+        
+        
+            
+            
+            <div class="article-category">
+                <i class="fa fa-folder"></i>
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
+                
+                
+            </div>
+            
+        
+
+        
+            
+            
+            <div class="article-category">
+                <i class="fa fa-tags"></i>
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker">Docker</a>
+                &middot;
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/dockercon2016">DockerCon2016</a>
+                &middot;
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/devops">DevOps</a>
+                
+                
+            </div>
+            
+        
+    </div>
+</header>
+
+            <div class="article-entry" itemprop="articleBody">
+                
+
+<p>DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về <a href="https://docs.docker.com/engine/swarm/">Docker Swarm Mode</a>, một tính năng mới có trong Docker Engine (v1.12).</p>
+
+<p>Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm <a href="https://docs.docker.com/swarm/">ở đây</a>.</p>
+
+<h2 id="docker-swarm-mode-là-gì">Docker Swarm Mode là gì?</h2>
+
+<p>Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào. Đặc biệt, version này cũng bao gồm việc xử lý về vấn đề Security, Networking, State &amp; Cluster Initialization.</p>
+
+<p>Xem thêm ở đây để được giới thiệu về <a href="https://www.youtube.com/watch?v=KC4Ad1DS8xU">Docker Swarm Mode</a></p>
+
+<h2 id="cài-đặt">Cài đặt</h2>
+
+<p>Trong bài này, chúng ta sẽ tạo ra một swarm cluster gồm 1 cluster manager và 3 worker. Nếu như trước đây chúng ta cần thêm các container khác cho service discovery, load balancer, &hellip; để xây dựng một cluster thì bây giờ mấy thứ đó không cần nữa. Tất cả đã được built-in trong Docker Engine.</p>
+
+<p><img src="https://trumhemcut.github.io/images/dockerswarm01.png" alt="Environment Setup" /></p>
+
+<h3 id="mở-port-để-giao-tiếp-giữa-các-hosts">Mở port để giao tiếp giữa các hosts</h3>
+
+<ul>
+<li><strong>TCP port 2377</strong>: port này để cluster mananegement</li>
+<li><strong>TCP</strong> và <strong>UDP port 7946</strong> để giao tiếp giữa các nodes</li>
+<li><strong>TCP</strong> và <strong>UDP port 4789</strong> dành cho overlay network</li>
+</ul>
+
+<p>Nếu chúng ta sử dụng Boot2Docker phiên bản mới nhất thì nó đã làm sẵn cho chúng ta rồi, nice :)</p>
+
+<h3 id="dùng-docker-machine-để-tạo-các-máy-ảo">Dùng docker-machine để tạo các máy ảo</h3>
+
+<p>Lưu ý là chúng ta phải cài Docker Toolbox để có thể xài lệnh docker-machine nhé. Trước đây tôi cũng đã từng nhầm lẫn giữa Docker for Mac &amp; Docker Toolbox, lưu ý đây là 2 sản phẩm hoàn toàn khác nhau nhé.</p>
+
+<p>Chúng ta tạo ra các máy ảo như sau, lưu ý là chúng ta phải sử dụng bản Boot2Docker mới nhất nhé, nếu không chắc thì bạn nên chạy lệnh upgrade để tải bảng boot2docker mới nhất:</p>
+
+<ul>
+<li><strong>swarm-00</strong>: máy này sẽ làm cluster manager, IP Address sẽ là: 192.168.99.100</li>
+<li><strong>swarm-01</strong>: worker số 1</li>
+<li><strong>swarm-02</strong>: worker số 2</li>
+<li><strong>swarm-03</strong>: worker số 3</li>
+</ul>
+
+<pre><code>$ docker-machine upgrade default
+$ docker-machine create -d virtualbox swarm-00
+$ docker-machine create -d virtualbox swarm-01
+$ docker-machine create -d virtualbox swarm-02
+$ docker-machine create -d virtualbox swarm-03
+</code></pre>
+
+<p>Kiểm tra lại địa chỉ IP để chắc chắn là <strong>swarm-00</strong> có địa chỉ là 192.168.99.100</p>
+
+<pre><code>$ docker-machine ip swarm-00 swarm-01 swarm-02 swarm-03
+192.168.99.103
+192.168.99.102
+192.168.99.101
+192.168.99.100
+</code></pre>
+
+<h2 id="tạo-một-swarm-cluster">Tạo một Swarm Cluster</h2>
+
+<p>Bây giờ chúng ta đã chuẩn bị sẵn sàng môi trường để ta xây dựng một Swarm Cluster.</p>
+
+<ol>
+<li><p>Kết nối vào <strong>swarm-00</strong> để khởi tạo swarm manager</p>
+
+<pre><code>$ docker-machine ssh swarm-00
+$ docker swarm init --listen-addr 192.168.99.100:2377
+Swarm initialized: current node (56cqz10j5z5inzzt0rsw877ja) is now a manager.
+</code></pre></li>
+
+<li><p>Chạy lệnh <code>docker info</code> để kiểm tra trạng thái của <strong>swarm manager</strong></p>
+
+<pre><code>docker@swarm-00:~$ docker info
+Containers: 0
+Running: 0
+Paused: 0
+Stopped: 0
+Images: 0
+Server Version: 1.12.0-rc2
+Storage Driver: aufs
+Root Dir: /mnt/sda1/var/lib/docker/aufs
+Backing Filesystem: extfs
+Dirs: 0
+Dirperm1 Supported: true
+Logging Driver: json-file
+...
+</code></pre></li>
+
+<li><p>Chạy lệnh docker node ls để kiểm tra thông tin các node trong cluster</p>
+
+<pre><code>docker@swarm-00:~$ docker node ls
+ID                           NAME      MEMBERSHIP  STATUS  AVAILABILITY  MANAGER STATUS
+56cqz10j5z5inzzt0rsw877ja *  swarm-00  Accepted    Ready   Active        Leader
+</code></pre></li>
+</ol>
+
+<h2 id="thêm-các-node-vào-swarm-cluster">Thêm các node vào Swarm Cluster</h2>
+
+<ol>
+<li><p>Thêm node <strong>swarm-01</strong> vào swarm cluster</p>
+
+<pre><code>$ docker-machine ssh swarm-01
+docker@swarm-01:~$ docker swarm join 192.168.99.100:2377
+This node joined a Swarm as a worker.
+</code></pre></li>
+
+<li><p>Thêm node <strong>swarm-02</strong> vào swarm cluster</p>
+
+<pre><code>$ docker-machine ssh swarm-02
+docker@swarm-02:~$ docker swarm join 192.168.99.100:2377
+This node joined a Swarm as a worker.
+</code></pre></li>
+
+<li><p>Thêm node <strong>swarm-03</strong> vào swarm cluster</p>
+
+<pre><code>$ docker-machine ssh swarm-03
+docker@swarm-03:~$ docker swarm join 192.168.99.100:2377
+This node joined a Swarm as a worker.
+</code></pre></li>
+
+<li><p>Kiểm tra lại trạng thái của các nodes trong cluster</p>
+
+<pre><code>docker@swarm-00:~$ docker node ls
+ID                           NAME      MEMBERSHIP  STATUS  AVAILABILITY  MANAGER STATUS
+0h70dwoxxl5jwx53m1g857jf2    swarm-03  Accepted    Ready   Active        
+2csi90lknok2o5w3539xm48dl    swarm-02  Accepted    Ready   Active        
+56cqz10j5z5inzzt0rsw877ja *  swarm-00  Accepted    Ready   Active        Leader
+5dkujue686ddhm0zui9un77rs    swarm-01  Accepted    Ready   Active 
+</code></pre></li>
+</ol>
+
+<h2 id="dùng-visualizer-để-hiển-thị-trạng-thái-các-nodes-services">Dùng Visualizer để hiển thị trạng thái các nodes &amp; services</h2>
+
+<p>Thật tình là tôi rất thích dùng thằng Visualizer này để hiển thị trạng thái của các nodes &amp; services. Bạn có thể không cần bước này, nhưng mình khuyên là nên dùng.</p>
+
+<p>Bạn có thể tham khảo về Visualzier <a href="https://github.com/ManoMarks/docker-swarm-visualizer">ở đây</a>.</p>
+
+<pre><code>docker@swarm-00:~$ docker run -it -d -p 5000:5000 -e HOST=localhost -e PORT=5000 -v /var/run/docker.sock:/var/run/docker.sock manomarks/visualizer
+</code></pre>
+
+<p>Sau khi chạy container xong, chúng ta có thể xem trên browser <a href="http://localhost:5000">http://localhost:5000</a> để xem trạng thái các nodes.</p>
+
+<h2 id="deploy-một-service-lên-swarm-cluster">Deploy một service lên swarm cluster</h2>
+
+<p>Đơn giản nhất, chúng ta tạo một server chạy trên swarm cluster như sau:</p>
+
+<pre><code>$ docker-machine ssh swarm-00
+$ docker service create --replicas 1 --name helloworld alpine ping docker.com
+</code></pre>
+
+<ul>
+<li><code>docker service create</code> để tạo ra service</li>
+<li><code>--replicas</code> chỉ định số instance muốn có, nếu bất kỳ instance nào bị down, cluster sẽ tự động clone số instance bằng số lượng replicas đã cấu hình</li>
+<li><code>--name</code> tên service là helloworld</li>
+<li><code>alpine ping docker.com</code> image tên là alpine và chạy lệnh <code>ping docker.com</code></li>
+</ul>
+
+<p>Sau đó mở trình duyệt và truy cập vào <a href="http://localhost:5000">http://localhost:5000</a> chúng ta sẽ thấy một container như trong hình.</p>
+
+<p><img src="https://trumhemcut.github.io/images/visualizer01.png" alt="Container in visualizer" /></p>
+
+<p>Liệt kê danh sách các service trong swarm cluster</p>
+
+<pre><code>$ docker service ls
+708jyxdzqrim  helloworld  1/1       alpine  ping docker.com
+</code></pre>
+
+<p>Xem chi tiết thông tin service</p>
+
+<pre><code>$ docker service tasks helloworld
+ID                         NAME          SERVICE     IMAGE   LAST STATE             DESIRED STATE  NODE
+439ypow987o6h0iun9wlm7x1f  helloworld.1  helloworld  alpine  Running About an hour  Running        swarm-00
+</code></pre>
+
+<h2 id="scale-service-trong-một-cluster-manager">Scale service trong một cluster manager</h2>
+
+<p>Ví dụ ta muốn scale out service <strong>helloworld</strong> lên 5 instances, dùng lệnh sau:</p>
+
+<pre><code>docker@swarm-00:~$ docker service scale helloworld=5
+helloworld scaled to 5
+</code></pre>
+
+<p>Chúng ta xem lại danh sách service để kiểm tra xem trạng thái các service</p>
+
+<pre><code>docker@swarm-00:~$ docker service tasks helloworld
+ID                         NAME          SERVICE     IMAGE   LAST STATE             DESIRED STATE  NODE
+439ypow987o6h0iun9wlm7x1f  helloworld.1  helloworld  alpine  Running About an hour  Running        swarm-00
+39zig0tgnb1fh0f6cocmtgq2c  helloworld.2  helloworld  alpine  Running 2 minutes      Running        swarm-00
+2p9sslerww0pjd3brn52y3zp3  helloworld.3  helloworld  alpine  Running 2 minutes      Running        swarm-02
+9m4p7jsaj0tv3k02ty099cjhd  helloworld.4  helloworld  alpine  Running 2 minutes      Running        swarm-00
+26oj2s6xgnr4wo2zu2zig73uq  helloworld.5  helloworld  alpine  Running 2 minutes      Running        swarm-02
+</code></pre>
+
+<p>Hoặc có thể xem qua visualizer <a href="http://localhost:5000">http://localhost:5000</a></p>
+
+<p><img src="https://trumhemcut.github.io/images/visualizer02.png" alt="Visualizer Viewer" /></p>
+
+<p>Như trên hình, chúng ta thấy node <strong>swarm-02</strong> có 2 instances, chúng ta thử stop node này xem chuyện gì sẽ xảy ra.</p>
+
+<pre><code>$ docker-machine stop swarm-02
+Stopping &quot;swarm-02&quot;...
+Machine &quot;swarm-02&quot; was stopped.
+</code></pre>
+
+<p>Chúng ta sẽ thấy swarm cluster sẽ tự động tạo ra thêm 3 nodes trên swarm-00. Tôi cũng không hiểu sao nó không tạo ra trên <strong>swarm-01</strong>.
+<img src="https://trumhemcut.github.io/images/visualizer03.png" alt="Visualizer Viewer" /></p>
+
+<h2 id="kết-luận">Kết luận</h2>
+
+<p>Đây là một vài tính năng rất cơ bản mà chúng ta lướt sơ qua, còn rất nhiều tính năng thú vị chúng ta sẽ khám phá dần qua các bài viết tiếp theo.</p>
+
+            </div>
+            <footer class="article-footer">
+    <a data-url="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" data-id="31be51e29caf4a64b8ece2b151534552" class="article-share-link">
+        Chia sẻ
+    </a>
+    
+    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12/#disqus_thread" class="article-comment-link">
+        Ý kiến
+    </a>
+    
+</footer>
+
+        </div>
+
+        
+<nav id="article-nav">
+    
+
+    
+    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">
+          Mới hơn
+      </strong>
+      <div class="article-nav-title">Mở port cho Docker Machine</div>
+    </a>
+    
+</nav>
+
+
+    </article>
+
+    
+    <section id="comments">
+        <div id="disqus_thread">
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'trumhemcut';
+    var disqus_identifier = 'https:\/\/trumhemcut.github.io\/2016\/06\/26\/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12';
+    var disqus_title = 'Giới thiệu các tính năng mới trong Docker 1.12';
+    var disqus_url = 'https:\/\/trumhemcut.github.io\/2016\/06\/26\/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </div>
+    </section>
+    
+</section>
+
+
+	    
+	    <aside id="sidebar">
+    
+<div class="widget-wrap">
+    <h3 class="widget-title">
+        Bài gần đây
+    </h3>
+    <div class="widget">
+        <ul id="recent-post">
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/cd-docker-jenkins.png)" alt="Giới thiệu các tính năng mới trong Docker 1.12" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" class="title">Continuous Delivery for dotnet core apps using Jenkins and Docker</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-08-17 11:17:34 &#43;0000 UTC" itemprop="datePublished">2016-08-17</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Giới thiệu các tính năng mới trong Docker 1.12" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="title">Docker networking &amp; Docker Swarm Mode Demo</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-07-03 13:27:20 &#43;0200 &#43;0200" itemprop="datePublished">2016-07-03</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg)" alt="Giới thiệu các tính năng mới trong Docker 1.12" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/programming">
+                        Programming
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" class="title">Docker Swarm, aspnet core 1.0 in action</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-06-29 11:44:08 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-29</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Giới thiệu các tính năng mới trong Docker 1.12" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="title">Mở port cho Docker Machine</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-06-28 11:20:46 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-28</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockercon2016.png)" alt="Giới thiệu các tính năng mới trong Docker 1.12" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" class="title">Giới thiệu các tính năng mới trong Docker 1.12</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-06-26 16:56:43 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-26</time>
+                    </p>
+                </div>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+    
+
+
+<div class="widget-wrap">
+    <h3 class="widget-title">Danh mục</h3>
+    <div class="widget">
+        <ul class="category-list">
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/devops">
+                    devops
+                </a>
+                <span class="category-list-count">5</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/docker">
+                    docker
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/programming">
+                    programming
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+
+    
+
+
+<div class="widget-wrap">
+    <h3 class="widget-title">
+        Tags
+    </h3>
+    <div class="widget">
+        <ul class="category-list">
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/asp.net-core">
+                    asp.net-core
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/devops">
+                    devops
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker">
+                    docker
+                </a>
+                <span class="category-list-count">4</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-compose">
+                    docker-compose
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-machine">
+                    docker-machine
+                </a>
+                <span class="category-list-count">2</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-networking">
+                    docker-networking
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-swarm">
+                    docker-swarm
+                </a>
+                <span class="category-list-count">2</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/dockercon2016">
+                    dockercon2016
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/swarm-mode">
+                    swarm-mode
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+
+    
+
+
+<div class="widget-wrap">
+    <h3 class="widget-title">
+        Tag cloud
+    </h3>
+    <div class="widget tagcloud">
+        
+        <a href="https://trumhemcut.github.io/tags/asp.net-core" style="font-size: 12px;">asp.net-core</a>
+        
+        <a href="https://trumhemcut.github.io/tags/devops" style="font-size: 12px;">devops</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker" style="font-size: 12px;">docker</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-compose" style="font-size: 12px;">docker-compose</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-machine" style="font-size: 12px;">docker-machine</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-networking" style="font-size: 12px;">docker-networking</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-swarm" style="font-size: 12px;">docker-swarm</a>
+        
+        <a href="https://trumhemcut.github.io/tags/dockercon2016" style="font-size: 12px;">dockercon2016</a>
+        
+        <a href="https://trumhemcut.github.io/tags/swarm-mode" style="font-size: 12px;">swarm-mode</a>
+        
+    </div>
+</div>
+
+
+
+
+    <div id="toTop" class="fa fa-chevron-up"></div>
+</aside>
+
+	    
+	</div>
+</div>
+
+<footer id="footer">
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016
+      Blog sử dụng nền tảng của <a href="//gohugo.io">Hugo</a>. Dùng theme của <a href="http://github.com/ppoffice">PPOffice</a>.
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://trumhemcut.github.io/fancybox/jquery.fancybox.pack.js"></script>
+<script src="https://trumhemcut.github.io/js/script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- MathJax -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</body>
+</html>

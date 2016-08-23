@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Devops on Phi Huỳnh</title>
+    <link>https://trumhemcut.github.io/categories/devops/</link>
+    <description>Recent content in Devops on Phi Huỳnh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 17 Aug 2016 11:17:34 +0000</lastBuildDate>
+    <atom:link href="https://trumhemcut.github.io/categories/devops/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Continuous Delivery for dotnet core apps using Jenkins and Docker</title>
+      <link>https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker</link>
+      <pubDate>Wed, 17 Aug 2016 11:17:34 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;
+
+&lt;p&gt;Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address.&lt;/p&gt;
+
+&lt;p&gt;Ví dụ:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker run -it -p 8080:8080 --name dotnetapp microsoft/dotnet:latest
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Để truy cập vào website, chúng ta sẽ dùng địa chỉ &lt;code&gt;http://192.168.99.100:8080&lt;/code&gt; với &lt;strong&gt;192.168.99.100&lt;/strong&gt; chính là địa chỉ máy ảo (mặc định) trên Docker Machine.&lt;/p&gt;
+
+&lt;p&gt;Để có thể truy cập bằng địa chỉ localhost, chúng ta phải forward port từ máy ảo sang máy host. Từ đó chúng ta có thể truy cập bằng địa chỉ &lt;code&gt;http://localhost:8080&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Có nhiều cách để forward port, nhưng tôi thấy bạn Johan Haleby làm là cách dễ nhớ nhất. Đó là dùng tool &lt;strong&gt;pf&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;download-bash-script&#34;&gt;Download bash script&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;git clone https://github.com/johanhaleby/docker-machine-port-forwarder &amp;amp;&amp;amp; cd docker-machine-port-forwarder
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;mở-port-8080-cho-máy-default&#34;&gt;Mở port 8080 cho máy default&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 8080
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;hoặc-mở-port-8080-cho-một-máy-docker-machine-có-tên-là-swarm-00&#34;&gt;Hoặc mở port 8080 cho một máy docker machine có tên là &lt;strong&gt;swarm-00&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 8080 -e swarm-00
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;hoặc-là-forward-port-8080-sang-port-80-trên-máy-host&#34;&gt;Hoặc là forward port 8080 sang port 80 trên máy host&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 80:8080 -e swarm-00
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;stop-port-forwarding&#34;&gt;Stop port forwarding&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 8080 -s
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;chạy-ở-chế-độ-foreground&#34;&gt;Chạy ở chế độ foreground&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 8080 -f
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Docker networking &amp; Docker Swarm Mode Demo</title>
+      <link>https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo</link>
+      <pubDate>Sun, 03 Jul 2016 13:27:20 +0200</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo</guid>
+      <description>
+
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;This post is a step by step introduction about Docker Networking and new features of Docker Swarm Mode which has just been introduced in #DockerCon 2016.&lt;/p&gt;
+
+&lt;p&gt;We will walk through by examples to understand the Docker Networking. Then will swich to Docker Swarm Mode, demo about the features such as:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The new way to create services&lt;/li&gt;
+&lt;li&gt;Scale the services&lt;/li&gt;
+&lt;li&gt;Load balancing with Rounting Mesh&lt;/li&gt;
+&lt;li&gt;Self-Healing&lt;/li&gt;
+&lt;li&gt;Self-Organizing&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;pre-requisites&#34;&gt;Pre-requisites&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine create -d virtualbox node-0
+$ docker-machine create -d virtualbox node-1
+$ docker-machine create -d virtualbox node-2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Double check to make sure of IP Address of nodes&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ip node-0
+$ docker-machine ip node-1
+$ docker-machine ip node-2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Change &lt;strong&gt;/etc/hosts&lt;/strong&gt; file with these above IP Addresses &amp;amp; nodes&lt;/p&gt;
+
+&lt;h2 id=&#34;docker-networking-demo&#34;&gt;Docker Networking Demo&lt;/h2&gt;
+
+&lt;p&gt;SSH to the node-0 node&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker-machine ssh node-0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Create a bridge network&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker network create -d bridge --subnet 10.10.0.0/16  vnet-1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Create containers within that network&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker run -d -p 8001:8000 --net=vnet-1 --name c1 jwilder/whoami
+docker run -d -p 8002:8000 --net=vnet-1 --name c2 jwilder/whoami
+docker run -d -p 8003:8000 --net=vnet-1 --name c3 jwilder/whoami
+docker run -d -p 8004:8000 --net=vnet-1 --name c4 jwilder/whoami
+docker run -d -p 8005:8000 --net=vnet-1 --name c5 jwilder/whoami
+docker run -d -p 8006:8000 --net=vnet-1 --name c6 jwilder/whoami
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Check the containers in the network&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker network inspect vnet-1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ping each others&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker exec -it c1 bash
+$ ping c2
+$ ping c3
+$ ping c4
+$ # and for the others...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Multiple bridge networks demo
+Create frontend &amp;amp; backend networks&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker network create -d bridge --subnet 10.11.0.0/16 frontend
+$ docker network create -d bridge --subnet 10.12.0.0/16 backend
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Remove containers off the vnet-1 network&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker network disconnect vnet-1 c1
+$ docker network disconnect vnet-1 c2
+$ docker network disconnect vnet-1 c3
+$ docker network disconnect vnet-1 c4
+$ docker network disconnect vnet-1 c5
+$ docker network disconnect vnet-1 c6
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Connect to frontend network&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker network connect frontend c1
+$ docker network connect frontend c2
+$ docker network connect frontend c3
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Connect to backend network&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker network connect backend c4
+$ docker network connect backend c5
+$ docker network connect backend c6
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ping each other&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker exec -it c1 bash
+$ ping c2
+$ ping c3
+$ ping c4
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Connect &lt;strong&gt;c3&lt;/strong&gt; to backend&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker network connect backend c3
+$ docker exec -it c3 bash
+$ ping c4
+$ ping c5
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;docker-swarm-mode-demo&#34;&gt;Docker Swarm Mode Demo&lt;/h2&gt;
+
+&lt;p&gt;Create a swarm cluster
+Initial swarm manager&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ssh node-0
+$ docker swarm init
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Node-1 joins the swarm cluster&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ssh node-1
+$ docker swarm join --listen-addr 192.168.99.101:2377 192.168.99.100:2377
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Node-2 joins the swarm cluster&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ssh node-2
+$ docker swarm join --listen-addr 192.168.99.102:2377 192.168.99.100:2377
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Go to the node-0 and check the status of nodes&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker node ls
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Create a service
+From node-0, create a service&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker service create -p 5000:5000 --name=cat mikesir87/cats
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Testing the service by browsing at &lt;a href=&#34;http://node-0:5000&#34;&gt;http://node-0:5000&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;scaling-the-service&#34;&gt;Scaling the service&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker service scale web=2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Testing the service by browsing at &lt;a href=&#34;http://node-0:5000&#34;&gt;http://node-0:5000&lt;/a&gt;
+Testing the service by browsing at &lt;a href=&#34;http://node-1:5000&#34;&gt;http://node-1:5000&lt;/a&gt;
+Testing the service by browsing at &lt;a href=&#34;http://node-2:5000&#34;&gt;http://node-2:5000&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;All works, why this happens, we have only two nodes, but three endpoints are working fine? Will discuss further?&amp;hellip;&lt;/p&gt;
+
+&lt;h3 id=&#34;routing-mesh&#34;&gt;Routing Mesh&lt;/h3&gt;
+
+&lt;p&gt;Ingress Load Balancing to allow the services exposing port to the outsite world. Only the services has the port published with -p option will join this &lt;strong&gt;ingress network&lt;/strong&gt;. Otherwise, it&amp;rsquo;s only added to &lt;strong&gt;default_gwbridge&lt;/strong&gt; network.&lt;/p&gt;
+
+&lt;p&gt;Try to scale the services to 10 instances as follow:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker service scale web=10
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It&amp;rsquo;s great if we have time to use a overlay user-defined network and attach the service to this network.&lt;/p&gt;
+
+&lt;h3 id=&#34;blue-print-releasing&#34;&gt;Blue-print Releasing&lt;/h3&gt;
+
+&lt;p&gt;When we need to deploy a new version, Docker 1.12 helps us to easily gain blue-print releasing with following command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker service update \ 
+    --image trumhemcut/aspnetcore:2.0 aspnet
+    --update-parallelism=2 \
+    --update-delay=10
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;self-healing&#34;&gt;Self-Healing&lt;/h3&gt;
+
+&lt;p&gt;Go to any nodes and try to stop one container. It will create another container for us.&lt;/p&gt;
+
+&lt;h3 id=&#34;self-organization&#34;&gt;Self-Organization&lt;/h3&gt;
+
+&lt;p&gt;Try to shut down a node, it will create containers on another node for us.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;Hopefully the demo can illustrate the idea of how we&amp;rsquo;re working with the new Docker (v1.12) &amp;amp; Docker Networking.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Docker Swarm, aspnet core 1.0 in action</title>
+      <link>https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action</link>
+      <pubDate>Wed, 29 Jun 2016 11:44:08 +0200</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action</guid>
+      <description>
+
+&lt;p&gt;Cuối cùng thì Microsoft cũng ra mắt &lt;a href=&#34;https://blogs.msdn.microsoft.com/webdev/2016/06/27/announcing-asp-net-core-1-0/&#34;&gt;aspnet core 1.0&lt;/a&gt;, sau một thời gian dài trải qua các version RC1, RC2. Như các bạn cũng biết asp.net core có nhiều tính năng được built-in mà chúng ta không phải tìm kiếm &amp;amp; sử dụng nhiều libraries ngoài như asp.net 5. Có thể kể ra một vài tính năng như sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Chạy cross-platform trên Windows, Mac và Linux&lt;/li&gt;
+&lt;li&gt;Xây dựng trên .NET core, hỗ trợ side-by-side versioning&lt;/li&gt;
+&lt;li&gt;Hỗ trợ built-in dependency injection&lt;/li&gt;
+&lt;li&gt;Tag Helper kiểu tự nhiên như HTML data attributes (bắt chước Angular 1 :v )&lt;/li&gt;
+&lt;li&gt;Có thể host trên IIS hoặc self-host&lt;/li&gt;
+&lt;li&gt;Không còn phân biệt giữa MVC/API nữa&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Có nhiều cách / tools để bắt đầu một dự án dùng aspnet core 1.0. Chúng ta có thể dùng &lt;a href=&#34;https://www.visualstudio.com/downloads/visual-studio-prerelease-downloads#sec1&#34;&gt;Visual Studio 2015 RC3&lt;/a&gt;, &lt;a href=&#34;https://code.visualstudio.com/&#34;&gt;Visual Studio Code&lt;/a&gt; hoặc &lt;a href=&#34;https://eclipse-che.readme.io/&#34;&gt;Eclipse Che&lt;/a&gt; để viết code, deploy lên Windows / Linux / Mac hay Docker tùy thích. Nói chung là có máy nào xài máy đó, thích tool nào xài tool đó :), không còn phụ thuộc vào tools hay environment nữa.&lt;/p&gt;
+
+&lt;p&gt;Trong bài này, tôi sẽ giới thiệu cách develop một dự án aspnet core 1.0 dùng Visual Studio Code trên Mac, deploy lên Docker Swarm Cluster và dùng Docker Compose để scale các service trên Swarm Cluster.&lt;/p&gt;
+
+&lt;h2 id=&#34;cài-đặt-net-core-1-0-visual-studio-code-trên-mac&#34;&gt;Cài đặt .NET Core 1.0, Visual Studio Code trên Mac&lt;/h2&gt;
+
+&lt;p&gt;Để bắt đầu một dự án aspnet core 1.0 trên Mac, chúng ta phải chuẩn bị environment như sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Cài đặt .NET Core 1.0 theo hướng dẫn &lt;a href=&#34;https://www.microsoft.com/net/core#macos&#34;&gt;ở đây&lt;/a&gt;. Sau khi cài đặt xong, dùng terminal chạy lệnh &lt;code&gt;dotnet --version&lt;/code&gt; để kiểm tra version của dotnet tool và nếu thấy giá trị là &lt;strong&gt;1.0.0-preview2-003121&lt;/strong&gt; nghĩa là chúng ta đã on track.&lt;/li&gt;
+&lt;li&gt;Cài đặt Visual Studio Code&lt;/li&gt;
+&lt;li&gt;Cài đặt &lt;a href=&#34;https://nodejs.org/en/&#34;&gt;NodeJS&lt;/a&gt; và &lt;a href=&#34;http://yeoman.io/&#34;&gt;Yeoman&lt;/a&gt; (optional): bước này không bắt buộc, tuy nhiên tôi khuyến khích sử dụng Yeoman vì rất thuận tiện để tạo project structure. Sau khi cài Yeoman xong thì cài thêm &lt;a href=&#34;https://www.npmjs.com/package/generator-aspnet&#34;&gt;aspnet generator&lt;/a&gt; là chúng ta đã sẵn sàng. Nếu đã cài yeoman &amp;amp; aspnet generator trước đó thì cần update generator để có bộ aspnet generator mới nhất.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;xin-chào-aspnet-core-1-0&#34;&gt;Xin chào aspnet core 1.0&lt;/h2&gt;
+
+&lt;p&gt;Khá dễ dàng để bắt đầu với aspnet core 1.0. Trên Mac, mở terminal và gõ lệnh &lt;code&gt;yo aspnet&lt;/code&gt;, chọn &lt;strong&gt;Empty Web Application&lt;/strong&gt;, đặt tên dự án là &lt;strong&gt;hello-aspnet&lt;/strong&gt; và nhấn enter. Yeoman sẽ tạo ra một project structure cho chúng ta.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ mkdir ~/projects &amp;amp; cd ~/projects
+$ yo aspnet
+
+     _-----_     ╭──────────────────────────╮
+    |       |    │      Welcome to the      │
+    |--(o)--|    │  marvellous ASP.NET Core │
+   `---------´   │        generator!        │
+    ( _´U`_ )    ╰──────────────────────────╯
+    /___A___\   /
+     |  ~  |     
+   __&#39;.___.&#39;__   
+ ´   `  |° ´ Y ` 
+
+? What type of application do you want to create? Empty Web Application
+? What&#39;s the name of your ASP.NET application? hello-aspnet
+   create hello-aspnet/.gitignore
+   create hello-aspnet/Program.cs
+   create hello-aspnet/Startup.cs
+   create hello-aspnet/project.json
+   create hello-aspnet/web.config
+   create hello-aspnet/Dockerfile
+   create hello-aspnet/Properties/launchSettings.json
+   create hello-aspnet/README.md
+
+
+Your project is now created, you can use the following commands to get going
+    cd &amp;quot;hello-aspnet&amp;quot;
+    dotnet restore
+    dotnet build (optional, build will also happen when it&#39;s run)
+    dotnet run
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sau đó chúng tao vào thư mục &lt;strong&gt;hello-aspnet&lt;/strong&gt; và chạy các lệnh &lt;code&gt;dotnet restore&lt;/code&gt;, &lt;code&gt;dotnet build&lt;/code&gt; và &lt;code&gt;dotnet run&lt;/code&gt; để chạy dự án.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;➜  hello-aspnet dotnet run
+Project hello-aspnet (.NETCoreApp,Version=v1.0) was previously compiled. Skipping compilation.
+Hosting environment: Production
+Content root path: /Users/phihuynh/projects/hello-aspnet
+Now listening on: http://localhost:5000
+Application started. Press Ctrl+C to shut down.
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:5000/  
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 88.3022ms 20
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sau đó, mở trình duyệt và nhập vào địa chỉ &lt;code&gt;http://localhost:5000&lt;/code&gt; là chúng ta đã có web app đầu tiên chạy trên aspnet core 1.0.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/aspnetcore01.png&#34; alt=&#34;say hello to aspnet core&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;xin-chào-docker&#34;&gt;Xin chào Docker&lt;/h2&gt;
+
+&lt;p&gt;Chúng ta đã có thể say hello với aspnet core 1.0 trên Mac, giờ chúng ta tiếp tục bắt đầu với Docker. Tôi giả sử là chúng ta đã là quen sơ sơ với Docker rồi nên sẽ không nói nhiều về benefits của Docker nữa.&lt;/p&gt;
+
+&lt;p&gt;Để chạy hello-aspnet app vừa rồi trên Docker, cơ bản chúng ta sẽ đi qua các bước như sau:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Cài đặt Docker Toolbox, bộ Docker Toolbox sẽ bao gồm Docker Machine, Kitematic &amp;amp; VirtualBox&lt;/li&gt;
+&lt;li&gt;Dùng &lt;strong&gt;docker-machine&lt;/strong&gt; để tạo ra một máy ảo boot2docker&lt;/li&gt;
+&lt;li&gt;Build image cho app hello-aspnet&lt;/li&gt;
+&lt;li&gt;Deploy hello-aspnet app lên Docker bằng docker commands&lt;br /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;cài-đặt-docker-toolbox&#34;&gt;Cài đặt Docker Toolbox&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.docker.com/products/docker-toolbox&#34;&gt;Docker Toolbox&lt;/a&gt; có 2 phiên bản cho Windows &amp;amp; Mac. Chúng ta lựa chọn phiên bản phù hợp với OS của mình. Sau khi cài xong, chúng ta sẽ có Docker Machine, Kitematic &amp;amp; Virtualbox để sẳn sàng tạo máy ảo.&lt;/p&gt;
+
+&lt;h3 id=&#34;tạo-máy-ảo-bằng-docker-machine&#34;&gt;Tạo máy ảo bằng docker-machine&lt;/h3&gt;
+
+&lt;p&gt;Sau khi đã cài Docker Toolbox, mở terminal lên, dùng lệnh sau để tạo máy ảo&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine create -d virtualbox docker00 
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Mở port cho Docker Machine</title>
+      <link>https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine</link>
+      <pubDate>Tue, 28 Jun 2016 11:20:46 +0200</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;
+
+&lt;p&gt;Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address.&lt;/p&gt;
+
+&lt;p&gt;Ví dụ:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker run -it -p 8080:8080 --name dotnetapp microsoft/dotnet:latest
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Để truy cập vào website, chúng ta sẽ dùng địa chỉ &lt;code&gt;http://192.168.99.100:8080&lt;/code&gt; với &lt;strong&gt;192.168.99.100&lt;/strong&gt; chính là địa chỉ máy ảo (mặc định) trên Docker Machine.&lt;/p&gt;
+
+&lt;p&gt;Để có thể truy cập bằng địa chỉ localhost, chúng ta phải forward port từ máy ảo sang máy host. Từ đó chúng ta có thể truy cập bằng địa chỉ &lt;code&gt;http://localhost:8080&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Có nhiều cách để forward port, nhưng tôi thấy bạn Johan Haleby làm là cách dễ nhớ nhất. Đó là dùng tool &lt;strong&gt;pf&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;download-bash-script&#34;&gt;Download bash script&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;git clone https://github.com/johanhaleby/docker-machine-port-forwarder &amp;amp;&amp;amp; cd docker-machine-port-forwarder
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;mở-port-8080-cho-máy-default&#34;&gt;Mở port 8080 cho máy default&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 8080
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;hoặc-mở-port-8080-cho-một-máy-docker-machine-có-tên-là-swarm-00&#34;&gt;Hoặc mở port 8080 cho một máy docker machine có tên là &lt;strong&gt;swarm-00&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 8080 -e swarm-00
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;hoặc-là-forward-port-8080-sang-port-80-trên-máy-host&#34;&gt;Hoặc là forward port 8080 sang port 80 trên máy host&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 80:8080 -e swarm-00
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;stop-port-forwarding&#34;&gt;Stop port forwarding&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 8080 -s
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;chạy-ở-chế-độ-foreground&#34;&gt;Chạy ở chế độ foreground&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;./pf 8080 -f
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Giới thiệu các tính năng mới trong Docker 1.12</title>
+      <link>https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12</link>
+      <pubDate>Sun, 26 Jun 2016 16:56:43 +0200</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12</guid>
+      <description>
+
+&lt;p&gt;DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về &lt;a href=&#34;https://docs.docker.com/engine/swarm/&#34;&gt;Docker Swarm Mode&lt;/a&gt;, một tính năng mới có trong Docker Engine (v1.12).&lt;/p&gt;
+
+&lt;p&gt;Nếu bạn đang sử dụng các phiên bản trước v1.12.0-rc1, vui lòng xem thêm &lt;a href=&#34;https://docs.docker.com/swarm/&#34;&gt;ở đây&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;docker-swarm-mode-là-gì&#34;&gt;Docker Swarm Mode là gì?&lt;/h2&gt;
+
+&lt;p&gt;Trong phiên bản v1.12.0, Docker Swarm là một tính năng được tích hợp sẵn trong Docker Engine, và chúng ta có thể xây dựng một swarm cluster, tạo các service trong cluster một cách dễ dàng mà không phải cài thêm bất kỳ phần mềm nào. Đặc biệt, version này cũng bao gồm việc xử lý về vấn đề Security, Networking, State &amp;amp; Cluster Initialization.&lt;/p&gt;
+
+&lt;p&gt;Xem thêm ở đây để được giới thiệu về &lt;a href=&#34;https://www.youtube.com/watch?v=KC4Ad1DS8xU&#34;&gt;Docker Swarm Mode&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;cài-đặt&#34;&gt;Cài đặt&lt;/h2&gt;
+
+&lt;p&gt;Trong bài này, chúng ta sẽ tạo ra một swarm cluster gồm 1 cluster manager và 3 worker. Nếu như trước đây chúng ta cần thêm các container khác cho service discovery, load balancer, &amp;hellip; để xây dựng một cluster thì bây giờ mấy thứ đó không cần nữa. Tất cả đã được built-in trong Docker Engine.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/dockerswarm01.png&#34; alt=&#34;Environment Setup&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;mở-port-để-giao-tiếp-giữa-các-hosts&#34;&gt;Mở port để giao tiếp giữa các hosts&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TCP port 2377&lt;/strong&gt;: port này để cluster mananegement&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TCP&lt;/strong&gt; và &lt;strong&gt;UDP port 7946&lt;/strong&gt; để giao tiếp giữa các nodes&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TCP&lt;/strong&gt; và &lt;strong&gt;UDP port 4789&lt;/strong&gt; dành cho overlay network&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Nếu chúng ta sử dụng Boot2Docker phiên bản mới nhất thì nó đã làm sẵn cho chúng ta rồi, nice :)&lt;/p&gt;
+
+&lt;h3 id=&#34;dùng-docker-machine-để-tạo-các-máy-ảo&#34;&gt;Dùng docker-machine để tạo các máy ảo&lt;/h3&gt;
+
+&lt;p&gt;Lưu ý là chúng ta phải cài Docker Toolbox để có thể xài lệnh docker-machine nhé. Trước đây tôi cũng đã từng nhầm lẫn giữa Docker for Mac &amp;amp; Docker Toolbox, lưu ý đây là 2 sản phẩm hoàn toàn khác nhau nhé.&lt;/p&gt;
+
+&lt;p&gt;Chúng ta tạo ra các máy ảo như sau, lưu ý là chúng ta phải sử dụng bản Boot2Docker mới nhất nhé, nếu không chắc thì bạn nên chạy lệnh upgrade để tải bảng boot2docker mới nhất:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;swarm-00&lt;/strong&gt;: máy này sẽ làm cluster manager, IP Address sẽ là: 192.168.99.100&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;swarm-01&lt;/strong&gt;: worker số 1&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;swarm-02&lt;/strong&gt;: worker số 2&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;swarm-03&lt;/strong&gt;: worker số 3&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine upgrade default
+$ docker-machine create -d virtualbox swarm-00
+$ docker-machine create -d virtualbox swarm-01
+$ docker-machine create -d virtualbox swarm-02
+$ docker-machine create -d virtualbox swarm-03
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Kiểm tra lại địa chỉ IP để chắc chắn là &lt;strong&gt;swarm-00&lt;/strong&gt; có địa chỉ là 192.168.99.100&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ip swarm-00 swarm-01 swarm-02 swarm-03
+192.168.99.103
+192.168.99.102
+192.168.99.101
+192.168.99.100
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;tạo-một-swarm-cluster&#34;&gt;Tạo một Swarm Cluster&lt;/h2&gt;
+
+&lt;p&gt;Bây giờ chúng ta đã chuẩn bị sẵn sàng môi trường để ta xây dựng một Swarm Cluster.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Kết nối vào &lt;strong&gt;swarm-00&lt;/strong&gt; để khởi tạo swarm manager&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ssh swarm-00
+$ docker swarm init --listen-addr 192.168.99.100:2377
+Swarm initialized: current node (56cqz10j5z5inzzt0rsw877ja) is now a manager.
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Chạy lệnh &lt;code&gt;docker info&lt;/code&gt; để kiểm tra trạng thái của &lt;strong&gt;swarm manager&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker@swarm-00:~$ docker info
+Containers: 0
+Running: 0
+Paused: 0
+Stopped: 0
+Images: 0
+Server Version: 1.12.0-rc2
+Storage Driver: aufs
+Root Dir: /mnt/sda1/var/lib/docker/aufs
+Backing Filesystem: extfs
+Dirs: 0
+Dirperm1 Supported: true
+Logging Driver: json-file
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Chạy lệnh docker node ls để kiểm tra thông tin các node trong cluster&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker@swarm-00:~$ docker node ls
+ID                           NAME      MEMBERSHIP  STATUS  AVAILABILITY  MANAGER STATUS
+56cqz10j5z5inzzt0rsw877ja *  swarm-00  Accepted    Ready   Active        Leader
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;thêm-các-node-vào-swarm-cluster&#34;&gt;Thêm các node vào Swarm Cluster&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Thêm node &lt;strong&gt;swarm-01&lt;/strong&gt; vào swarm cluster&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ssh swarm-01
+docker@swarm-01:~$ docker swarm join 192.168.99.100:2377
+This node joined a Swarm as a worker.
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Thêm node &lt;strong&gt;swarm-02&lt;/strong&gt; vào swarm cluster&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ssh swarm-02
+docker@swarm-02:~$ docker swarm join 192.168.99.100:2377
+This node joined a Swarm as a worker.
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Thêm node &lt;strong&gt;swarm-03&lt;/strong&gt; vào swarm cluster&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ssh swarm-03
+docker@swarm-03:~$ docker swarm join 192.168.99.100:2377
+This node joined a Swarm as a worker.
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Kiểm tra lại trạng thái của các nodes trong cluster&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker@swarm-00:~$ docker node ls
+ID                           NAME      MEMBERSHIP  STATUS  AVAILABILITY  MANAGER STATUS
+0h70dwoxxl5jwx53m1g857jf2    swarm-03  Accepted    Ready   Active        
+2csi90lknok2o5w3539xm48dl    swarm-02  Accepted    Ready   Active        
+56cqz10j5z5inzzt0rsw877ja *  swarm-00  Accepted    Ready   Active        Leader
+5dkujue686ddhm0zui9un77rs    swarm-01  Accepted    Ready   Active 
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;dùng-visualizer-để-hiển-thị-trạng-thái-các-nodes-services&#34;&gt;Dùng Visualizer để hiển thị trạng thái các nodes &amp;amp; services&lt;/h2&gt;
+
+&lt;p&gt;Thật tình là tôi rất thích dùng thằng Visualizer này để hiển thị trạng thái của các nodes &amp;amp; services. Bạn có thể không cần bước này, nhưng mình khuyên là nên dùng.&lt;/p&gt;
+
+&lt;p&gt;Bạn có thể tham khảo về Visualzier &lt;a href=&#34;https://github.com/ManoMarks/docker-swarm-visualizer&#34;&gt;ở đây&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker@swarm-00:~$ docker run -it -d -p 5000:5000 -e HOST=localhost -e PORT=5000 -v /var/run/docker.sock:/var/run/docker.sock manomarks/visualizer
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sau khi chạy container xong, chúng ta có thể xem trên browser &lt;a href=&#34;http://localhost:5000&#34;&gt;http://localhost:5000&lt;/a&gt; để xem trạng thái các nodes.&lt;/p&gt;
+
+&lt;h2 id=&#34;deploy-một-service-lên-swarm-cluster&#34;&gt;Deploy một service lên swarm cluster&lt;/h2&gt;
+
+&lt;p&gt;Đơn giản nhất, chúng ta tạo một server chạy trên swarm cluster như sau:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine ssh swarm-00
+$ docker service create --replicas 1 --name helloworld alpine ping docker.com
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;docker service create&lt;/code&gt; để tạo ra service&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--replicas&lt;/code&gt; chỉ định số instance muốn có, nếu bất kỳ instance nào bị down, cluster sẽ tự động clone số instance bằng số lượng replicas đã cấu hình&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--name&lt;/code&gt; tên service là helloworld&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;alpine ping docker.com&lt;/code&gt; image tên là alpine và chạy lệnh &lt;code&gt;ping docker.com&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Sau đó mở trình duyệt và truy cập vào &lt;a href=&#34;http://localhost:5000&#34;&gt;http://localhost:5000&lt;/a&gt; chúng ta sẽ thấy một container như trong hình.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/visualizer01.png&#34; alt=&#34;Container in visualizer&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Liệt kê danh sách các service trong swarm cluster&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker service ls
+708jyxdzqrim  helloworld  1/1       alpine  ping docker.com
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Xem chi tiết thông tin service&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker service tasks helloworld
+ID                         NAME          SERVICE     IMAGE   LAST STATE             DESIRED STATE  NODE
+439ypow987o6h0iun9wlm7x1f  helloworld.1  helloworld  alpine  Running About an hour  Running        swarm-00
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;scale-service-trong-một-cluster-manager&#34;&gt;Scale service trong một cluster manager&lt;/h2&gt;
+
+&lt;p&gt;Ví dụ ta muốn scale out service &lt;strong&gt;helloworld&lt;/strong&gt; lên 5 instances, dùng lệnh sau:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker@swarm-00:~$ docker service scale helloworld=5
+helloworld scaled to 5
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Chúng ta xem lại danh sách service để kiểm tra xem trạng thái các service&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker@swarm-00:~$ docker service tasks helloworld
+ID                         NAME          SERVICE     IMAGE   LAST STATE             DESIRED STATE  NODE
+439ypow987o6h0iun9wlm7x1f  helloworld.1  helloworld  alpine  Running About an hour  Running        swarm-00
+39zig0tgnb1fh0f6cocmtgq2c  helloworld.2  helloworld  alpine  Running 2 minutes      Running        swarm-00
+2p9sslerww0pjd3brn52y3zp3  helloworld.3  helloworld  alpine  Running 2 minutes      Running        swarm-02
+9m4p7jsaj0tv3k02ty099cjhd  helloworld.4  helloworld  alpine  Running 2 minutes      Running        swarm-00
+26oj2s6xgnr4wo2zu2zig73uq  helloworld.5  helloworld  alpine  Running 2 minutes      Running        swarm-02
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Hoặc có thể xem qua visualizer &lt;a href=&#34;http://localhost:5000&#34;&gt;http://localhost:5000&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/visualizer02.png&#34; alt=&#34;Visualizer Viewer&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Như trên hình, chúng ta thấy node &lt;strong&gt;swarm-02&lt;/strong&gt; có 2 instances, chúng ta thử stop node này xem chuyện gì sẽ xảy ra.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine stop swarm-02
+Stopping &amp;quot;swarm-02&amp;quot;...
+Machine &amp;quot;swarm-02&amp;quot; was stopped.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Chúng ta sẽ thấy swarm cluster sẽ tự động tạo ra thêm 3 nodes trên swarm-00. Tôi cũng không hiểu sao nó không tạo ra trên &lt;strong&gt;swarm-01&lt;/strong&gt;.
+&lt;img src=&#34;https://trumhemcut.github.io/images/visualizer03.png&#34; alt=&#34;Visualizer Viewer&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;kết-luận&#34;&gt;Kết luận&lt;/h2&gt;
+
+&lt;p&gt;Đây là một vài tính năng rất cơ bản mà chúng ta lướt sơ qua, còn rất nhiều tính năng thú vị chúng ta sẽ khám phá dần qua các bài viết tiếp theo.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
