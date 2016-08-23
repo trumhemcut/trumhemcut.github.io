@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cloud on Phi Huỳnh</title>
+    <link>https://trumhemcut.github.io/categories/cloud/</link>
+    <description>Recent content in Cloud on Phi Huỳnh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 23 Aug 2016 16:34:00 +0000</lastBuildDate>
+    <atom:link href="https://trumhemcut.github.io/categories/cloud/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Tạo Docker Swarm Cluster dùng Azure Container Service</title>
+      <link>https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service</link>
+      <pubDate>Tue, 23 Aug 2016 16:34:00 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;
+
+&lt;p&gt;Docker đã quá quen thuộc với anh em làm DevOps và ngày càng trở nên phổ biến với cả developers. Build ra các images, tạo ra các containers gần như là các công việc thường ngày của dân IT. Hôm nay tôi xin giới thiệu cách dùng &lt;strong&gt;Azure Container Service&lt;/strong&gt; để tạo ra một &lt;strong&gt;Swarm Cluster&lt;/strong&gt; chỉ với vài bước đơn giản. Có điều lưu ý ở đây là Docker Swarm chứ không phải Docker Swarm-Mode (chỉ có từ Docker v1.12 nhé).&lt;/p&gt;
+
+&lt;h2 id=&#34;chuẩn-bị&#34;&gt;Chuẩn bị&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Bạn cần có account của Azure&lt;/li&gt;
+&lt;li&gt;Bạn cần cài đặt Docker trên máy tính của mình, có thể là &lt;strong&gt;Docker for Mac&lt;/strong&gt; hoặc &lt;strong&gt;Docker for Windows&lt;/strong&gt; tùy hệ điều hành đang sử dụng.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;tạo-ssh-key&#34;&gt;Tạo ssh key&lt;/h2&gt;
+
+&lt;p&gt;Azure Container Service yêu cầu có ssh public key để tạo service. Do đó, chúng ta cần phải tạo ra key này để nhập vào lúc đăng ký Azure Container Service. Key này sẽ được dùng để đăng nhập mà không cần phải gõ password.&lt;/p&gt;
+
+&lt;p&gt;Để tạo key, chúng ta mở terminal lên, sau đó gõ lệnh &lt;code&gt;ssh-keygen&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ssh-keygen          
+Generating public/private rsa key pair.
+Enter file in which to save the key (/Users/phihuynh/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /Users/phihuynh/.ssh/id_rsa.
+Your public key has been saved in /Users/phihuynh/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:ZR+bg7xg4SKjU8yiQTMGvDS+soVi19fFB1GeWbU+Tzc phihuynh@phis-mbp.harveynash.vn.local
+The key&#39;s randomart image is:
++---[RSA 2048]----+
+|o          .o. .o|
+|.+         .. + .|
+|o=o     . + o+ . |
+|oooo   . = = =.  |
+|..o B . S + *  Eo|
+|+=.= + + o . . .=|
+|=o+   .   .     .|
+|.  .             |
+|                 |
++----[SHA256]-----+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sau đó, chúng ta dùng lệnh &lt;code&gt;cat ~/.ssh/id_rsa.pub&lt;/code&gt; để xem giá trị của public key. Chúng ta lưu lại giá trị này để nhập vào trong bước đăng ký &lt;strong&gt;Azure Containre Service&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cat ~/.ssh/id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/KIrbbnrP2X60Qr65dGIU3c0qDZP4bQpuFA71xbKBp45Rr4HPdQ4GBEnBf1oryNKBDOlhQCor7mIDn4hlwCvCGkiIP4IZEMDeSnraHlDUuyWd+CR1K+pi8OwP4DlSajEsikZ+zPQ8wr/aD94bs4yjEANclXGxQSGZMXdCdoizI9Qw3PZmd/xYLvtUatW1FOD9Jxt8+QHkAIroImviWUy6Wr7YAk9RhaMuD+yTvI9QETtquQhUOZNP8KD8jCPE3IgJIW2uWW5AFMkCIm54NDyMx1sVGuMb3/Vnxq2wjo+9if0DwGHNOsBfiq/zrTeSJ/9DjyCy8qFI7YcRkia4IzKt phihuynh@phis-mbp.harveynash.vn.local
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;tạo-azure-container-service&#34;&gt;Tạo Azure Container Service&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã tạo xong ssh public key, bước tiếp theo là đăng ký một Azure Container Service để tạo ra một Swarm Cluster. Azure Container Service có thể tạo ra một Swarm Cluster hay Mesos Master.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Đăng nhập vào &lt;strong&gt;&lt;a href=&#34;https://portal.azure.com&#34;&gt;Azure Portal&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Từ portal, chọn &lt;strong&gt;New&lt;/strong&gt;, gõ vào &lt;strong&gt;Azure Container Service&lt;/strong&gt;, sau đó nhấn vào nút &lt;strong&gt;Create&lt;/strong&gt;
+&lt;img src=&#34;https://trumhemcut.github.io/images/acs1.png&#34; alt=&#34;Create container service&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Sau đó, nhập vào &lt;strong&gt;User name&lt;/strong&gt;, &lt;strong&gt;SSH public key&lt;/strong&gt; chính là giá trị của public key bạn tạo ra ở trên. Tôi dùng &lt;strong&gt;Visual Studio Premium with MSDN&lt;/strong&gt; subscription, nếu bạn dùng trial hoặc mua thì có thể là subscription khác. Đặt tên cho service là &lt;strong&gt;test-swarm&lt;/strong&gt;, chọn Location là Southeast Asia và sau đó nhấn nút &lt;strong&gt;OK&lt;/strong&gt;.
+&lt;img src=&#34;https://trumhemcut.github.io/images/acs2.png&#34; alt=&#34;Basic configuration&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Ở bước &lt;strong&gt;2 Framework configuration&lt;/strong&gt;, chọn &lt;strong&gt;Ochestrator configuration&lt;/strong&gt; là &lt;strong&gt;Swarm&lt;/strong&gt; sau đó nhấn OK. Do bài này chúng ta tập trung tạo Docker Swarm Cluster, Azure cũng hỗ trợ Mesos Cluster.&lt;/li&gt;
+&lt;li&gt;Ở bước &lt;strong&gt;3 Azure Container Service settings&lt;/strong&gt;, nhập vào &lt;strong&gt;Agent count&lt;/strong&gt; là 3 (chúng ta muốn có 3 nodes, bạn có thể nhập số khác tùy ý). &lt;strong&gt;Master count&lt;/strong&gt; là 1 là đủ, &lt;strong&gt;DNS prefix&lt;/strong&gt; nhập vào text tùy ý, ví dụ &lt;strong&gt;swarm&lt;/strong&gt;.
+&lt;img src=&#34;https://trumhemcut.github.io/images/acs3.png&#34; alt=&#34;3 Azure container service settings&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Bước 4 validation passed, nhấn &lt;strong&gt;OK&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Bước 5 Buy, nhấn &lt;strong&gt;Purchase&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Toàn bộ quá trình deployment diễn ra mất khoảng 15-20 phút, chúng ta kiên nhẫn chờ đợi. Sau khi deploy thành công, chúng ta có thể xem các service trong resource group &lt;strong&gt;test-swarm&lt;/strong&gt;. Chúng ta thấy có rất nhiều service được tạo ra: 1 virtual machine, 1 virtual machine scaleset (bao gồm 3 instances tương ứng với 3 nodes chúng ta cấu hình ở trên), 2 load balancers, 2 public ips, &amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/acs4.png&#34; alt=&#34;Azure container services&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;kết-nối-đến-swarm-master&#34;&gt;Kết nối đến Swarm Master&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã hoàn tất quá trình deployment, chúng ta đã sẵn sàng để kết nối đến cluster. Để kết nối đến cluster, chúng ta cần địa chỉ IP để SSH. chúng ta chọn resource group &lt;strong&gt;test-swarm&lt;/strong&gt;, chọn &lt;strong&gt;swarm-master-lb-[ID]&lt;/strong&gt; load balancer, nhấn &lt;strong&gt;Overview&lt;/strong&gt; và copy giá trị Public IP Address, ví dụ của tôi là &lt;strong&gt;52.187.69.179&lt;/strong&gt;.
+&lt;img src=&#34;https://trumhemcut.github.io/images/acs5.png&#34; alt=&#34;Get load balancer IP Address&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Sau đó mở terminal, gõ lệnh ssh để kết nối đến swarm cluster:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ssh -L 2375:localhost:2375 -f -N phihuynh@52.187.69.179 -p 2200
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Lệnh này sẽ tạo ra một SSH Server trên máy local và lắng nghe trên port 2375, sau đó forward traffic lên SSH server của cluster.&lt;/p&gt;
+
+&lt;p&gt;Sau đó, chúng ta chạy tiếp lệnh sau &lt;code&gt;export DOCKER_HOST=:2375&lt;/code&gt; để lệnh docker client sẽ chuyển hướng sang localhost:2375&lt;/p&gt;
+
+&lt;p&gt;Ok, đến đây là chúng ta đã hoàn tất kết nối đến swarm cluster. Để kiểm tra xem kết nối thành công hay không, chúng ta chạy lệnh &lt;code&gt;docker info&lt;/code&gt; để xem số lượng nodes có phải là 3 hay không.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker info
+ocker info
+Containers: 0
+ Running: 0
+ Paused: 0
+ Stopped: 0
+Images: 0
+Role: primary
+Strategy: spread
+Filters: health, port, dependency, affinity, constraint
+Nodes: 3
+ swarm-agent-BA631D94000000: 10.0.0.4:2375
+  └ Status: Healthy
+  └ Containers: 0
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.145 GiB
+  └ Labels: executiondriver=, kernelversion=3.19.0-65-generic, operatingsystem=Ubuntu 14.04.4 LTS, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-08-23T11:43:31Z
+ swarm-agent-BA631D94000002: 10.0.0.6:2375
+  └ Status: Healthy
+  └ Containers: 0
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.145 GiB
+  └ Labels: executiondriver=, kernelversion=3.19.0-65-generic, operatingsystem=Ubuntu 14.04.4 LTS, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-08-23T11:43:34Z
+ swarm-agent-BA631D94000003: 10.0.0.7:2375
+  └ Status: Healthy
+  └ Containers: 0
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.145 GiB
+  └ Labels: executiondriver=, kernelversion=3.19.0-65-generic, operatingsystem=Ubuntu 14.04.4 LTS, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-08-23T11:43:54Z
+Plugins:
+ Volume: 
+ Network: 
+Swarm: 
+ NodeID: 
+ Is Manager: false
+ Node Address: 
+Security Options:
+Kernel Version: 3.19.0-65-generic
+Operating System: linux
+Architecture: amd64
+CPUs: 6
+Total Memory: 21.44 GiB
+Name: 7434ac726bcc
+Docker Root Dir: 
+Debug Mode (client): false
+Debug Mode (server): false
+WARNING: No kernel memory limit support
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;chạy-thử-một-container&#34;&gt;Chạy thử một container&lt;/h2&gt;
+
+&lt;p&gt;Sau khi kết nối thành công, chúng ta chạy thử một container ubuntu.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker run -it ubuntu bash
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

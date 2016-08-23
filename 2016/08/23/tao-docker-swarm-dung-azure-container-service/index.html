@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <title>Tạo Docker Swarm Cluster dùng Azure Container Service &middot; Phi Huỳnh</title>
+    <meta name="generator" content="Hugo 0.16" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="Phi Huỳnh">
+    
+      <meta name="description" content="">
+    
+    
+    <link rel="icon" href="https://trumhemcut.github.io/favicon.ico">
+    <link rel="apple-touch-icon" href="https://trumhemcut.github.io/apple-touch-icon.png" />
+    <link rel="stylesheet" href="https://trumhemcut.github.io/css/style.css">
+    <link rel="stylesheet" href="https://trumhemcut.github.io/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://trumhemcut.github.io/css/monokai.css">
+    <link rel="stylesheet" href="https://trumhemcut.github.io/fancybox/jquery.fancybox.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+    <meta property="og:title" content="Tạo Docker Swarm Cluster dùng Azure Container Service" />
+<meta property="og:description" content="Giới thiệu Docker đã quá quen thuộc với anh em làm DevOps và ngày càng trở nên phổ biến với cả developers. Build ra các images, tạo ra các containers gần như là các công việc thường ngày của dân IT. Hôm nay tôi xin giới thiệu cách dùng Azure Container Service để tạo ra một Swarm Cluster chỉ với vài bước đơn giản. Có điều lưu ý ở đây là Docker Swarm chứ không phải Docker Swarm-Mode (chỉ có từ Docker v1.12 nhé)." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service" />
+
+
+<meta property="og:updated_time" content="2016-08-23T16:34:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+    
+    
+<meta itemprop="name" content="Tạo Docker Swarm Cluster dùng Azure Container Service">
+<meta itemprop="description" content="Giới thiệu Docker đã quá quen thuộc với anh em làm DevOps và ngày càng trở nên phổ biến với cả developers. Build ra các images, tạo ra các containers gần như là các công việc thường ngày của dân IT. Hôm nay tôi xin giới thiệu cách dùng Azure Container Service để tạo ra một Swarm Cluster chỉ với vài bước đơn giản. Có điều lưu ý ở đây là Docker Swarm chứ không phải Docker Swarm-Mode (chỉ có từ Docker v1.12 nhé).">
+
+
+<meta itemprop="dateModified" content="2016-08-23T16:34:00&#43;00:00" />
+<meta itemprop="wordCount" content="963">
+
+
+
+<meta itemprop="keywords" content="cloud,devops,docker,programming,asp.net-core,azure,azurecontainerservice,devops,docker,docker-compose,docker-machine,docker-networking,docker-swarm,dockercon2016,dockerswarm,dotnetcore,jenkins,swarm-mode," />
+
+    
+
+  <meta name="twitter:card" content="summary"/>
+
+
+
+<meta name="twitter:title" content="Tạo Docker Swarm Cluster dùng Azure Container Service"/>
+<meta name="twitter:description" content="Giới thiệu Docker đã quá quen thuộc với anh em làm DevOps và ngày càng trở nên phổ biến với cả developers. Build ra các images, tạo ra các containers gần như là các công việc thường ngày của dân IT. Hôm nay tôi xin giới thiệu cách dùng Azure Container Service để tạo ra một Swarm Cluster chỉ với vài bước đơn giản. Có điều lưu ý ở đây là Docker Swarm chứ không phải Docker Swarm-Mode (chỉ có từ Docker v1.12 nhé)."/>
+<meta name="twitter:site" content="@trumhemcut"/>
+
+
+    
+
+    
+</head>
+<body>
+<div class="container">
+
+
+<div id="container">
+	<header id="header">
+  <div id="header-main" class="header-inner">
+    <div class="outer">
+      <a href="https://trumhemcut.github.io/" id="logo">
+          
+          <i class="logo" style="background-image: url('https://trumhemcut.github.io/css/images/logo.png')"></i>
+          
+          <span class="site-title">Phi Huỳnh</span>
+      </a>
+      <nav id="main-nav">
+          
+          
+          <a class="main-nav-link" href="https://trumhemcut.github.io/">Trang chủ</a>
+          
+          
+          
+          
+          
+          
+
+          
+
+          
+          
+          
+          
+          <a class="main-nav-link" href="https://trumhemcut.github.io/tags/">Tags</a>
+          
+          
+          
+          <a class="main-nav-link" href="https://trumhemcut.github.io/categories/">Danh mục</a>
+          
+          
+      </nav>
+        <nav id="sub-nav">
+          <div class="profile" id="profile-nav">
+            <a id="profile-anchor" href="javascript:;"><img class="avatar" src="https://trumhemcut.github.io/css/images/avatar.png"><i class="fa fa-caret-down"></i></a>
+          </div>
+        </nav>
+        <div id="search-form-wrap">
+          <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form">
+              <input type="search" name="q" results="0" class="search-form-input" placeholder="Tìm kiếm">
+              <button type="submit" class="search-form-submit">
+              </button>
+              <input type="hidden" name="q" value="site:https://trumhemcut.github.io/">
+         </form>
+        </div>
+    </div>
+  </div>
+  <div id="main-nav-mobile" class="header-sub header-inner">
+    <table class="menu outer">
+      <tbody>
+          <tr>
+          
+          
+          <td><a class="main-nav-link" href="https://trumhemcut.github.io/">Trang chủ</a></td>
+          
+          
+          
+          
+          
+          
+
+          
+
+          
+          
+          
+          
+          <td><a class="main-nav-link" href="https://trumhemcut.github.io/tags/">Tags</a></td>
+          
+          
+          
+          <td><a class="main-nav-link" href="https://trumhemcut.github.io/categories/">Danh mục</a></td>
+          
+          
+          <td>
+          <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form">
+          <input type="search" name="q" results="0" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" value="site:https://trumhemcut.github.io/">
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</header>
+
+   	
+   	<div class="outer">
+   		
+	    <aside id="profile">
+  <div class="inner profile-inner">
+    <div class="base-info profile-block">
+      <img id="avatar" src="https://trumhemcut.github.io/css/images/avatar.png">
+      <h2 id="name">Phi Huỳnh</h2>
+      <h3 id="title">Code cày cuốc - Làm bố</h3>
+      <span id="location"><i class="fa fa-map-marker"></i>Việt Nam</span>
+      
+          <a id="follow" href="https://github.com/trumhemcut">
+              Theo dõi
+          </a>
+      
+    </div>
+    <div class="article-info profile-block">
+      <div class="article-info-block">
+        6
+        <span>Bài viết</span>
+      </div>
+      <div class="article-info-block">
+        
+          14
+        
+        <span>
+            Tags
+        </span>
+      </div>
+    </div>
+    <div class="contact-info profile-block">
+      <table class="contact-list">
+        <tr>
+          
+<td><a href="//github.com/trumhemcut" target="_blank" title="GitHub"><i class="fa fa-github"></i></a></td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<td><a href="//linkedin.com/in/phi-huynh-82a31040" target="_blank" title="LinkedIn"><i class="fa fa-linkedin"></i></a></td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<td><a href="//facebook.com/trumxomcui" target="_blank" title="Facebook"><i class="fa fa-facebook"></i></a></td>
+
+
+
+<td><a href="//twitter.com/trumhemcut" target="_blank" title="Twitter"><i class="fa fa-twitter"></i></a></td>
+
+
+          <td><a href="" target="_blank" title="RSS"><i class="fa fa-rss"></i></a></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</aside>
+
+	    
+
+	    
+<section id="main">
+
+    <article id="page-undefined" class="article article-type-page" itemscope="" itemprop="blogPost">
+        <div class="article-inner">
+            
+                <img src="https://trumhemcut.github.io/banners/azurecontainerservice.jpg" class="article-banner">
+            
+
+            <header class="article-header">
+    <a href="https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service">
+    <h1 class="article-title" itemprop="name">
+        Tạo Docker Swarm Cluster dùng Azure Container Service
+    </h1>
+    </a>
+    <div class="article-meta">
+        <div class="article-date">
+            <i class="fa fa-calendar"></i>
+            <time datetime="2016-08-23 16:34:00 &#43;0000 UTC" itemprop="datePublished">2016-08-23</time>
+            &middot;
+            963
+            từ
+            &middot;
+            5
+            phút đọc
+        </div>
+
+        
+        
+            
+            
+            <div class="article-category">
+                <i class="fa fa-folder"></i>
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
+                &middot;
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/categories/cloud">Cloud</a>
+                
+                
+            </div>
+            
+        
+
+        
+            
+            
+            <div class="article-category">
+                <i class="fa fa-tags"></i>
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/docker">Docker</a>
+                &middot;
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/azure">Azure</a>
+                &middot;
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/azurecontainerservice">AzureContainerService</a>
+                &middot;
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/dockerswarm">DockerSwarm</a>
+                
+                
+            </div>
+            
+        
+    </div>
+</header>
+
+            <div class="article-entry" itemprop="articleBody">
+                
+
+<h2 id="giới-thiệu">Giới thiệu</h2>
+
+<p>Docker đã quá quen thuộc với anh em làm DevOps và ngày càng trở nên phổ biến với cả developers. Build ra các images, tạo ra các containers gần như là các công việc thường ngày của dân IT. Hôm nay tôi xin giới thiệu cách dùng <strong>Azure Container Service</strong> để tạo ra một <strong>Swarm Cluster</strong> chỉ với vài bước đơn giản. Có điều lưu ý ở đây là Docker Swarm chứ không phải Docker Swarm-Mode (chỉ có từ Docker v1.12 nhé).</p>
+
+<h2 id="chuẩn-bị">Chuẩn bị</h2>
+
+<ul>
+<li>Bạn cần có account của Azure</li>
+<li>Bạn cần cài đặt Docker trên máy tính của mình, có thể là <strong>Docker for Mac</strong> hoặc <strong>Docker for Windows</strong> tùy hệ điều hành đang sử dụng.</li>
+</ul>
+
+<h2 id="tạo-ssh-key">Tạo ssh key</h2>
+
+<p>Azure Container Service yêu cầu có ssh public key để tạo service. Do đó, chúng ta cần phải tạo ra key này để nhập vào lúc đăng ký Azure Container Service. Key này sẽ được dùng để đăng nhập mà không cần phải gõ password.</p>
+
+<p>Để tạo key, chúng ta mở terminal lên, sau đó gõ lệnh <code>ssh-keygen</code>:</p>
+
+<pre><code>$ ssh-keygen          
+Generating public/private rsa key pair.
+Enter file in which to save the key (/Users/phihuynh/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /Users/phihuynh/.ssh/id_rsa.
+Your public key has been saved in /Users/phihuynh/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:ZR+bg7xg4SKjU8yiQTMGvDS+soVi19fFB1GeWbU+Tzc phihuynh@phis-mbp.harveynash.vn.local
+The key's randomart image is:
++---[RSA 2048]----+
+|o          .o. .o|
+|.+         .. + .|
+|o=o     . + o+ . |
+|oooo   . = = =.  |
+|..o B . S + *  Eo|
+|+=.= + + o . . .=|
+|=o+   .   .     .|
+|.  .             |
+|                 |
++----[SHA256]-----+
+</code></pre>
+
+<p>Sau đó, chúng ta dùng lệnh <code>cat ~/.ssh/id_rsa.pub</code> để xem giá trị của public key. Chúng ta lưu lại giá trị này để nhập vào trong bước đăng ký <strong>Azure Containre Service</strong>.</p>
+
+<pre><code>$ cat ~/.ssh/id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/KIrbbnrP2X60Qr65dGIU3c0qDZP4bQpuFA71xbKBp45Rr4HPdQ4GBEnBf1oryNKBDOlhQCor7mIDn4hlwCvCGkiIP4IZEMDeSnraHlDUuyWd+CR1K+pi8OwP4DlSajEsikZ+zPQ8wr/aD94bs4yjEANclXGxQSGZMXdCdoizI9Qw3PZmd/xYLvtUatW1FOD9Jxt8+QHkAIroImviWUy6Wr7YAk9RhaMuD+yTvI9QETtquQhUOZNP8KD8jCPE3IgJIW2uWW5AFMkCIm54NDyMx1sVGuMb3/Vnxq2wjo+9if0DwGHNOsBfiq/zrTeSJ/9DjyCy8qFI7YcRkia4IzKt phihuynh@phis-mbp.harveynash.vn.local
+
+</code></pre>
+
+<h2 id="tạo-azure-container-service">Tạo Azure Container Service</h2>
+
+<p>Sau khi đã tạo xong ssh public key, bước tiếp theo là đăng ký một Azure Container Service để tạo ra một Swarm Cluster. Azure Container Service có thể tạo ra một Swarm Cluster hay Mesos Master.</p>
+
+<ul>
+<li>Đăng nhập vào <strong><a href="https://portal.azure.com">Azure Portal</a></strong></li>
+<li>Từ portal, chọn <strong>New</strong>, gõ vào <strong>Azure Container Service</strong>, sau đó nhấn vào nút <strong>Create</strong>
+<img src="https://trumhemcut.github.io/images/acs1.png" alt="Create container service" /></li>
+<li>Sau đó, nhập vào <strong>User name</strong>, <strong>SSH public key</strong> chính là giá trị của public key bạn tạo ra ở trên. Tôi dùng <strong>Visual Studio Premium with MSDN</strong> subscription, nếu bạn dùng trial hoặc mua thì có thể là subscription khác. Đặt tên cho service là <strong>test-swarm</strong>, chọn Location là Southeast Asia và sau đó nhấn nút <strong>OK</strong>.
+<img src="https://trumhemcut.github.io/images/acs2.png" alt="Basic configuration" /></li>
+<li>Ở bước <strong>2 Framework configuration</strong>, chọn <strong>Ochestrator configuration</strong> là <strong>Swarm</strong> sau đó nhấn OK. Do bài này chúng ta tập trung tạo Docker Swarm Cluster, Azure cũng hỗ trợ Mesos Cluster.</li>
+<li>Ở bước <strong>3 Azure Container Service settings</strong>, nhập vào <strong>Agent count</strong> là 3 (chúng ta muốn có 3 nodes, bạn có thể nhập số khác tùy ý). <strong>Master count</strong> là 1 là đủ, <strong>DNS prefix</strong> nhập vào text tùy ý, ví dụ <strong>swarm</strong>.
+<img src="https://trumhemcut.github.io/images/acs3.png" alt="3 Azure container service settings" /></li>
+<li>Bước 4 validation passed, nhấn <strong>OK</strong></li>
+<li>Bước 5 Buy, nhấn <strong>Purchase</strong></li>
+</ul>
+
+<p>Toàn bộ quá trình deployment diễn ra mất khoảng 15-20 phút, chúng ta kiên nhẫn chờ đợi. Sau khi deploy thành công, chúng ta có thể xem các service trong resource group <strong>test-swarm</strong>. Chúng ta thấy có rất nhiều service được tạo ra: 1 virtual machine, 1 virtual machine scaleset (bao gồm 3 instances tương ứng với 3 nodes chúng ta cấu hình ở trên), 2 load balancers, 2 public ips, &hellip;</p>
+
+<p><img src="https://trumhemcut.github.io/images/acs4.png" alt="Azure container services" /></p>
+
+<h2 id="kết-nối-đến-swarm-master">Kết nối đến Swarm Master</h2>
+
+<p>Sau khi đã hoàn tất quá trình deployment, chúng ta đã sẵn sàng để kết nối đến cluster. Để kết nối đến cluster, chúng ta cần địa chỉ IP để SSH. chúng ta chọn resource group <strong>test-swarm</strong>, chọn <strong>swarm-master-lb-[ID]</strong> load balancer, nhấn <strong>Overview</strong> và copy giá trị Public IP Address, ví dụ của tôi là <strong>52.187.69.179</strong>.
+<img src="https://trumhemcut.github.io/images/acs5.png" alt="Get load balancer IP Address" /></p>
+
+<p>Sau đó mở terminal, gõ lệnh ssh để kết nối đến swarm cluster:</p>
+
+<pre><code>$ ssh -L 2375:localhost:2375 -f -N phihuynh@52.187.69.179 -p 2200
+</code></pre>
+
+<p>Lệnh này sẽ tạo ra một SSH Server trên máy local và lắng nghe trên port 2375, sau đó forward traffic lên SSH server của cluster.</p>
+
+<p>Sau đó, chúng ta chạy tiếp lệnh sau <code>export DOCKER_HOST=:2375</code> để lệnh docker client sẽ chuyển hướng sang localhost:2375</p>
+
+<p>Ok, đến đây là chúng ta đã hoàn tất kết nối đến swarm cluster. Để kiểm tra xem kết nối thành công hay không, chúng ta chạy lệnh <code>docker info</code> để xem số lượng nodes có phải là 3 hay không.</p>
+
+<pre><code>$ docker info
+ocker info
+Containers: 0
+ Running: 0
+ Paused: 0
+ Stopped: 0
+Images: 0
+Role: primary
+Strategy: spread
+Filters: health, port, dependency, affinity, constraint
+Nodes: 3
+ swarm-agent-BA631D94000000: 10.0.0.4:2375
+  └ Status: Healthy
+  └ Containers: 0
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.145 GiB
+  └ Labels: executiondriver=, kernelversion=3.19.0-65-generic, operatingsystem=Ubuntu 14.04.4 LTS, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-08-23T11:43:31Z
+ swarm-agent-BA631D94000002: 10.0.0.6:2375
+  └ Status: Healthy
+  └ Containers: 0
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.145 GiB
+  └ Labels: executiondriver=, kernelversion=3.19.0-65-generic, operatingsystem=Ubuntu 14.04.4 LTS, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-08-23T11:43:34Z
+ swarm-agent-BA631D94000003: 10.0.0.7:2375
+  └ Status: Healthy
+  └ Containers: 0
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.145 GiB
+  └ Labels: executiondriver=, kernelversion=3.19.0-65-generic, operatingsystem=Ubuntu 14.04.4 LTS, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-08-23T11:43:54Z
+Plugins:
+ Volume: 
+ Network: 
+Swarm: 
+ NodeID: 
+ Is Manager: false
+ Node Address: 
+Security Options:
+Kernel Version: 3.19.0-65-generic
+Operating System: linux
+Architecture: amd64
+CPUs: 6
+Total Memory: 21.44 GiB
+Name: 7434ac726bcc
+Docker Root Dir: 
+Debug Mode (client): false
+Debug Mode (server): false
+WARNING: No kernel memory limit support
+</code></pre>
+
+<h2 id="chạy-thử-một-container">Chạy thử một container</h2>
+
+<p>Sau khi kết nối thành công, chúng ta chạy thử một container ubuntu.</p>
+
+<pre><code>$ docker run -it ubuntu bash
+</code></pre>
+
+            </div>
+            <footer class="article-footer">
+    <a data-url="https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service" data-id="211e3083285a0b642fe8e66b8fc88e55" class="article-share-link">
+        Chia sẻ
+    </a>
+    
+    <a href="https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service/#disqus_thread" class="article-comment-link">
+        Ý kiến
+    </a>
+    
+</footer>
+
+        </div>
+
+        
+<nav id="article-nav">
+    
+    <a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">
+          Cũ hơn
+      </strong>
+      <div class="article-nav-title">Continuous Delivery for dotnet core apps using Jenkins and Docker</div>
+    </a>
+    
+
+    
+</nav>
+
+
+    </article>
+
+    
+    <section id="comments">
+        <div id="disqus_thread">
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'trumhemcut';
+    var disqus_identifier = 'https:\/\/trumhemcut.github.io\/2016\/08\/23\/tao-docker-swarm-dung-azure-container-service';
+    var disqus_title = 'Tạo Docker Swarm Cluster dùng Azure Container Service';
+    var disqus_url = 'https:\/\/trumhemcut.github.io\/2016\/08\/23\/tao-docker-swarm-dung-azure-container-service';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </div>
+    </section>
+    
+</section>
+
+
+	    
+	    <aside id="sidebar">
+    
+<div class="widget-wrap">
+    <h3 class="widget-title">
+        Bài gần đây
+    </h3>
+    <div class="widget">
+        <ul id="recent-post">
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/azurecontainerservice.jpg)" alt="Tạo Docker Swarm Cluster dùng Azure Container Service" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service" class="title">Tạo Docker Swarm Cluster dùng Azure Container Service</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-08-23 16:34:00 &#43;0000 UTC" itemprop="datePublished">2016-08-23</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/cd-docker-jenkins.png)" alt="Tạo Docker Swarm Cluster dùng Azure Container Service" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" class="title">Continuous Delivery for dotnet core apps using Jenkins and Docker</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-08-17 11:17:34 &#43;0000 UTC" itemprop="datePublished">2016-08-17</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Tạo Docker Swarm Cluster dùng Azure Container Service" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="title">Docker networking &amp; Docker Swarm Mode Demo</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-07-03 13:27:20 &#43;0200 &#43;0200" itemprop="datePublished">2016-07-03</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg)" alt="Tạo Docker Swarm Cluster dùng Azure Container Service" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/programming">
+                        Programming
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" class="title">Docker Swarm, aspnet core 1.0 in action</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-06-29 11:44:08 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-29</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Tạo Docker Swarm Cluster dùng Azure Container Service" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="title">Mở port cho Docker Machine</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-06-28 11:20:46 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-28</time>
+                    </p>
+                </div>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+    
+
+
+<div class="widget-wrap">
+    <h3 class="widget-title">Danh mục</h3>
+    <div class="widget">
+        <ul class="category-list">
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/cloud">
+                    cloud
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/devops">
+                    devops
+                </a>
+                <span class="category-list-count">6</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/docker">
+                    docker
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/programming">
+                    programming
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+
+    
+
+
+<div class="widget-wrap">
+    <h3 class="widget-title">
+        Tags
+    </h3>
+    <div class="widget">
+        <ul class="category-list">
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/asp.net-core">
+                    asp.net-core
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/azure">
+                    azure
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/azurecontainerservice">
+                    azurecontainerservice
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/devops">
+                    devops
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker">
+                    docker
+                </a>
+                <span class="category-list-count">5</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-compose">
+                    docker-compose
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-machine">
+                    docker-machine
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-networking">
+                    docker-networking
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-swarm">
+                    docker-swarm
+                </a>
+                <span class="category-list-count">2</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/dockercon2016">
+                    dockercon2016
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/dockerswarm">
+                    dockerswarm
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/dotnetcore">
+                    dotnetcore
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/jenkins">
+                    jenkins
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/swarm-mode">
+                    swarm-mode
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+
+    
+
+
+<div class="widget-wrap">
+    <h3 class="widget-title">
+        Tag cloud
+    </h3>
+    <div class="widget tagcloud">
+        
+        <a href="https://trumhemcut.github.io/tags/asp.net-core" style="font-size: 12px;">asp.net-core</a>
+        
+        <a href="https://trumhemcut.github.io/tags/azure" style="font-size: 12px;">azure</a>
+        
+        <a href="https://trumhemcut.github.io/tags/azurecontainerservice" style="font-size: 12px;">azurecontainerservice</a>
+        
+        <a href="https://trumhemcut.github.io/tags/devops" style="font-size: 12px;">devops</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker" style="font-size: 12px;">docker</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-compose" style="font-size: 12px;">docker-compose</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-machine" style="font-size: 12px;">docker-machine</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-networking" style="font-size: 12px;">docker-networking</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-swarm" style="font-size: 12px;">docker-swarm</a>
+        
+        <a href="https://trumhemcut.github.io/tags/dockercon2016" style="font-size: 12px;">dockercon2016</a>
+        
+        <a href="https://trumhemcut.github.io/tags/dockerswarm" style="font-size: 12px;">dockerswarm</a>
+        
+        <a href="https://trumhemcut.github.io/tags/dotnetcore" style="font-size: 12px;">dotnetcore</a>
+        
+        <a href="https://trumhemcut.github.io/tags/jenkins" style="font-size: 12px;">jenkins</a>
+        
+        <a href="https://trumhemcut.github.io/tags/swarm-mode" style="font-size: 12px;">swarm-mode</a>
+        
+    </div>
+</div>
+
+
+
+
+    <div id="toTop" class="fa fa-chevron-up"></div>
+</aside>
+
+	    
+	</div>
+</div>
+
+<footer id="footer">
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016
+      Blog sử dụng nền tảng của <a href="//gohugo.io">Hugo</a>. Dùng theme của <a href="http://github.com/ppoffice">PPOffice</a>.
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://trumhemcut.github.io/fancybox/jquery.fancybox.pack.js"></script>
+<script src="https://trumhemcut.github.io/js/script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- MathJax -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</body>
+</html>

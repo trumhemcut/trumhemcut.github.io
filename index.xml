@@ -6,8 +6,164 @@
     <description>Recent content on Phi Huỳnh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 17 Aug 2016 11:17:34 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 23 Aug 2016 16:34:00 +0000</lastBuildDate>
     <atom:link href="https://trumhemcut.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Tạo Docker Swarm Cluster dùng Azure Container Service</title>
+      <link>https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service</link>
+      <pubDate>Tue, 23 Aug 2016 16:34:00 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;
+
+&lt;p&gt;Docker đã quá quen thuộc với anh em làm DevOps và ngày càng trở nên phổ biến với cả developers. Build ra các images, tạo ra các containers gần như là các công việc thường ngày của dân IT. Hôm nay tôi xin giới thiệu cách dùng &lt;strong&gt;Azure Container Service&lt;/strong&gt; để tạo ra một &lt;strong&gt;Swarm Cluster&lt;/strong&gt; chỉ với vài bước đơn giản. Có điều lưu ý ở đây là Docker Swarm chứ không phải Docker Swarm-Mode (chỉ có từ Docker v1.12 nhé).&lt;/p&gt;
+
+&lt;h2 id=&#34;chuẩn-bị&#34;&gt;Chuẩn bị&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Bạn cần có account của Azure&lt;/li&gt;
+&lt;li&gt;Bạn cần cài đặt Docker trên máy tính của mình, có thể là &lt;strong&gt;Docker for Mac&lt;/strong&gt; hoặc &lt;strong&gt;Docker for Windows&lt;/strong&gt; tùy hệ điều hành đang sử dụng.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;tạo-ssh-key&#34;&gt;Tạo ssh key&lt;/h2&gt;
+
+&lt;p&gt;Azure Container Service yêu cầu có ssh public key để tạo service. Do đó, chúng ta cần phải tạo ra key này để nhập vào lúc đăng ký Azure Container Service. Key này sẽ được dùng để đăng nhập mà không cần phải gõ password.&lt;/p&gt;
+
+&lt;p&gt;Để tạo key, chúng ta mở terminal lên, sau đó gõ lệnh &lt;code&gt;ssh-keygen&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ssh-keygen          
+Generating public/private rsa key pair.
+Enter file in which to save the key (/Users/phihuynh/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /Users/phihuynh/.ssh/id_rsa.
+Your public key has been saved in /Users/phihuynh/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:ZR+bg7xg4SKjU8yiQTMGvDS+soVi19fFB1GeWbU+Tzc phihuynh@phis-mbp.harveynash.vn.local
+The key&#39;s randomart image is:
++---[RSA 2048]----+
+|o          .o. .o|
+|.+         .. + .|
+|o=o     . + o+ . |
+|oooo   . = = =.  |
+|..o B . S + *  Eo|
+|+=.= + + o . . .=|
+|=o+   .   .     .|
+|.  .             |
+|                 |
++----[SHA256]-----+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sau đó, chúng ta dùng lệnh &lt;code&gt;cat ~/.ssh/id_rsa.pub&lt;/code&gt; để xem giá trị của public key. Chúng ta lưu lại giá trị này để nhập vào trong bước đăng ký &lt;strong&gt;Azure Containre Service&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cat ~/.ssh/id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/KIrbbnrP2X60Qr65dGIU3c0qDZP4bQpuFA71xbKBp45Rr4HPdQ4GBEnBf1oryNKBDOlhQCor7mIDn4hlwCvCGkiIP4IZEMDeSnraHlDUuyWd+CR1K+pi8OwP4DlSajEsikZ+zPQ8wr/aD94bs4yjEANclXGxQSGZMXdCdoizI9Qw3PZmd/xYLvtUatW1FOD9Jxt8+QHkAIroImviWUy6Wr7YAk9RhaMuD+yTvI9QETtquQhUOZNP8KD8jCPE3IgJIW2uWW5AFMkCIm54NDyMx1sVGuMb3/Vnxq2wjo+9if0DwGHNOsBfiq/zrTeSJ/9DjyCy8qFI7YcRkia4IzKt phihuynh@phis-mbp.harveynash.vn.local
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;tạo-azure-container-service&#34;&gt;Tạo Azure Container Service&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã tạo xong ssh public key, bước tiếp theo là đăng ký một Azure Container Service để tạo ra một Swarm Cluster. Azure Container Service có thể tạo ra một Swarm Cluster hay Mesos Master.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Đăng nhập vào &lt;strong&gt;&lt;a href=&#34;https://portal.azure.com&#34;&gt;Azure Portal&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Từ portal, chọn &lt;strong&gt;New&lt;/strong&gt;, gõ vào &lt;strong&gt;Azure Container Service&lt;/strong&gt;, sau đó nhấn vào nút &lt;strong&gt;Create&lt;/strong&gt;
+&lt;img src=&#34;https://trumhemcut.github.io/images/acs1.png&#34; alt=&#34;Create container service&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Sau đó, nhập vào &lt;strong&gt;User name&lt;/strong&gt;, &lt;strong&gt;SSH public key&lt;/strong&gt; chính là giá trị của public key bạn tạo ra ở trên. Tôi dùng &lt;strong&gt;Visual Studio Premium with MSDN&lt;/strong&gt; subscription, nếu bạn dùng trial hoặc mua thì có thể là subscription khác. Đặt tên cho service là &lt;strong&gt;test-swarm&lt;/strong&gt;, chọn Location là Southeast Asia và sau đó nhấn nút &lt;strong&gt;OK&lt;/strong&gt;.
+&lt;img src=&#34;https://trumhemcut.github.io/images/acs2.png&#34; alt=&#34;Basic configuration&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Ở bước &lt;strong&gt;2 Framework configuration&lt;/strong&gt;, chọn &lt;strong&gt;Ochestrator configuration&lt;/strong&gt; là &lt;strong&gt;Swarm&lt;/strong&gt; sau đó nhấn OK. Do bài này chúng ta tập trung tạo Docker Swarm Cluster, Azure cũng hỗ trợ Mesos Cluster.&lt;/li&gt;
+&lt;li&gt;Ở bước &lt;strong&gt;3 Azure Container Service settings&lt;/strong&gt;, nhập vào &lt;strong&gt;Agent count&lt;/strong&gt; là 3 (chúng ta muốn có 3 nodes, bạn có thể nhập số khác tùy ý). &lt;strong&gt;Master count&lt;/strong&gt; là 1 là đủ, &lt;strong&gt;DNS prefix&lt;/strong&gt; nhập vào text tùy ý, ví dụ &lt;strong&gt;swarm&lt;/strong&gt;.
+&lt;img src=&#34;https://trumhemcut.github.io/images/acs3.png&#34; alt=&#34;3 Azure container service settings&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Bước 4 validation passed, nhấn &lt;strong&gt;OK&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Bước 5 Buy, nhấn &lt;strong&gt;Purchase&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Toàn bộ quá trình deployment diễn ra mất khoảng 15-20 phút, chúng ta kiên nhẫn chờ đợi. Sau khi deploy thành công, chúng ta có thể xem các service trong resource group &lt;strong&gt;test-swarm&lt;/strong&gt;. Chúng ta thấy có rất nhiều service được tạo ra: 1 virtual machine, 1 virtual machine scaleset (bao gồm 3 instances tương ứng với 3 nodes chúng ta cấu hình ở trên), 2 load balancers, 2 public ips, &amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/acs4.png&#34; alt=&#34;Azure container services&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;kết-nối-đến-swarm-master&#34;&gt;Kết nối đến Swarm Master&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã hoàn tất quá trình deployment, chúng ta đã sẵn sàng để kết nối đến cluster. Để kết nối đến cluster, chúng ta cần địa chỉ IP để SSH. chúng ta chọn resource group &lt;strong&gt;test-swarm&lt;/strong&gt;, chọn &lt;strong&gt;swarm-master-lb-[ID]&lt;/strong&gt; load balancer, nhấn &lt;strong&gt;Overview&lt;/strong&gt; và copy giá trị Public IP Address, ví dụ của tôi là &lt;strong&gt;52.187.69.179&lt;/strong&gt;.
+&lt;img src=&#34;https://trumhemcut.github.io/images/acs5.png&#34; alt=&#34;Get load balancer IP Address&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Sau đó mở terminal, gõ lệnh ssh để kết nối đến swarm cluster:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ssh -L 2375:localhost:2375 -f -N phihuynh@52.187.69.179 -p 2200
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Lệnh này sẽ tạo ra một SSH Server trên máy local và lắng nghe trên port 2375, sau đó forward traffic lên SSH server của cluster.&lt;/p&gt;
+
+&lt;p&gt;Sau đó, chúng ta chạy tiếp lệnh sau &lt;code&gt;export DOCKER_HOST=:2375&lt;/code&gt; để lệnh docker client sẽ chuyển hướng sang localhost:2375&lt;/p&gt;
+
+&lt;p&gt;Ok, đến đây là chúng ta đã hoàn tất kết nối đến swarm cluster. Để kiểm tra xem kết nối thành công hay không, chúng ta chạy lệnh &lt;code&gt;docker info&lt;/code&gt; để xem số lượng nodes có phải là 3 hay không.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker info
+ocker info
+Containers: 0
+ Running: 0
+ Paused: 0
+ Stopped: 0
+Images: 0
+Role: primary
+Strategy: spread
+Filters: health, port, dependency, affinity, constraint
+Nodes: 3
+ swarm-agent-BA631D94000000: 10.0.0.4:2375
+  └ Status: Healthy
+  └ Containers: 0
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.145 GiB
+  └ Labels: executiondriver=, kernelversion=3.19.0-65-generic, operatingsystem=Ubuntu 14.04.4 LTS, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-08-23T11:43:31Z
+ swarm-agent-BA631D94000002: 10.0.0.6:2375
+  └ Status: Healthy
+  └ Containers: 0
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.145 GiB
+  └ Labels: executiondriver=, kernelversion=3.19.0-65-generic, operatingsystem=Ubuntu 14.04.4 LTS, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-08-23T11:43:34Z
+ swarm-agent-BA631D94000003: 10.0.0.7:2375
+  └ Status: Healthy
+  └ Containers: 0
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.145 GiB
+  └ Labels: executiondriver=, kernelversion=3.19.0-65-generic, operatingsystem=Ubuntu 14.04.4 LTS, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-08-23T11:43:54Z
+Plugins:
+ Volume: 
+ Network: 
+Swarm: 
+ NodeID: 
+ Is Manager: false
+ Node Address: 
+Security Options:
+Kernel Version: 3.19.0-65-generic
+Operating System: linux
+Architecture: amd64
+CPUs: 6
+Total Memory: 21.44 GiB
+Name: 7434ac726bcc
+Docker Root Dir: 
+Debug Mode (client): false
+Debug Mode (server): false
+WARNING: No kernel memory limit support
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;chạy-thử-một-container&#34;&gt;Chạy thử một container&lt;/h2&gt;
+
+&lt;p&gt;Sau khi kết nối thành công, chúng ta chạy thử một container ubuntu.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker run -it ubuntu bash
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>Continuous Delivery for dotnet core apps using Jenkins and Docker</title>
@@ -17,50 +173,93 @@
       <guid>https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker</guid>
       <description>
 
-&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 
-&lt;p&gt;Khi sử dụng Docker Machine trên MacOS, chúng ta thường chạy các containers, sau đó mở port cho các containers đó, thông thường chúng ta sẽ truy cập vào các containers đó thông qua địa chỉ của docker machine (virtual machine) thông qua IP Address.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;m very exicted with Docker &amp;amp; dotnet core since they&amp;rsquo;re technologies changing the way we develop our applications which we haven&amp;rsquo;t done as before. I&amp;rsquo;m also been attracted by the tools to build Continous Delivery process so that we can shorten the time to deliver our software to the market. I&amp;rsquo;ve been familiar with Release Management (from Microsoft), TeamCity, Octopus &amp;amp; Jenkins, which are great tools to build CI/CD solutions.&lt;/p&gt;
 
-&lt;p&gt;Ví dụ:&lt;/p&gt;
+&lt;p&gt;To continue investigating new way to build CI/CD solution so that we can build, ship &amp;amp; run using Docker images &amp;amp; containers, my colleague &amp;amp; myself have been investigating some days to have a PoC using Jenkins &amp;amp; Docker family toolset &amp;amp; it&amp;rsquo;s great to have a share today.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;docker run -it -p 8080:8080 --name dotnetapp microsoft/dotnet:latest
+&lt;p&gt;The idea is to build a full application life-cycle management (ALM) for the project team. As a developer commits the source code to VCS (such as Gitlab/Github/VS Team Service), the changes should be built &amp;amp; run unit-tests immediately. If there is no issues with build &amp;amp; test, the code base then will be built for Docker images, then is pushed to a privated Docker Registry. Then the deployment process can continue to pull the images &amp;amp; deploy to a clustering environment such as Docker Swarm Mode (from Docker v1.12) or Mesos.&lt;/p&gt;
+
+&lt;p&gt;So in general, there should have the steps as follow:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Assuming we have a VCS ready (I&amp;rsquo;m using Gitlab)&lt;/li&gt;
+&lt;li&gt;Jenkins to build the source code, push images to internal Docker Registry &amp;amp; deploy to Docker Swarm Mode cluster&lt;/li&gt;
+&lt;li&gt;Internal Docker Registry (insecured mode, it&amp;rsquo;s just PoC :) )&lt;/li&gt;
+&lt;li&gt;Docker Swarm Mode to deploy services&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To leverage the power of Docker, every tools listed here are Docker images, we can easily make it up by simple &lt;code&gt;docker run&lt;/code&gt; command.&lt;/p&gt;
+
+&lt;h2 id=&#34;assuming-we-have-a-vcs-ready-i-m-using-gitlab&#34;&gt;Assuming we have a VCS ready (I&amp;rsquo;m using Gitlab)&lt;/h2&gt;
+
+&lt;p&gt;My company has a Gitlab environment up &amp;amp; ready to use, I don&amp;rsquo;t want to take time to build a new one. So assuming we have it available like mine.&lt;/p&gt;
+
+&lt;p&gt;But just in case you don&amp;rsquo;t, we can easily build a new one as &lt;code&gt;Dockerfile&lt;/code&gt; below:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;TODO
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Để truy cập vào website, chúng ta sẽ dùng địa chỉ &lt;code&gt;http://192.168.99.100:8080&lt;/code&gt; với &lt;strong&gt;192.168.99.100&lt;/strong&gt; chính là địa chỉ máy ảo (mặc định) trên Docker Machine.&lt;/p&gt;
+&lt;h2 id=&#34;build-jenkins-server&#34;&gt;Build Jenkins Server&lt;/h2&gt;
 
-&lt;p&gt;Để có thể truy cập bằng địa chỉ localhost, chúng ta phải forward port từ máy ảo sang máy host. Từ đó chúng ta có thể truy cập bằng địa chỉ &lt;code&gt;http://localhost:8080&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Here is the &lt;code&gt;Dockerfile&lt;/code&gt; to create Jenkins Server. Be aware of the line &lt;code&gt;RUN groupadd -g dockergroupid docker &amp;amp;&amp;amp; usermod -a -G docker jenkins&lt;/code&gt;, there is a &lt;code&gt;dockergroupid&lt;/code&gt; which is a variable will be replaced by a shell script named &lt;code&gt;create-dockerfile.sh&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;Có nhiều cách để forward port, nhưng tôi thấy bạn Johan Haleby làm là cách dễ nhớ nhất. Đó là dùng tool &lt;strong&gt;pf&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Firstly take a look on the Dockerfile:&lt;/p&gt;
 
-&lt;h4 id=&#34;download-bash-script&#34;&gt;Download bash script&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;# Dockerfile
+FROM jenkinsci/jenkins
 
-&lt;pre&gt;&lt;code&gt;git clone https://github.com/johanhaleby/docker-machine-port-forwarder &amp;amp;&amp;amp; cd docker-machine-port-forwarder
+USER root
+RUN mkdir /var/log/jenkins
+RUN mkdir /var/cache/jenkins
+RUN chown -R jenkins:jenkins /var/log/jenkins
+RUN chown -R jenkins:jenkins /var/cache/jenkins
+
+RUN apt-get update \
+      &amp;amp;&amp;amp; apt-get install -y sudo \
+      &amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/*
+
+RUN groupadd -g dockergroupid docker &amp;amp;&amp;amp; usermod -a -G docker jenkins 
+
+USER jenkins
+ENV JAVA_OPTS=&amp;quot;-Xmx8192m&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&#34;mở-port-8080-cho-máy-default&#34;&gt;Mở port 8080 cho máy default&lt;/h4&gt;
+&lt;p&gt;And then create-dockerfile.sh&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;./pf 8080
+&lt;pre&gt;&lt;code&gt;# create-dockerfile.sh
+dockergroupid=`cat /etc/group | grep doc | cut -d&amp;quot;:&amp;quot; -f3`
+sed -i s,dockergroupid,$dockergroupid,g Dockerfile
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&#34;hoặc-mở-port-8080-cho-một-máy-docker-machine-có-tên-là-swarm-00&#34;&gt;Hoặc mở port 8080 cho một máy docker machine có tên là &lt;strong&gt;swarm-00&lt;/strong&gt;&lt;/h4&gt;
+&lt;h2 id=&#34;build-internal-docker-registry&#34;&gt;Build internal Docker Registry&lt;/h2&gt;
 
-&lt;pre&gt;&lt;code&gt;./pf 8080 -e swarm-00
+&lt;p&gt;The internal Docker Registry is neccessary to store the images built from Jenkins. Since we&amp;rsquo;re building the insecured private registry, we need to update the Docker config &lt;code&gt;/etc/default/docker&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Use DOCKER_OPTS to modify the daemon startup options.
+DOCKER_OPTS=&amp;quot; --insecure-registry 10.12.0.137:5000&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&#34;hoặc-là-forward-port-8080-sang-port-80-trên-máy-host&#34;&gt;Hoặc là forward port 8080 sang port 80 trên máy host&lt;/h4&gt;
+&lt;p&gt;Please be aware that insecured registry is only used for PoC purpose &amp;amp; should not be used in Production environment at all.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;./pf 80:8080 -e swarm-00
+&lt;p&gt;Restart the Docker daemon service to get the update affects.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo service docker restart
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&#34;stop-port-forwarding&#34;&gt;Stop port forwarding&lt;/h4&gt;
+&lt;p&gt;Run the registry container&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;./pf 8080 -s
+&lt;pre&gt;&lt;code&gt;$ docker run -p 5000:5000 -d --name registry --restart always -d -v `pwd`/data:/var/lib/registry registry 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&#34;chạy-ở-chế-độ-foreground&#34;&gt;Chạy ở chế độ foreground&lt;/h4&gt;
+&lt;p&gt;We mount a volume from Docker Host to Docker container so that we the images in the registry won&amp;rsquo;t be delete as we delete / re-new the registry container.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;./pf 8080 -f
-&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;buid-steps-on-jenkins&#34;&gt;Buid steps on Jenkins&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Create a new free style project, put it a name &lt;code&gt;dotnetcore test&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
 </description>
     </item>
     
