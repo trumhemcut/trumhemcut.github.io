@@ -4,7 +4,7 @@ date = "2014-10-31T10:20:00"
 tags = ["Azure", "PowerShell"]
 categories = ["DevOps", "Cloud", "Azure"]
 menu = ""
-banner = "banners/azurecontainerservice.jpg"
+banner = "banners/azure-sma.jpg"
 +++
 
 ## Giới thiệu về Azure Automation
