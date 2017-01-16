@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <title>Tương tác với Azure Scheduler qua REST API dùng Fiddler &middot; Phi Huỳnh</title>
+    <meta name="generator" content="Hugo 0.16" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="Phi Huỳnh">
+    
+      <meta name="description" content="">
+    
+    
+    <link rel="icon" href="https://trumhemcut.github.io/favicon.ico">
+    <link rel="apple-touch-icon" href="https://trumhemcut.github.io/apple-touch-icon.png" />
+    <link rel="stylesheet" href="https://trumhemcut.github.io/css/style.css">
+    <link rel="stylesheet" href="https://trumhemcut.github.io/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://trumhemcut.github.io/css/monokai.css">
+    <link rel="stylesheet" href="https://trumhemcut.github.io/fancybox/jquery.fancybox.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+    <meta property="og:title" content="Tương tác với Azure Scheduler qua REST API dùng Fiddler" />
+<meta property="og:description" content="Giới thiệu về Windows Azure Scheduler Azure Scheduler cho phép chúng ta tạo ra các jobs trên cloud để gọi các services bên trong hoặc ngoài Microsoft Azure. Ví dụ như Azure Scheduler có thể gọi các request HTTP/HTTPS enpoints hoặc gửi các message đến Azure Storage Queue. Bạn có thể chạy job ngay lập tức, hoặc theo một lịch nào đó, hoặc vào một thời điểm nào đó ở tương lai." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://trumhemcut.github.io/2014/10/22/tuong-tac-voi-azure-scheduler-qua-rest-dung-fiddler" />
+
+
+<meta property="og:updated_time" content="2014-10-22T15:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+    
+    
+<meta itemprop="name" content="Tương tác với Azure Scheduler qua REST API dùng Fiddler">
+<meta itemprop="description" content="Giới thiệu về Windows Azure Scheduler Azure Scheduler cho phép chúng ta tạo ra các jobs trên cloud để gọi các services bên trong hoặc ngoài Microsoft Azure. Ví dụ như Azure Scheduler có thể gọi các request HTTP/HTTPS enpoints hoặc gửi các message đến Azure Storage Queue. Bạn có thể chạy job ngay lập tức, hoặc theo một lịch nào đó, hoặc vào một thời điểm nào đó ở tương lai.">
+
+
+<meta itemprop="dateModified" content="2014-10-22T15:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="516">
+
+
+
+<meta itemprop="keywords" content="azure,cloud,devops,docker,programming,asp.net-core,azure,azure-scheduler,azurecontainerservice,devops,docker,docker-compose,docker-machine,docker-networking,docker-swarm,dockercon2016,dockerswarm,dotnetcore,jenkins,powershell,swarm-mode," />
+
+    
+
+  <meta name="twitter:card" content="summary"/>
+
+
+
+<meta name="twitter:title" content="Tương tác với Azure Scheduler qua REST API dùng Fiddler"/>
+<meta name="twitter:description" content="Giới thiệu về Windows Azure Scheduler Azure Scheduler cho phép chúng ta tạo ra các jobs trên cloud để gọi các services bên trong hoặc ngoài Microsoft Azure. Ví dụ như Azure Scheduler có thể gọi các request HTTP/HTTPS enpoints hoặc gửi các message đến Azure Storage Queue. Bạn có thể chạy job ngay lập tức, hoặc theo một lịch nào đó, hoặc vào một thời điểm nào đó ở tương lai."/>
+<meta name="twitter:site" content="@trumhemcut"/>
+
+
+    
+
+    
+</head>
+<body>
+<div class="container">
+
+
+<div id="container">
+	<header id="header">
+  <div id="header-main" class="header-inner">
+    <div class="outer">
+      <a href="https://trumhemcut.github.io/" id="logo">
+          
+          <i class="logo" style="background-image: url('https://trumhemcut.github.io/css/images/logo.png')"></i>
+          
+          <span class="site-title">Phi Huỳnh</span>
+      </a>
+      <nav id="main-nav">
+          
+          
+          <a class="main-nav-link" href="https://trumhemcut.github.io/">Trang chủ</a>
+          
+          
+          
+          
+          
+          
+
+          
+
+          
+          
+          
+          
+          <a class="main-nav-link" href="https://trumhemcut.github.io/tags/">Tags</a>
+          
+          
+          
+          <a class="main-nav-link" href="https://trumhemcut.github.io/categories/">Danh mục</a>
+          
+          
+      </nav>
+        <nav id="sub-nav">
+          <div class="profile" id="profile-nav">
+            <a id="profile-anchor" href="javascript:;"><img class="avatar" src="https://trumhemcut.github.io/css/images/avatar.png"><i class="fa fa-caret-down"></i></a>
+          </div>
+        </nav>
+        <div id="search-form-wrap">
+          <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form">
+              <input type="search" name="q" results="0" class="search-form-input" placeholder="Tìm kiếm">
+              <button type="submit" class="search-form-submit">
+              </button>
+              <input type="hidden" name="q" value="site:https://trumhemcut.github.io/">
+         </form>
+        </div>
+    </div>
+  </div>
+  <div id="main-nav-mobile" class="header-sub header-inner">
+    <table class="menu outer">
+      <tbody>
+          <tr>
+          
+          
+          <td><a class="main-nav-link" href="https://trumhemcut.github.io/">Trang chủ</a></td>
+          
+          
+          
+          
+          
+          
+
+          
+
+          
+          
+          
+          
+          <td><a class="main-nav-link" href="https://trumhemcut.github.io/tags/">Tags</a></td>
+          
+          
+          
+          <td><a class="main-nav-link" href="https://trumhemcut.github.io/categories/">Danh mục</a></td>
+          
+          
+          <td>
+          <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form">
+          <input type="search" name="q" results="0" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" value="site:https://trumhemcut.github.io/">
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</header>
+
+   	
+   	<div class="outer">
+   		
+	    <aside id="profile">
+  <div class="inner profile-inner">
+    <div class="base-info profile-block">
+      <img id="avatar" src="https://trumhemcut.github.io/css/images/avatar.png">
+      <h2 id="name">Phi Huỳnh</h2>
+      <h3 id="title">Code cày cuốc - Làm bố</h3>
+      <span id="location"><i class="fa fa-map-marker"></i>Việt Nam</span>
+      
+          <a id="follow" href="https://github.com/trumhemcut">
+              Theo dõi
+          </a>
+      
+    </div>
+    <div class="article-info profile-block">
+      <div class="article-info-block">
+        10
+        <span>Bài viết</span>
+      </div>
+      <div class="article-info-block">
+        
+          16
+        
+        <span>
+            Tags
+        </span>
+      </div>
+    </div>
+    <div class="contact-info profile-block">
+      <table class="contact-list">
+        <tr>
+          
+<td><a href="//github.com/trumhemcut" target="_blank" title="GitHub"><i class="fa fa-github"></i></a></td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<td><a href="//linkedin.com/in/phi-huynh-82a31040" target="_blank" title="LinkedIn"><i class="fa fa-linkedin"></i></a></td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<td><a href="//facebook.com/trumxomcui" target="_blank" title="Facebook"><i class="fa fa-facebook"></i></a></td>
+
+
+
+<td><a href="//twitter.com/trumhemcut" target="_blank" title="Twitter"><i class="fa fa-twitter"></i></a></td>
+
+
+          <td><a href="" target="_blank" title="RSS"><i class="fa fa-rss"></i></a></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</aside>
+
+	    
+
+	    
+<section id="main">
+
+    <article id="page-undefined" class="article article-type-page" itemscope="" itemprop="blogPost">
+        <div class="article-inner">
+            
+
+            <header class="article-header">
+    <a href="https://trumhemcut.github.io/2014/10/22/tuong-tac-voi-azure-scheduler-qua-rest-dung-fiddler">
+    <h1 class="article-title" itemprop="name">
+        Tương tác với Azure Scheduler qua REST API dùng Fiddler
+    </h1>
+    </a>
+    <div class="article-meta">
+        <div class="article-date">
+            <i class="fa fa-calendar"></i>
+            <time datetime="2014-10-22 15:00:00 &#43;0000 UTC" itemprop="datePublished">2014-10-22</time>
+            &middot;
+            516
+            từ
+            &middot;
+            3
+            phút đọc
+        </div>
+
+        
+        
+            
+            
+            <div class="article-category">
+                <i class="fa fa-folder"></i>
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/categories/cloud">Cloud</a>
+                &middot;
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/categories/azure">Azure</a>
+                
+                
+            </div>
+            
+        
+
+        
+            
+            
+            <div class="article-category">
+                <i class="fa fa-tags"></i>
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/azure">Azure</a>
+                &middot;
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/azure-scheduler">Azure Scheduler</a>
+                
+                
+            </div>
+            
+        
+    </div>
+</header>
+
+            <div class="article-entry" itemprop="articleBody">
+                
+
+<h2 id="giới-thiệu-về-windows-azure-scheduler">Giới thiệu về Windows Azure Scheduler</h2>
+
+<p>Azure Scheduler cho phép chúng ta tạo ra các jobs trên cloud để gọi các services bên trong hoặc ngoài Microsoft Azure. Ví dụ như Azure Scheduler có thể gọi các request HTTP/HTTPS enpoints hoặc gửi các message đến Azure Storage Queue. Bạn có thể chạy job ngay lập tức, hoặc theo một lịch nào đó, hoặc vào một thời điểm nào đó ở tương lai.</p>
+
+<h2 id="quản-lý-azure-scheduler-bằng-cách-nào">Quản lý Azure Scheduler bằng cách nào?</h2>
+
+<p>Bạn có thể quản lý Azure Scheduler bằng các cách sau:</p>
+
+<ul>
+<li>REST API</li>
+<li>.NET Client</li>
+<li>PowerShell</li>
+<li>xpat-cli</li>
+<li>Azure Portal</li>
+</ul>
+
+<p>Dùng Azure Portal dĩ nhiên là cách đơn giản và trực quan nhất, các bạn có thể login vào Azure Portal rồi tạo Job Collection mới, sau đó tạo các job mới. Hôm nay mình muốn giới thiệu dùng REST API để tạo các job mới.</p>
+
+<h2 id="tạo-một-management-certificate-và-import-vào-subscription">Tạo một Management Certificate và import vào Subscription</h2>
+
+<p>Để có thể gọi REST API, trước tiên cần phải authenticate các request. Cơ bản có 2 cách để authenticate request REST API, một là dùng Windows Azure AD, hai là dùng management certificate. Bài này tôi xin giới thiệu dùng cách thứ 2. Bạn có thể tham khảo 2 cách này ở <a href="http://msdn.microsoft.com/library/azure/ee460782.aspx">http://msdn.microsoft.com/library/azure/ee460782.aspx</a></p>
+
+<p>Để import certificate vào Azure Subscription, chúng ta sẽ tạo ra một certificate trước, và phải import vào mục Personal, chi tiết xem tại <a href="http://msdn.microsoft.com/en-US/library/azure/gg551722.aspx">http://msdn.microsoft.com/en-US/library/azure/gg551722.aspx</a></p>
+
+<p>Để tạo một certificate, làm theo các bước sau:</p>
+
+<ul>
+<li>Mở CMD</li>
+<li>Gõ lệnh makecert -sky exchange -r -n “CN=DevTest” -pe -a sha1 -len 2048 -ss My “DevTest.cer” . Lệnh này sẽ tạo ra một Certificate là DevTest và lưu trong thư mục Personal của Certificate Management.</li>
+<li>Nhấn Windows+R rồi gõ vào certmgr.msc để mở Certificate Management</li>
+<li>Vào thư mục Certificates -&gt; Personal -&gt; Certificates, chúng ta sẽ thấy một certificate tên là DevTest mới vừa tạo.</li>
+<li>Nhấn chuột phải vào DevTest, chọn All Tasks, sau đó chọn Export, nhấn Next, Next, Next và nhập vào tên file để export. Ví dụ: C:\Users\phihuynh\Desktop\DevTest.cer, sau đó nhấn Next, Finish
+<img src="https://trumhemcut.github.io/images/asr01.png" alt="Certificates" /></li>
+</ul>
+
+<h2 id="import-certificate-vào-azure-subscription">Import certificate vào Azure Subscription</h2>
+
+<p>Sau khi  đã tạo ra một certificate và export nó ra màn hình desktop, bước kế tiếp là import nó vào Azure Subscription, theo các bước như sau:</p>
+
+<ul>
+<li>Đăng nhập vào manage.windowsazure.com</li>
+<li>Chọn mục Settings, nhấn vào Management Certificates, sau đó chọn Upload và chọn file DevTest.cer vừa export ở Desktop và nhấn dấu Checked để upload.
+<img src="https://trumhemcut.github.io/images/asr02.png" alt="Upload Certificate" /></li>
+<li>Sau khi upload thành công sẽ có màn hình như bên dưới:
+<img src="https://trumhemcut.github.io/images/asr03.png" alt="Upload Certificate" /></li>
+</ul>
+
+<h2 id="gọi-azure-scheduler-rest-api-dùng-fiddler">Gọi Azure Scheduler REST API dùng Fiddler</h2>
+
+<p>Sau khi đã chuẩn bị xong certificate, bạn phải copy certificate vào thư mục C:\Users\phihuynh\Documents\Fiddler2 để Fiddler sẽ dùng certificate này để mã hóa các request và gửi lên Azure Scheduler server.</p>
+
+<p>Để gửi một request lên Azure Scheduler cũng giống như các request bình thường khác, chỉ có 2 điểm cần lưu ý:</p>
+
+<pre><code>URL Parameter: ?api-version=2014-04-01
+Header: x-ms-version: 2013-03-01
+</code></pre>
+
+<p><img src="https://trumhemcut.github.io/images/asr04.png" alt="Upload Certificate" />
+Kết quả trả về như sau
+<img src="https://trumhemcut.github.io/images/asr05.png" alt="Upload Certificate" /></p>
+
+<h2 id="kết-luận">Kết luận</h2>
+
+<p>Cũng giống như tất cả các REST API Service khác, chúng ta cần chuẩn bị các bước để authenticate trước. Sau đó thì gọi service một cách bình thường.</p>
+
+            </div>
+            <footer class="article-footer">
+    <a data-url="https://trumhemcut.github.io/2014/10/22/tuong-tac-voi-azure-scheduler-qua-rest-dung-fiddler" data-id="af4630a94e1b11ede0ecb2e4abd0988d" class="article-share-link">
+        Chia sẻ
+    </a>
+    
+    <a href="https://trumhemcut.github.io/2014/10/22/tuong-tac-voi-azure-scheduler-qua-rest-dung-fiddler/#disqus_thread" class="article-comment-link">
+        Ý kiến
+    </a>
+    
+</footer>
+
+        </div>
+
+        
+<nav id="article-nav">
+    
+
+    
+    <a href="https://trumhemcut.github.io/2014/10/27/tuong-tac-voi-azure-scheduler-qua-net-client" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">
+          Mới hơn
+      </strong>
+      <div class="article-nav-title">Tương tác với Azure Scheduler qua .NET Client</div>
+    </a>
+    
+</nav>
+
+
+    </article>
+
+    
+    <section id="comments">
+        <div id="disqus_thread">
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'trumhemcut';
+    var disqus_identifier = 'https:\/\/trumhemcut.github.io\/2014\/10\/22\/tuong-tac-voi-azure-scheduler-qua-rest-dung-fiddler';
+    var disqus_title = 'Tương tác với Azure Scheduler qua REST API dùng Fiddler';
+    var disqus_url = 'https:\/\/trumhemcut.github.io\/2014\/10\/22\/tuong-tac-voi-azure-scheduler-qua-rest-dung-fiddler';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </div>
+    </section>
+    
+</section>
+
+
+	    
+	    <aside id="sidebar">
+    
+<div class="widget-wrap">
+    <h3 class="widget-title">
+        Bài gần đây
+    </h3>
+    <div class="widget">
+        <ul id="recent-post">
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/azurecontainerservice.jpg)" alt="Tương tác với Azure Scheduler qua REST API dùng Fiddler" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service" class="title">Tạo Docker Swarm Cluster dùng Azure Container Service</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-08-23 16:34:00 &#43;0000 UTC" itemprop="datePublished">2016-08-23</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/cd-docker-jenkins.png)" alt="Tương tác với Azure Scheduler qua REST API dùng Fiddler" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" class="title">Continuous Delivery for dotnet core apps using Jenkins and Docker</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-08-17 11:17:34 &#43;0000 UTC" itemprop="datePublished">2016-08-17</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Tương tác với Azure Scheduler qua REST API dùng Fiddler" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="title">Docker networking &amp; Docker Swarm Mode Demo</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-07-03 13:27:20 &#43;0200 &#43;0200" itemprop="datePublished">2016-07-03</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg)" alt="Tương tác với Azure Scheduler qua REST API dùng Fiddler" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/azure">
+                        Azure
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" class="title">Docker Swarm, aspnet core 1.0 in action</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-06-29 11:44:08 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-29</time>
+                    </p>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-thumbnail">
+                    <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="thumbnail">
+                    
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Tương tác với Azure Scheduler qua REST API dùng Fiddler" class="thumbnail-image"></span>
+                    
+                    </a>
+                </div>
+                <div class="item-inner">
+                    
+                    
+                    <p class="item-category">
+                        <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">
+                        DevOps
+                        </a>
+                    </p>
+                    
+                    
+                    <p class="item-title"><a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="title">Mở port cho Docker Machine</a></p>
+                    <p class="item-date">
+                        <time datetime="2016-06-28 11:20:46 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-28</time>
+                    </p>
+                </div>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+    
+
+
+<div class="widget-wrap">
+    <h3 class="widget-title">Danh mục</h3>
+    <div class="widget">
+        <ul class="category-list">
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/azure">
+                    azure
+                </a>
+                <span class="category-list-count">6</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/cloud">
+                    cloud
+                </a>
+                <span class="category-list-count">6</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/devops">
+                    devops
+                </a>
+                <span class="category-list-count">7</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/docker">
+                    docker
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/categories/programming">
+                    programming
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+
+    
+
+
+<div class="widget-wrap">
+    <h3 class="widget-title">
+        Tags
+    </h3>
+    <div class="widget">
+        <ul class="category-list">
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/asp.net-core">
+                    asp.net-core
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/azure">
+                    azure
+                </a>
+                <span class="category-list-count">5</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/azure-scheduler">
+                    azure-scheduler
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/azurecontainerservice">
+                    azurecontainerservice
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/devops">
+                    devops
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker">
+                    docker
+                </a>
+                <span class="category-list-count">5</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-compose">
+                    docker-compose
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-machine">
+                    docker-machine
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-networking">
+                    docker-networking
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/docker-swarm">
+                    docker-swarm
+                </a>
+                <span class="category-list-count">2</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/dockercon2016">
+                    dockercon2016
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/dockerswarm">
+                    dockerswarm
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/dotnetcore">
+                    dotnetcore
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/jenkins">
+                    jenkins
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/powershell">
+                    powershell
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+            <li class="category-list-item">
+                <a class="category-list-link" href="https://trumhemcut.github.io/tags/swarm-mode">
+                    swarm-mode
+                </a>
+                <span class="category-list-count">1</span>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+
+    
+
+
+<div class="widget-wrap">
+    <h3 class="widget-title">
+        Tag cloud
+    </h3>
+    <div class="widget tagcloud">
+        
+        <a href="https://trumhemcut.github.io/tags/asp.net-core" style="font-size: 12px;">asp.net-core</a>
+        
+        <a href="https://trumhemcut.github.io/tags/azure" style="font-size: 12px;">azure</a>
+        
+        <a href="https://trumhemcut.github.io/tags/azure-scheduler" style="font-size: 12px;">azure-scheduler</a>
+        
+        <a href="https://trumhemcut.github.io/tags/azurecontainerservice" style="font-size: 12px;">azurecontainerservice</a>
+        
+        <a href="https://trumhemcut.github.io/tags/devops" style="font-size: 12px;">devops</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker" style="font-size: 12px;">docker</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-compose" style="font-size: 12px;">docker-compose</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-machine" style="font-size: 12px;">docker-machine</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-networking" style="font-size: 12px;">docker-networking</a>
+        
+        <a href="https://trumhemcut.github.io/tags/docker-swarm" style="font-size: 12px;">docker-swarm</a>
+        
+        <a href="https://trumhemcut.github.io/tags/dockercon2016" style="font-size: 12px;">dockercon2016</a>
+        
+        <a href="https://trumhemcut.github.io/tags/dockerswarm" style="font-size: 12px;">dockerswarm</a>
+        
+        <a href="https://trumhemcut.github.io/tags/dotnetcore" style="font-size: 12px;">dotnetcore</a>
+        
+        <a href="https://trumhemcut.github.io/tags/jenkins" style="font-size: 12px;">jenkins</a>
+        
+        <a href="https://trumhemcut.github.io/tags/powershell" style="font-size: 12px;">powershell</a>
+        
+        <a href="https://trumhemcut.github.io/tags/swarm-mode" style="font-size: 12px;">swarm-mode</a>
+        
+    </div>
+</div>
+
+
+
+
+    <div id="toTop" class="fa fa-chevron-up"></div>
+</aside>
+
+	    
+	</div>
+</div>
+
+<footer id="footer">
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017
+      Blog sử dụng nền tảng của <a href="//gohugo.io">Hugo</a>. Dùng theme của <a href="http://github.com/ppoffice">PPOffice</a>.
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://trumhemcut.github.io/fancybox/jquery.fancybox.pack.js"></script>
+<script src="https://trumhemcut.github.io/js/script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- MathJax -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</body>
+</html>

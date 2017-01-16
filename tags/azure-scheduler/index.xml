@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Azure Scheduler on Phi Huỳnh</title>
+    <link>https://trumhemcut.github.io/tags/azure-scheduler/</link>
+    <description>Recent content in Azure Scheduler on Phi Huỳnh</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 22 Oct 2014 15:00:00 +0000</lastBuildDate>
+    <atom:link href="https://trumhemcut.github.io/tags/azure-scheduler/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Tương tác với Azure Scheduler qua REST API dùng Fiddler</title>
+      <link>https://trumhemcut.github.io/2014/10/22/tuong-tac-voi-azure-scheduler-qua-rest-dung-fiddler</link>
+      <pubDate>Wed, 22 Oct 2014 15:00:00 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2014/10/22/tuong-tac-voi-azure-scheduler-qua-rest-dung-fiddler</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu-về-windows-azure-scheduler&#34;&gt;Giới thiệu về Windows Azure Scheduler&lt;/h2&gt;
+
+&lt;p&gt;Azure Scheduler cho phép chúng ta tạo ra các jobs trên cloud để gọi các services bên trong hoặc ngoài Microsoft Azure. Ví dụ như Azure Scheduler có thể gọi các request HTTP/HTTPS enpoints hoặc gửi các message đến Azure Storage Queue. Bạn có thể chạy job ngay lập tức, hoặc theo một lịch nào đó, hoặc vào một thời điểm nào đó ở tương lai.&lt;/p&gt;
+
+&lt;h2 id=&#34;quản-lý-azure-scheduler-bằng-cách-nào&#34;&gt;Quản lý Azure Scheduler bằng cách nào?&lt;/h2&gt;
+
+&lt;p&gt;Bạn có thể quản lý Azure Scheduler bằng các cách sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;REST API&lt;/li&gt;
+&lt;li&gt;.NET Client&lt;/li&gt;
+&lt;li&gt;PowerShell&lt;/li&gt;
+&lt;li&gt;xpat-cli&lt;/li&gt;
+&lt;li&gt;Azure Portal&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Dùng Azure Portal dĩ nhiên là cách đơn giản và trực quan nhất, các bạn có thể login vào Azure Portal rồi tạo Job Collection mới, sau đó tạo các job mới. Hôm nay mình muốn giới thiệu dùng REST API để tạo các job mới.&lt;/p&gt;
+
+&lt;h2 id=&#34;tạo-một-management-certificate-và-import-vào-subscription&#34;&gt;Tạo một Management Certificate và import vào Subscription&lt;/h2&gt;
+
+&lt;p&gt;Để có thể gọi REST API, trước tiên cần phải authenticate các request. Cơ bản có 2 cách để authenticate request REST API, một là dùng Windows Azure AD, hai là dùng management certificate. Bài này tôi xin giới thiệu dùng cách thứ 2. Bạn có thể tham khảo 2 cách này ở &lt;a href=&#34;http://msdn.microsoft.com/library/azure/ee460782.aspx&#34;&gt;http://msdn.microsoft.com/library/azure/ee460782.aspx&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Để import certificate vào Azure Subscription, chúng ta sẽ tạo ra một certificate trước, và phải import vào mục Personal, chi tiết xem tại &lt;a href=&#34;http://msdn.microsoft.com/en-US/library/azure/gg551722.aspx&#34;&gt;http://msdn.microsoft.com/en-US/library/azure/gg551722.aspx&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Để tạo một certificate, làm theo các bước sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mở CMD&lt;/li&gt;
+&lt;li&gt;Gõ lệnh makecert -sky exchange -r -n “CN=DevTest” -pe -a sha1 -len 2048 -ss My “DevTest.cer” . Lệnh này sẽ tạo ra một Certificate là DevTest và lưu trong thư mục Personal của Certificate Management.&lt;/li&gt;
+&lt;li&gt;Nhấn Windows+R rồi gõ vào certmgr.msc để mở Certificate Management&lt;/li&gt;
+&lt;li&gt;Vào thư mục Certificates -&amp;gt; Personal -&amp;gt; Certificates, chúng ta sẽ thấy một certificate tên là DevTest mới vừa tạo.&lt;/li&gt;
+&lt;li&gt;Nhấn chuột phải vào DevTest, chọn All Tasks, sau đó chọn Export, nhấn Next, Next, Next và nhập vào tên file để export. Ví dụ: C:\Users\phihuynh\Desktop\DevTest.cer, sau đó nhấn Next, Finish
+&lt;img src=&#34;https://trumhemcut.github.io/images/asr01.png&#34; alt=&#34;Certificates&#34; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;import-certificate-vào-azure-subscription&#34;&gt;Import certificate vào Azure Subscription&lt;/h2&gt;
+
+&lt;p&gt;Sau khi  đã tạo ra một certificate và export nó ra màn hình desktop, bước kế tiếp là import nó vào Azure Subscription, theo các bước như sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Đăng nhập vào manage.windowsazure.com&lt;/li&gt;
+&lt;li&gt;Chọn mục Settings, nhấn vào Management Certificates, sau đó chọn Upload và chọn file DevTest.cer vừa export ở Desktop và nhấn dấu Checked để upload.
+&lt;img src=&#34;https://trumhemcut.github.io/images/asr02.png&#34; alt=&#34;Upload Certificate&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Sau khi upload thành công sẽ có màn hình như bên dưới:
+&lt;img src=&#34;https://trumhemcut.github.io/images/asr03.png&#34; alt=&#34;Upload Certificate&#34; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;gọi-azure-scheduler-rest-api-dùng-fiddler&#34;&gt;Gọi Azure Scheduler REST API dùng Fiddler&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã chuẩn bị xong certificate, bạn phải copy certificate vào thư mục C:\Users\phihuynh\Documents\Fiddler2 để Fiddler sẽ dùng certificate này để mã hóa các request và gửi lên Azure Scheduler server.&lt;/p&gt;
+
+&lt;p&gt;Để gửi một request lên Azure Scheduler cũng giống như các request bình thường khác, chỉ có 2 điểm cần lưu ý:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;URL Parameter: ?api-version=2014-04-01
+Header: x-ms-version: 2013-03-01
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/asr04.png&#34; alt=&#34;Upload Certificate&#34; /&gt;
+Kết quả trả về như sau
+&lt;img src=&#34;https://trumhemcut.github.io/images/asr05.png&#34; alt=&#34;Upload Certificate&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;kết-luận&#34;&gt;Kết luận&lt;/h2&gt;
+
+&lt;p&gt;Cũng giống như tất cả các REST API Service khác, chúng ta cần chuẩn bị các bước để authenticate trước. Sau đó thì gọi service một cách bình thường.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
