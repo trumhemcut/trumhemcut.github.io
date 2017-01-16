@@ -3,7 +3,12 @@
   
   <url>
     <loc>https://trumhemcut.github.io/</loc>
-    <lastmod>2016-08-17T11:17:34+00:00</lastmod>
+    <lastmod>2016-08-23T16:34:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service</loc>
+    <lastmod>2016-08-23T16:34:00+00:00</lastmod>
   </url>
   
   <url>
@@ -29,6 +34,11 @@
   <url>
     <loc>https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12</loc>
     <lastmod>2016-06-26T16:56:43+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://trumhemcut.github.io/2014/10/31/azure-automation-hay-la-powershell-as-a-service</loc>
+    <lastmod>2014-10-31T10:20:00+00:00</lastmod>
   </url>
   
 </urlset>

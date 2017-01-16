@@ -4,8 +4,8 @@ date = "2016-06-26T16:56:43+02:00"
 tags = ["Docker", "DockerCon2016", "DevOps"]
 categories = ["DevOps"]
 menu = ""
-images = ["static/images/dockerswarm01.png", "static/images/visualizer01.png", "static/images/visualizer02.png", "static/images/visualizer03.png"]
-banner = "banners/dockercon2016.png"
+images = ["static/images/azurepowershell01.png"]
+banner = "banners/azure-sma.jpg"
 +++
 
 DockerCon đã giới thiệu một loạt các tính năng mới trong Docker, và với version 1.12 (hiện tại đang rc2) chúng ta đã có thể bắt đầu vọc phá. Hôm nay tôi xin giới thiệu về [Docker Swarm Mode](https://docs.docker.com/engine/swarm/), một tính năng mới có trong Docker Engine (v1.12).
@@ -195,6 +195,7 @@ Machine "swarm-02" was stopped.
 ```
 
 Chúng ta sẽ thấy swarm cluster sẽ tự động tạo ra thêm 3 nodes trên swarm-00. Tôi cũng không hiểu sao nó không tạo ra trên **swarm-01**.
+
 ![Visualizer Viewer](/images/visualizer03.png)
 
 ## Kết luận
