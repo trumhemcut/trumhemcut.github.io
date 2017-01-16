@@ -165,5 +165,49 @@ WARNING: No kernel memory limit support
 </description>
     </item>
     
+    <item>
+      <title>Azure Automation hay là PowerShell as a service</title>
+      <link>https://trumhemcut.github.io/2014/10/31/azure-automation-hay-la-powershell-as-a-service</link>
+      <pubDate>Fri, 31 Oct 2014 10:20:00 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2014/10/31/azure-automation-hay-la-powershell-as-a-service</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu-về-azure-automation&#34;&gt;Giới thiệu về Azure Automation&lt;/h2&gt;
+
+&lt;p&gt;Microsoft thông báo là đã cho ra mắt liền tù tì cả lố dịch vụ mới, đọc mà chóng cả mặt. Thế là lại lặn lội tìm xem có gì hay, đọc sơ qua cái sớ thì thấy có em Azure Automation là gây ấn tượng mạnh nhất. Mò ngay :))&lt;/p&gt;
+
+&lt;p&gt;Azure Automation giúp cho các developer (hoặc DevOps) tự động hóa các công việc lập đi lập lại hàng ngày, các tác vụ mất nhiều thời gian (long-running) hoặc các tác vụ mà chúng ta làm thường mắc lỗi (ví dụ như là chỉnh sửa các thông tin cấu hình mỗi lần deployment). Chúng ta có thể dễ dàng create / deploy / monitoring / maintenance các resources trên môi trường Microsoft Azure dùng ngôn ngữ PowerShell (chính xác là PowerShell Workflow). Theo tôi thấy thì Auzure Automation cũng kết hợp cả Azure Scheduler để kích hoạt chạy các tác vụ trên Azure Automation.&lt;/p&gt;
+
+&lt;p&gt;Rõ ràng PowerShell ngày càng trở nên quan trọng trong hệ sinh thái của Microsoft. Việc Microsoft đưa PowerShell phục vụ cho các tác vụ tự động hóa trên môi trường Azure sẽ nâng tầm lên một bước nữa, mà tôi xin đặt tên một cách vui vẻ là PowerShell-As-A-Service (nhại theo Everything Is A Service 🙂 )&lt;/p&gt;
+
+&lt;h2 id=&#34;lợi-ích-khi-sử-dụng-azure-automation&#34;&gt;Lợi ích khi sử dụng Azure Automation&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Tiết kiệm thời gian và tiền bạc với Automation&lt;/li&gt;
+&lt;li&gt;Loại bỏ các công việc tay chân lặp đi lặp lại, các công việc tay chân dễ mắc lỗi hoặc các tác vụ long-runing&lt;/li&gt;
+&lt;li&gt;Nâng cao hiệu quả và độ tin cậy&lt;/li&gt;
+&lt;li&gt;Tương tác với các dịch vụ của Azure và các third-party dùng PowerShell&lt;/li&gt;
+&lt;li&gt;Tăng khả năng sẵn sàng&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;chính-sách-giá-của-azure-automation&#34;&gt;Chính sách giá của Azure Automation&lt;/h2&gt;
+
+&lt;p&gt;Có 2 gói, Free và Standard, hiện tại gói Standard đang được dùng thử miễn phí cho đến cuối tháng 11. Thử ngay nhé, nếu không thì chúng ta vẫn còn cơ hội xài chùa vì đã có gói Free, chi tiết như sau:
+&lt;img src=&#34;https://trumhemcut.github.io/images/azurepowershell01.png&#34; alt=&#34;Container in visualizer&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;bạn-cần-phải-chuẩn-bị-gì-để-bắt-đầu-với-azure-automation&#34;&gt;Bạn cần phải chuẩn bị gì để bắt đầu với Azure Automation?&lt;/h2&gt;
+
+&lt;p&gt;Để bắt đầu cần phải chuẩn bị các bước sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Đăng ký account dùng thử Microsoft Azure (dĩ nhiên roài hehe)&lt;/li&gt;
+&lt;li&gt;Kích hoạt dùng thử Azure Automation&lt;/li&gt;
+&lt;li&gt;Bạn phải biết cơ bản kiến thức về PowerShell&lt;/li&gt;
+&lt;li&gt;Nếu đã dùng thử Azure Scheduler rồi là một lợi thế&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
   </channel>
 </rss>

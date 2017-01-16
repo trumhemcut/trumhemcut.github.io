@@ -728,8 +728,9 @@ Stopping &amp;quot;swarm-02&amp;quot;...
 Machine &amp;quot;swarm-02&amp;quot; was stopped.
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Chúng ta sẽ thấy swarm cluster sẽ tự động tạo ra thêm 3 nodes trên swarm-00. Tôi cũng không hiểu sao nó không tạo ra trên &lt;strong&gt;swarm-01&lt;/strong&gt;.
-&lt;img src=&#34;https://trumhemcut.github.io/images/visualizer03.png&#34; alt=&#34;Visualizer Viewer&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Chúng ta sẽ thấy swarm cluster sẽ tự động tạo ra thêm 3 nodes trên swarm-00. Tôi cũng không hiểu sao nó không tạo ra trên &lt;strong&gt;swarm-01&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/visualizer03.png&#34; alt=&#34;Visualizer Viewer&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;kết-luận&#34;&gt;Kết luận&lt;/h2&gt;
 

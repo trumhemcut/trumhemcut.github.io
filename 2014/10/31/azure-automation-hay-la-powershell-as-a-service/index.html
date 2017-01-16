@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-    <title>Docker &middot; Phi Huỳnh</title>
+    <title>Azure Automation hay là PowerShell as a service &middot; Phi Huỳnh</title>
     <meta name="generator" content="Hugo 0.16" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -9,9 +9,6 @@
     
       <meta name="description" content="">
     
-    
-      <link href="https://trumhemcut.github.io/tags/docker/index.xml" rel="alternate" type="application/rss+xml" title="Phi Huỳnh" />
-      <link href="https://trumhemcut.github.io/tags/docker/index.xml" rel="feed" type="application/rss+xml" title="Phi Huỳnh" />
     
     <link rel="icon" href="https://trumhemcut.github.io/favicon.ico">
     <link rel="apple-touch-icon" href="https://trumhemcut.github.io/apple-touch-icon.png" />
@@ -21,29 +18,47 @@
     <link rel="stylesheet" href="https://trumhemcut.github.io/fancybox/jquery.fancybox.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
-    <meta property="og:title" content="Docker" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://trumhemcut.github.io/tags/docker/" />
+    <meta property="og:title" content="Azure Automation hay là PowerShell as a service" />
+<meta property="og:description" content="Giới thiệu về Azure Automation Microsoft thông báo là đã cho ra mắt liền tù tì cả lố dịch vụ mới, đọc mà chóng cả mặt. Thế là lại lặn lội tìm xem có gì hay, đọc sơ qua cái sớ thì thấy có em Azure Automation là gây ấn tượng mạnh nhất. Mò ngay :)) Azure Automation giúp cho các developer (hoặc DevOps) tự động hóa các công việc lập đi lập lại hàng ngày, các tác vụ mất nhiều thời gian (long-running) hoặc các tác vụ mà chúng ta làm thường mắc lỗi (ví dụ như là chỉnh sửa các thông tin cấu hình mỗi lần deployment)." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://trumhemcut.github.io/2014/10/31/azure-automation-hay-la-powershell-as-a-service" />
 
 
-<meta property="og:updated_time" content="2016-08-23T16:34:00&#43;00:00"/>
-
-
-
+<meta property="og:updated_time" content="2014-10-31T10:20:00&#43;00:00"/>
 
 
 
 
 
 
-    
-    
-<meta itemprop="name" content="Docker">
-<meta itemprop="description" content="">
+
+
 
 
     
+    
+<meta itemprop="name" content="Azure Automation hay là PowerShell as a service">
+<meta itemprop="description" content="Giới thiệu về Azure Automation Microsoft thông báo là đã cho ra mắt liền tù tì cả lố dịch vụ mới, đọc mà chóng cả mặt. Thế là lại lặn lội tìm xem có gì hay, đọc sơ qua cái sớ thì thấy có em Azure Automation là gây ấn tượng mạnh nhất. Mò ngay :)) Azure Automation giúp cho các developer (hoặc DevOps) tự động hóa các công việc lập đi lập lại hàng ngày, các tác vụ mất nhiều thời gian (long-running) hoặc các tác vụ mà chúng ta làm thường mắc lỗi (ví dụ như là chỉnh sửa các thông tin cấu hình mỗi lần deployment).">
+
+
+<meta itemprop="dateModified" content="2014-10-31T10:20:00&#43;00:00" />
+<meta itemprop="wordCount" content="393">
+
+
+
+<meta itemprop="keywords" content="azure,cloud,devops,docker,programming,asp.net-core,azure,azurecontainerservice,devops,docker,docker-compose,docker-machine,docker-networking,docker-swarm,dockercon2016,dockerswarm,dotnetcore,jenkins,powershell,swarm-mode," />
+
+    
+
+  <meta name="twitter:card" content="summary"/>
+
+
+
+<meta name="twitter:title" content="Azure Automation hay là PowerShell as a service"/>
+<meta name="twitter:description" content="Giới thiệu về Azure Automation Microsoft thông báo là đã cho ra mắt liền tù tì cả lố dịch vụ mới, đọc mà chóng cả mặt. Thế là lại lặn lội tìm xem có gì hay, đọc sơ qua cái sớ thì thấy có em Azure Automation là gây ấn tượng mạnh nhất. Mò ngay :)) Azure Automation giúp cho các developer (hoặc DevOps) tự động hóa các công việc lập đi lập lại hàng ngày, các tác vụ mất nhiều thời gian (long-running) hoặc các tác vụ mà chúng ta làm thường mắc lỗi (ví dụ như là chỉnh sửa các thông tin cấu hình mỗi lần deployment)."/>
+<meta name="twitter:site" content="@trumhemcut"/>
+
+
     
 
     
@@ -53,7 +68,7 @@
 
 
 <div id="container">
-    <header id="header">
+	<header id="header">
   <div id="header-main" class="header-inner">
     <div class="outer">
       <a href="https://trumhemcut.github.io/" id="logo">
@@ -141,8 +156,10 @@
   </div>
 </header>
 
-    <div class="outer">
-        <aside id="profile">
+   	
+   	<div class="outer">
+   		
+	    <aside id="profile">
   <div class="inner profile-inner">
     <div class="base-info profile-block">
       <img id="avatar" src="https://trumhemcut.github.io/css/images/avatar.png">
@@ -233,139 +250,174 @@
 <td><a href="//twitter.com/trumhemcut" target="_blank" title="Twitter"><i class="fa fa-twitter"></i></a></td>
 
 
-          <td><a href="https://trumhemcut.github.io/tags/docker/index.xml" target="_blank" title="RSS"><i class="fa fa-rss"></i></a></td>
+          <td><a href="" target="_blank" title="RSS"><i class="fa fa-rss"></i></a></td>
         </tr>
       </table>
     </div>
   </div>
 </aside>
 
-        <section id="main">
-            <section class="archives-wrap">
-                <div class="archive-category-wrap">
-                    <span class="archive-category">Docker</span>
-                </div>
-                <div class="archives">
-                    
-                    
-                        <article class="archive-article archive-type-post">
-    <div class="archive-article-inner">
-        <div class="archive-article-thumbnail">
-            
-            <a href="https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service" class="thumbnail">
-                <span style="background-image:url(https://trumhemcut.github.io/banners/azurecontainerservice.jpg)" alt="Tạo Docker Swarm Cluster dùng Azure Container Service" class="thumbnail-image"></span>
-            </a>
-            
-        </div>
-        <header class="archive-article-header">
-            <h1 itemprop="name">
-            <a class="archive-article-title" href="https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service">Tạo Docker Swarm Cluster dùng Azure Container Service</a>
-            </h1>
-            <div class="archive-article-date">
-                <i class="fa fa-calendar"></i>
-                <time datetime="2016-08-23 16:34:00 &#43;0000 UTC" itemprop="datePublished">2016-08-23</time>
-            </div>
-        </header>
-    </div>
-</article>
- 
-                    
-                        <article class="archive-article archive-type-post">
-    <div class="archive-article-inner">
-        <div class="archive-article-thumbnail">
-            
-            <a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" class="thumbnail">
-                <span style="background-image:url(https://trumhemcut.github.io/banners/cd-docker-jenkins.png)" alt="Continuous Delivery for dotnet core apps using Jenkins and Docker" class="thumbnail-image"></span>
-            </a>
-            
-        </div>
-        <header class="archive-article-header">
-            <h1 itemprop="name">
-            <a class="archive-article-title" href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker">Continuous Delivery for dotnet core apps using Jenkins and Docker</a>
-            </h1>
-            <div class="archive-article-date">
-                <i class="fa fa-calendar"></i>
-                <time datetime="2016-08-17 11:17:34 &#43;0000 UTC" itemprop="datePublished">2016-08-17</time>
-            </div>
-        </header>
-    </div>
-</article>
- 
-                    
-                        <article class="archive-article archive-type-post">
-    <div class="archive-article-inner">
-        <div class="archive-article-thumbnail">
-            
-            <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="thumbnail">
-                <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Docker networking &amp; Docker Swarm Mode Demo" class="thumbnail-image"></span>
-            </a>
-            
-        </div>
-        <header class="archive-article-header">
-            <h1 itemprop="name">
-            <a class="archive-article-title" href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo">Docker networking &amp; Docker Swarm Mode Demo</a>
-            </h1>
-            <div class="archive-article-date">
-                <i class="fa fa-calendar"></i>
-                <time datetime="2016-07-03 13:27:20 &#43;0200 &#43;0200" itemprop="datePublished">2016-07-03</time>
-            </div>
-        </header>
-    </div>
-</article>
- 
-                    
-                        <article class="archive-article archive-type-post">
-    <div class="archive-article-inner">
-        <div class="archive-article-thumbnail">
-            
-            <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="thumbnail">
-                <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Mở port cho Docker Machine" class="thumbnail-image"></span>
-            </a>
-            
-        </div>
-        <header class="archive-article-header">
-            <h1 itemprop="name">
-            <a class="archive-article-title" href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine">Mở port cho Docker Machine</a>
-            </h1>
-            <div class="archive-article-date">
-                <i class="fa fa-calendar"></i>
-                <time datetime="2016-06-28 11:20:46 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-28</time>
-            </div>
-        </header>
-    </div>
-</article>
- 
-                    
-                        <article class="archive-article archive-type-post">
-    <div class="archive-article-inner">
-        <div class="archive-article-thumbnail">
-            
-            <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" class="thumbnail">
-                <span style="background-image:url(https://trumhemcut.github.io/banners/azure-sma.jpg)" alt="Giới thiệu các tính năng mới trong Docker 1.12" class="thumbnail-image"></span>
-            </a>
-            
-        </div>
-        <header class="archive-article-header">
-            <h1 itemprop="name">
-            <a class="archive-article-title" href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12">Giới thiệu các tính năng mới trong Docker 1.12</a>
-            </h1>
-            <div class="archive-article-date">
-                <i class="fa fa-calendar"></i>
-                <time datetime="2016-06-26 16:56:43 &#43;0200 &#43;0200" itemprop="datePublished">2016-06-26</time>
-            </div>
-        </header>
-    </div>
-</article>
- 
-                    
-                </div>
-            </section>
-            <nav id="page-nav">
+	    
 
+	    
+<section id="main">
+
+    <article id="page-undefined" class="article article-type-page" itemscope="" itemprop="blogPost">
+        <div class="article-inner">
+            
+                <img src="https://trumhemcut.github.io/banners/azurecontainerservice.jpg" class="article-banner">
+            
+
+            <header class="article-header">
+    <a href="https://trumhemcut.github.io/2014/10/31/azure-automation-hay-la-powershell-as-a-service">
+    <h1 class="article-title" itemprop="name">
+        Azure Automation hay là PowerShell as a service
+    </h1>
+    </a>
+    <div class="article-meta">
+        <div class="article-date">
+            <i class="fa fa-calendar"></i>
+            <time datetime="2014-10-31 10:20:00 &#43;0000 UTC" itemprop="datePublished">2014-10-31</time>
+            &middot;
+            393
+            từ
+            &middot;
+            2
+            phút đọc
+        </div>
+
+        
+        
+            
+            
+            <div class="article-category">
+                <i class="fa fa-folder"></i>
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/categories/devops">DevOps</a>
+                &middot;
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/categories/cloud">Cloud</a>
+                &middot;
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/categories/azure">Azure</a>
+                
+                
+            </div>
+            
+        
+
+        
+            
+            
+            <div class="article-category">
+                <i class="fa fa-tags"></i>
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/azure">Azure</a>
+                &middot;
+                
+                <a class="article-category-link" href="https://trumhemcut.github.io/tags/powershell">PowerShell</a>
+                
+                
+            </div>
+            
+        
+    </div>
+</header>
+
+            <div class="article-entry" itemprop="articleBody">
+                
+
+<h2 id="giới-thiệu-về-azure-automation">Giới thiệu về Azure Automation</h2>
+
+<p>Microsoft thông báo là đã cho ra mắt liền tù tì cả lố dịch vụ mới, đọc mà chóng cả mặt. Thế là lại lặn lội tìm xem có gì hay, đọc sơ qua cái sớ thì thấy có em Azure Automation là gây ấn tượng mạnh nhất. Mò ngay :))</p>
+
+<p>Azure Automation giúp cho các developer (hoặc DevOps) tự động hóa các công việc lập đi lập lại hàng ngày, các tác vụ mất nhiều thời gian (long-running) hoặc các tác vụ mà chúng ta làm thường mắc lỗi (ví dụ như là chỉnh sửa các thông tin cấu hình mỗi lần deployment). Chúng ta có thể dễ dàng create / deploy / monitoring / maintenance các resources trên môi trường Microsoft Azure dùng ngôn ngữ PowerShell (chính xác là PowerShell Workflow). Theo tôi thấy thì Auzure Automation cũng kết hợp cả Azure Scheduler để kích hoạt chạy các tác vụ trên Azure Automation.</p>
+
+<p>Rõ ràng PowerShell ngày càng trở nên quan trọng trong hệ sinh thái của Microsoft. Việc Microsoft đưa PowerShell phục vụ cho các tác vụ tự động hóa trên môi trường Azure sẽ nâng tầm lên một bước nữa, mà tôi xin đặt tên một cách vui vẻ là PowerShell-As-A-Service (nhại theo Everything Is A Service 🙂 )</p>
+
+<h2 id="lợi-ích-khi-sử-dụng-azure-automation">Lợi ích khi sử dụng Azure Automation</h2>
+
+<ul>
+<li>Tiết kiệm thời gian và tiền bạc với Automation</li>
+<li>Loại bỏ các công việc tay chân lặp đi lặp lại, các công việc tay chân dễ mắc lỗi hoặc các tác vụ long-runing</li>
+<li>Nâng cao hiệu quả và độ tin cậy</li>
+<li>Tương tác với các dịch vụ của Azure và các third-party dùng PowerShell</li>
+<li>Tăng khả năng sẵn sàng</li>
+</ul>
+
+<h2 id="chính-sách-giá-của-azure-automation">Chính sách giá của Azure Automation</h2>
+
+<p>Có 2 gói, Free và Standard, hiện tại gói Standard đang được dùng thử miễn phí cho đến cuối tháng 11. Thử ngay nhé, nếu không thì chúng ta vẫn còn cơ hội xài chùa vì đã có gói Free, chi tiết như sau:
+<img src="https://trumhemcut.github.io/images/azurepowershell01.png" alt="Container in visualizer" /></p>
+
+<h2 id="bạn-cần-phải-chuẩn-bị-gì-để-bắt-đầu-với-azure-automation">Bạn cần phải chuẩn bị gì để bắt đầu với Azure Automation?</h2>
+
+<p>Để bắt đầu cần phải chuẩn bị các bước sau:</p>
+
+<ul>
+<li>Đăng ký account dùng thử Microsoft Azure (dĩ nhiên roài hehe)</li>
+<li>Kích hoạt dùng thử Azure Automation</li>
+<li>Bạn phải biết cơ bản kiến thức về PowerShell</li>
+<li>Nếu đã dùng thử Azure Scheduler rồi là một lợi thế</li>
+</ul>
+
+            </div>
+            <footer class="article-footer">
+    <a data-url="https://trumhemcut.github.io/2014/10/31/azure-automation-hay-la-powershell-as-a-service" data-id="6dc63113765cd6d73bd85646cfb7590c" class="article-share-link">
+        Chia sẻ
+    </a>
+    
+    <a href="https://trumhemcut.github.io/2014/10/31/azure-automation-hay-la-powershell-as-a-service/#disqus_thread" class="article-comment-link">
+        Ý kiến
+    </a>
+    
+</footer>
+
+        </div>
+
+        
+<nav id="article-nav">
+    
+
+    
+    <a href="https://trumhemcut.github.io/2016/06/26/gioi-thieu-cac-tinh-nang-moi-trong-docker1-12" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">
+          Mới hơn
+      </strong>
+      <div class="article-nav-title">Giới thiệu các tính năng mới trong Docker 1.12</div>
+    </a>
+    
 </nav>
 
-        </section>
-        <aside id="sidebar">
+
+    </article>
+
+    
+    <section id="comments">
+        <div id="disqus_thread">
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'trumhemcut';
+    var disqus_identifier = 'https:\/\/trumhemcut.github.io\/2014\/10\/31\/azure-automation-hay-la-powershell-as-a-service';
+    var disqus_title = 'Azure Automation hay là PowerShell as a service';
+    var disqus_url = 'https:\/\/trumhemcut.github.io\/2014\/10\/31\/azure-automation-hay-la-powershell-as-a-service';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </div>
+    </section>
+    
+</section>
+
+
+	    
+	    <aside id="sidebar">
     
 <div class="widget-wrap">
     <h3 class="widget-title">
@@ -378,7 +430,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/azurecontainerservice.jpg)" alt="Docker" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/azurecontainerservice.jpg)" alt="Azure Automation hay là PowerShell as a service" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -403,7 +455,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/08/17/continuous-delivery-for-dotnet-core-app-using-jenkins--docker" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/cd-docker-jenkins.png)" alt="Docker" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/cd-docker-jenkins.png)" alt="Azure Automation hay là PowerShell as a service" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -428,7 +480,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/07/03/docker-networking-docker-swarm-mode-demo" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Docker" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/dockerswarm.png)" alt="Azure Automation hay là PowerShell as a service" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -453,7 +505,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg)" alt="Docker" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/microsoft-loves-linux.jpg)" alt="Azure Automation hay là PowerShell as a service" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -478,7 +530,7 @@
                 <div class="item-thumbnail">
                     <a href="https://trumhemcut.github.io/2016/06/28/mo-port-cho-docker-machine" class="thumbnail">
                     
-                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Docker" class="thumbnail-image"></span>
+                        <span style="background-image:url(https://trumhemcut.github.io/banners/portforward.png)" alt="Azure Automation hay là PowerShell as a service" class="thumbnail-image"></span>
                     
                     </a>
                 </div>
@@ -722,7 +774,8 @@
     <div id="toTop" class="fa fa-chevron-up"></div>
 </aside>
 
-    </div>
+	    
+	</div>
 </div>
 
 <footer id="footer">
