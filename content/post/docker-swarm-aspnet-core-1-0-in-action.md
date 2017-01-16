@@ -2,7 +2,7 @@
 title = "Docker Swarm, aspnet core 1.0 in action"
 date = "2016-06-29T11:44:08+02:00"
 tags = ["asp.net core", "Docker Swarm", "Docker Compose"]
-categories = ["Programming", "DevOps", "Docker"]
+categories = ["Azure", "Cloud", "Programming", "DevOps", "Docker"]
 menu = ""
 banner = "banners/microsoft-loves-linux.jpg"
 images = ["static/images/aspnetcore01.png"]

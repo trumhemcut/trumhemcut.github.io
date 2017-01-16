@@ -6,8 +6,277 @@
     <description>Recent content in Azure on Phi Huỳnh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 31 Oct 2014 10:20:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 23 Aug 2016 16:34:00 +0000</lastBuildDate>
     <atom:link href="https://trumhemcut.github.io/categories/azure/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Tạo Docker Swarm Cluster dùng Azure Container Service</title>
+      <link>https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service</link>
+      <pubDate>Tue, 23 Aug 2016 16:34:00 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2016/08/23/tao-docker-swarm-dung-azure-container-service</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;
+
+&lt;p&gt;Docker đã quá quen thuộc với anh em làm DevOps và ngày càng trở nên phổ biến với cả developers. Build ra các images, tạo ra các containers gần như là các công việc thường ngày của dân IT. Hôm nay tôi xin giới thiệu cách dùng &lt;strong&gt;Azure Container Service&lt;/strong&gt; để tạo ra một &lt;strong&gt;Swarm Cluster&lt;/strong&gt; chỉ với vài bước đơn giản. Có điều lưu ý ở đây là Docker Swarm chứ không phải Docker Swarm-Mode (chỉ có từ Docker v1.12 nhé).&lt;/p&gt;
+
+&lt;h2 id=&#34;chuẩn-bị&#34;&gt;Chuẩn bị&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Bạn cần có account của Azure&lt;/li&gt;
+&lt;li&gt;Bạn cần cài đặt Docker trên máy tính của mình, có thể là &lt;strong&gt;Docker for Mac&lt;/strong&gt; hoặc &lt;strong&gt;Docker for Windows&lt;/strong&gt; tùy hệ điều hành đang sử dụng.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;tạo-ssh-key&#34;&gt;Tạo ssh key&lt;/h2&gt;
+
+&lt;p&gt;Azure Container Service yêu cầu có ssh public key để tạo service. Do đó, chúng ta cần phải tạo ra key này để nhập vào lúc đăng ký Azure Container Service. Key này sẽ được dùng để đăng nhập mà không cần phải gõ password.&lt;/p&gt;
+
+&lt;p&gt;Để tạo key, chúng ta mở terminal lên, sau đó gõ lệnh &lt;code&gt;ssh-keygen&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ssh-keygen          
+Generating public/private rsa key pair.
+Enter file in which to save the key (/Users/phihuynh/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /Users/phihuynh/.ssh/id_rsa.
+Your public key has been saved in /Users/phihuynh/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:ZR+bg7xg4SKjU8yiQTMGvDS+soVi19fFB1GeWbU+Tzc phihuynh@phis-mbp.harveynash.vn.local
+The key&#39;s randomart image is:
++---[RSA 2048]----+
+|o          .o. .o|
+|.+         .. + .|
+|o=o     . + o+ . |
+|oooo   . = = =.  |
+|..o B . S + *  Eo|
+|+=.= + + o . . .=|
+|=o+   .   .     .|
+|.  .             |
+|                 |
++----[SHA256]-----+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sau đó, chúng ta dùng lệnh &lt;code&gt;cat ~/.ssh/id_rsa.pub&lt;/code&gt; để xem giá trị của public key. Chúng ta lưu lại giá trị này để nhập vào trong bước đăng ký &lt;strong&gt;Azure Containre Service&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cat ~/.ssh/id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/KIrbbnrP2X60Qr65dGIU3c0qDZP4bQpuFA71xbKBp45Rr4HPdQ4GBEnBf1oryNKBDOlhQCor7mIDn4hlwCvCGkiIP4IZEMDeSnraHlDUuyWd+CR1K+pi8OwP4DlSajEsikZ+zPQ8wr/aD94bs4yjEANclXGxQSGZMXdCdoizI9Qw3PZmd/xYLvtUatW1FOD9Jxt8+QHkAIroImviWUy6Wr7YAk9RhaMuD+yTvI9QETtquQhUOZNP8KD8jCPE3IgJIW2uWW5AFMkCIm54NDyMx1sVGuMb3/Vnxq2wjo+9if0DwGHNOsBfiq/zrTeSJ/9DjyCy8qFI7YcRkia4IzKt phihuynh@phis-mbp.harveynash.vn.local
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;tạo-azure-container-service&#34;&gt;Tạo Azure Container Service&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã tạo xong ssh public key, bước tiếp theo là đăng ký một Azure Container Service để tạo ra một Swarm Cluster. Azure Container Service có thể tạo ra một Swarm Cluster hay Mesos Master.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Đăng nhập vào &lt;strong&gt;&lt;a href=&#34;https://portal.azure.com&#34;&gt;Azure Portal&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Từ portal, chọn &lt;strong&gt;New&lt;/strong&gt;, gõ vào &lt;strong&gt;Azure Container Service&lt;/strong&gt;, sau đó nhấn vào nút &lt;strong&gt;Create&lt;/strong&gt;
+&lt;img src=&#34;https://trumhemcut.github.io/images/acs1.png&#34; alt=&#34;Create container service&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Sau đó, nhập vào &lt;strong&gt;User name&lt;/strong&gt;, &lt;strong&gt;SSH public key&lt;/strong&gt; chính là giá trị của public key bạn tạo ra ở trên. Tôi dùng &lt;strong&gt;Visual Studio Premium with MSDN&lt;/strong&gt; subscription, nếu bạn dùng trial hoặc mua thì có thể là subscription khác. Đặt tên cho service là &lt;strong&gt;test-swarm&lt;/strong&gt;, chọn Location là Southeast Asia và sau đó nhấn nút &lt;strong&gt;OK&lt;/strong&gt;.
+&lt;img src=&#34;https://trumhemcut.github.io/images/acs2.png&#34; alt=&#34;Basic configuration&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Ở bước &lt;strong&gt;2 Framework configuration&lt;/strong&gt;, chọn &lt;strong&gt;Ochestrator configuration&lt;/strong&gt; là &lt;strong&gt;Swarm&lt;/strong&gt; sau đó nhấn OK. Do bài này chúng ta tập trung tạo Docker Swarm Cluster, Azure cũng hỗ trợ Mesos Cluster.&lt;/li&gt;
+&lt;li&gt;Ở bước &lt;strong&gt;3 Azure Container Service settings&lt;/strong&gt;, nhập vào &lt;strong&gt;Agent count&lt;/strong&gt; là 3 (chúng ta muốn có 3 nodes, bạn có thể nhập số khác tùy ý). &lt;strong&gt;Master count&lt;/strong&gt; là 1 là đủ, &lt;strong&gt;DNS prefix&lt;/strong&gt; nhập vào text tùy ý, ví dụ &lt;strong&gt;swarm&lt;/strong&gt;.
+&lt;img src=&#34;https://trumhemcut.github.io/images/acs3.png&#34; alt=&#34;3 Azure container service settings&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Bước 4 validation passed, nhấn &lt;strong&gt;OK&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Bước 5 Buy, nhấn &lt;strong&gt;Purchase&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Toàn bộ quá trình deployment diễn ra mất khoảng 15-20 phút, chúng ta kiên nhẫn chờ đợi. Sau khi deploy thành công, chúng ta có thể xem các service trong resource group &lt;strong&gt;test-swarm&lt;/strong&gt;. Chúng ta thấy có rất nhiều service được tạo ra: 1 virtual machine, 1 virtual machine scaleset (bao gồm 3 instances tương ứng với 3 nodes chúng ta cấu hình ở trên), 2 load balancers, 2 public ips, &amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/acs4.png&#34; alt=&#34;Azure container services&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;kết-nối-đến-swarm-master&#34;&gt;Kết nối đến Swarm Master&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã hoàn tất quá trình deployment, chúng ta đã sẵn sàng để kết nối đến cluster. Để kết nối đến cluster, chúng ta cần địa chỉ IP để SSH. chúng ta chọn resource group &lt;strong&gt;test-swarm&lt;/strong&gt;, chọn &lt;strong&gt;swarm-master-lb-[ID]&lt;/strong&gt; load balancer, nhấn &lt;strong&gt;Overview&lt;/strong&gt; và copy giá trị Public IP Address, ví dụ của tôi là &lt;strong&gt;52.187.69.179&lt;/strong&gt;.
+&lt;img src=&#34;https://trumhemcut.github.io/images/acs5.png&#34; alt=&#34;Get load balancer IP Address&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Sau đó mở terminal, gõ lệnh ssh để kết nối đến swarm cluster:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ssh -L 2375:localhost:2375 -f -N phihuynh@52.187.69.179 -p 2200
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Lệnh này sẽ tạo ra một SSH Server trên máy local và lắng nghe trên port 2375, sau đó forward traffic lên SSH server của cluster.&lt;/p&gt;
+
+&lt;p&gt;Sau đó, chúng ta chạy tiếp lệnh sau &lt;code&gt;export DOCKER_HOST=:2375&lt;/code&gt; để lệnh docker client sẽ chuyển hướng sang localhost:2375&lt;/p&gt;
+
+&lt;p&gt;Ok, đến đây là chúng ta đã hoàn tất kết nối đến swarm cluster. Để kiểm tra xem kết nối thành công hay không, chúng ta chạy lệnh &lt;code&gt;docker info&lt;/code&gt; để xem số lượng nodes có phải là 3 hay không.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker info
+ocker info
+Containers: 0
+ Running: 0
+ Paused: 0
+ Stopped: 0
+Images: 0
+Role: primary
+Strategy: spread
+Filters: health, port, dependency, affinity, constraint
+Nodes: 3
+ swarm-agent-BA631D94000000: 10.0.0.4:2375
+  └ Status: Healthy
+  └ Containers: 0
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.145 GiB
+  └ Labels: executiondriver=, kernelversion=3.19.0-65-generic, operatingsystem=Ubuntu 14.04.4 LTS, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-08-23T11:43:31Z
+ swarm-agent-BA631D94000002: 10.0.0.6:2375
+  └ Status: Healthy
+  └ Containers: 0
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.145 GiB
+  └ Labels: executiondriver=, kernelversion=3.19.0-65-generic, operatingsystem=Ubuntu 14.04.4 LTS, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-08-23T11:43:34Z
+ swarm-agent-BA631D94000003: 10.0.0.7:2375
+  └ Status: Healthy
+  └ Containers: 0
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 7.145 GiB
+  └ Labels: executiondriver=, kernelversion=3.19.0-65-generic, operatingsystem=Ubuntu 14.04.4 LTS, storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-08-23T11:43:54Z
+Plugins:
+ Volume: 
+ Network: 
+Swarm: 
+ NodeID: 
+ Is Manager: false
+ Node Address: 
+Security Options:
+Kernel Version: 3.19.0-65-generic
+Operating System: linux
+Architecture: amd64
+CPUs: 6
+Total Memory: 21.44 GiB
+Name: 7434ac726bcc
+Docker Root Dir: 
+Debug Mode (client): false
+Debug Mode (server): false
+WARNING: No kernel memory limit support
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;chạy-thử-một-container&#34;&gt;Chạy thử một container&lt;/h2&gt;
+
+&lt;p&gt;Sau khi kết nối thành công, chúng ta chạy thử một container ubuntu.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker run -it ubuntu bash
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Docker Swarm, aspnet core 1.0 in action</title>
+      <link>https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action</link>
+      <pubDate>Wed, 29 Jun 2016 11:44:08 +0200</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2016/06/29/docker-swarm-aspnet-core-1-0-in-action</guid>
+      <description>
+
+&lt;p&gt;Cuối cùng thì Microsoft cũng ra mắt &lt;a href=&#34;https://blogs.msdn.microsoft.com/webdev/2016/06/27/announcing-asp-net-core-1-0/&#34;&gt;aspnet core 1.0&lt;/a&gt;, sau một thời gian dài trải qua các version RC1, RC2. Như các bạn cũng biết asp.net core có nhiều tính năng được built-in mà chúng ta không phải tìm kiếm &amp;amp; sử dụng nhiều libraries ngoài như asp.net 5. Có thể kể ra một vài tính năng như sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Chạy cross-platform trên Windows, Mac và Linux&lt;/li&gt;
+&lt;li&gt;Xây dựng trên .NET core, hỗ trợ side-by-side versioning&lt;/li&gt;
+&lt;li&gt;Hỗ trợ built-in dependency injection&lt;/li&gt;
+&lt;li&gt;Tag Helper kiểu tự nhiên như HTML data attributes (bắt chước Angular 1 :v )&lt;/li&gt;
+&lt;li&gt;Có thể host trên IIS hoặc self-host&lt;/li&gt;
+&lt;li&gt;Không còn phân biệt giữa MVC/API nữa&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Có nhiều cách / tools để bắt đầu một dự án dùng aspnet core 1.0. Chúng ta có thể dùng &lt;a href=&#34;https://www.visualstudio.com/downloads/visual-studio-prerelease-downloads#sec1&#34;&gt;Visual Studio 2015 RC3&lt;/a&gt;, &lt;a href=&#34;https://code.visualstudio.com/&#34;&gt;Visual Studio Code&lt;/a&gt; hoặc &lt;a href=&#34;https://eclipse-che.readme.io/&#34;&gt;Eclipse Che&lt;/a&gt; để viết code, deploy lên Windows / Linux / Mac hay Docker tùy thích. Nói chung là có máy nào xài máy đó, thích tool nào xài tool đó :), không còn phụ thuộc vào tools hay environment nữa.&lt;/p&gt;
+
+&lt;p&gt;Trong bài này, tôi sẽ giới thiệu cách develop một dự án aspnet core 1.0 dùng Visual Studio Code trên Mac, deploy lên Docker Swarm Cluster và dùng Docker Compose để scale các service trên Swarm Cluster.&lt;/p&gt;
+
+&lt;h2 id=&#34;cài-đặt-net-core-1-0-visual-studio-code-trên-mac&#34;&gt;Cài đặt .NET Core 1.0, Visual Studio Code trên Mac&lt;/h2&gt;
+
+&lt;p&gt;Để bắt đầu một dự án aspnet core 1.0 trên Mac, chúng ta phải chuẩn bị environment như sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Cài đặt .NET Core 1.0 theo hướng dẫn &lt;a href=&#34;https://www.microsoft.com/net/core#macos&#34;&gt;ở đây&lt;/a&gt;. Sau khi cài đặt xong, dùng terminal chạy lệnh &lt;code&gt;dotnet --version&lt;/code&gt; để kiểm tra version của dotnet tool và nếu thấy giá trị là &lt;strong&gt;1.0.0-preview2-003121&lt;/strong&gt; nghĩa là chúng ta đã on track.&lt;/li&gt;
+&lt;li&gt;Cài đặt Visual Studio Code&lt;/li&gt;
+&lt;li&gt;Cài đặt &lt;a href=&#34;https://nodejs.org/en/&#34;&gt;NodeJS&lt;/a&gt; và &lt;a href=&#34;http://yeoman.io/&#34;&gt;Yeoman&lt;/a&gt; (optional): bước này không bắt buộc, tuy nhiên tôi khuyến khích sử dụng Yeoman vì rất thuận tiện để tạo project structure. Sau khi cài Yeoman xong thì cài thêm &lt;a href=&#34;https://www.npmjs.com/package/generator-aspnet&#34;&gt;aspnet generator&lt;/a&gt; là chúng ta đã sẵn sàng. Nếu đã cài yeoman &amp;amp; aspnet generator trước đó thì cần update generator để có bộ aspnet generator mới nhất.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;xin-chào-aspnet-core-1-0&#34;&gt;Xin chào aspnet core 1.0&lt;/h2&gt;
+
+&lt;p&gt;Khá dễ dàng để bắt đầu với aspnet core 1.0. Trên Mac, mở terminal và gõ lệnh &lt;code&gt;yo aspnet&lt;/code&gt;, chọn &lt;strong&gt;Empty Web Application&lt;/strong&gt;, đặt tên dự án là &lt;strong&gt;hello-aspnet&lt;/strong&gt; và nhấn enter. Yeoman sẽ tạo ra một project structure cho chúng ta.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ mkdir ~/projects &amp;amp; cd ~/projects
+$ yo aspnet
+
+     _-----_     ╭──────────────────────────╮
+    |       |    │      Welcome to the      │
+    |--(o)--|    │  marvellous ASP.NET Core │
+   `---------´   │        generator!        │
+    ( _´U`_ )    ╰──────────────────────────╯
+    /___A___\   /
+     |  ~  |     
+   __&#39;.___.&#39;__   
+ ´   `  |° ´ Y ` 
+
+? What type of application do you want to create? Empty Web Application
+? What&#39;s the name of your ASP.NET application? hello-aspnet
+   create hello-aspnet/.gitignore
+   create hello-aspnet/Program.cs
+   create hello-aspnet/Startup.cs
+   create hello-aspnet/project.json
+   create hello-aspnet/web.config
+   create hello-aspnet/Dockerfile
+   create hello-aspnet/Properties/launchSettings.json
+   create hello-aspnet/README.md
+
+
+Your project is now created, you can use the following commands to get going
+    cd &amp;quot;hello-aspnet&amp;quot;
+    dotnet restore
+    dotnet build (optional, build will also happen when it&#39;s run)
+    dotnet run
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sau đó chúng tao vào thư mục &lt;strong&gt;hello-aspnet&lt;/strong&gt; và chạy các lệnh &lt;code&gt;dotnet restore&lt;/code&gt;, &lt;code&gt;dotnet build&lt;/code&gt; và &lt;code&gt;dotnet run&lt;/code&gt; để chạy dự án.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;➜  hello-aspnet dotnet run
+Project hello-aspnet (.NETCoreApp,Version=v1.0) was previously compiled. Skipping compilation.
+Hosting environment: Production
+Content root path: /Users/phihuynh/projects/hello-aspnet
+Now listening on: http://localhost:5000
+Application started. Press Ctrl+C to shut down.
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:5000/  
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 88.3022ms 20
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sau đó, mở trình duyệt và nhập vào địa chỉ &lt;code&gt;http://localhost:5000&lt;/code&gt; là chúng ta đã có web app đầu tiên chạy trên aspnet core 1.0.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/aspnetcore01.png&#34; alt=&#34;say hello to aspnet core&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;xin-chào-docker&#34;&gt;Xin chào Docker&lt;/h2&gt;
+
+&lt;p&gt;Chúng ta đã có thể say hello với aspnet core 1.0 trên Mac, giờ chúng ta tiếp tục bắt đầu với Docker. Tôi giả sử là chúng ta đã là quen sơ sơ với Docker rồi nên sẽ không nói nhiều về benefits của Docker nữa.&lt;/p&gt;
+
+&lt;p&gt;Để chạy hello-aspnet app vừa rồi trên Docker, cơ bản chúng ta sẽ đi qua các bước như sau:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Cài đặt Docker Toolbox, bộ Docker Toolbox sẽ bao gồm Docker Machine, Kitematic &amp;amp; VirtualBox&lt;/li&gt;
+&lt;li&gt;Dùng &lt;strong&gt;docker-machine&lt;/strong&gt; để tạo ra một máy ảo boot2docker&lt;/li&gt;
+&lt;li&gt;Build image cho app hello-aspnet&lt;/li&gt;
+&lt;li&gt;Deploy hello-aspnet app lên Docker bằng docker commands&lt;br /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;cài-đặt-docker-toolbox&#34;&gt;Cài đặt Docker Toolbox&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.docker.com/products/docker-toolbox&#34;&gt;Docker Toolbox&lt;/a&gt; có 2 phiên bản cho Windows &amp;amp; Mac. Chúng ta lựa chọn phiên bản phù hợp với OS của mình. Sau khi cài xong, chúng ta sẽ có Docker Machine, Kitematic &amp;amp; Virtualbox để sẳn sàng tạo máy ảo.&lt;/p&gt;
+
+&lt;h3 id=&#34;tạo-máy-ảo-bằng-docker-machine&#34;&gt;Tạo máy ảo bằng docker-machine&lt;/h3&gt;
+
+&lt;p&gt;Sau khi đã cài Docker Toolbox, mở terminal lên, dùng lệnh sau để tạo máy ảo&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ docker-machine create -d virtualbox docker00 
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>Azure Automation hay là PowerShell as a service</title>
@@ -50,6 +319,289 @@
 &lt;li&gt;Bạn phải biết cơ bản kiến thức về PowerShell&lt;/li&gt;
 &lt;li&gt;Nếu đã dùng thử Azure Scheduler rồi là một lợi thế&lt;/li&gt;
 &lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Tương tác với Azure Scheduler dùng Azure Active Directory</title>
+      <link>https://trumhemcut.github.io/2014/10/27/tuong-tac-voi-azure-scheduler-dung-azure-ad</link>
+      <pubDate>Mon, 27 Oct 2014 18:00:00 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2014/10/27/tuong-tac-voi-azure-scheduler-dung-azure-ad</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu-azure-active-directory&#34;&gt;Giới thiệu Azure Active Directory&lt;/h2&gt;
+
+&lt;p&gt;Azure Active Directory (AAD) là một giải pháp cloud mà Microsoft đưa ra để quản lý identity &amp;amp; access một cách toàn diện. Bạn có thể dùng AAD để quản lý users &amp;amp; groups, quyền truy cập vào các app của bạn một cách dễ dàng. Hôm nay tôi sẽ giới thiệu cách truy cập vào Azure Scheduler REST API dùng OAuth 2.0.&lt;/p&gt;
+
+&lt;h2 id=&#34;tạo-app-mới-trong-azure-directory&#34;&gt;Tạo App mới trong Azure Directory&lt;/h2&gt;
+
+&lt;p&gt;Để truy cập vào REST API service của Azure Scheduler, chúng ta phải tạo ra một App trong AAD, sau đó sẽ cấp phép cho App này truy cập vào REST API Services. Thao tác các bước sau để tạo ra một App trong AAD:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Đăng nhập vào Microsoft Azure (manage.windowsazure.com)&lt;/li&gt;
+&lt;li&gt;Từ menu bên trái ở trang chính của Microsoft Azure, chọn mục Active Directory, sau đó chọn Default Directory, sẽ thấy hình như bên dưới:
+&lt;img src=&#34;https://trumhemcut.github.io/images/as01.png&#34; alt=&#34;Azure AD&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Chọn tab Applications, sau đó nhấn nút Add, chọn Add an application my organization is developing&lt;/li&gt;
+&lt;li&gt;Đặt tên cho Application, ví dụ: TestAzureScheduler, chọn NATIVE CLIENT APPLICATION
+&lt;img src=&#34;https://trumhemcut.github.io/images/as02.png&#34; alt=&#34;Azure AD&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Sau đó nhấn biểu tượng Next&lt;/li&gt;
+&lt;li&gt;Nhập vào Redirect URI, ví dụ: &lt;a href=&#34;http://localhost/testazurescheduler&#34;&gt;http://localhost/testazurescheduler&lt;/a&gt;, nhấn OK để hoàn tất tạo app&lt;/li&gt;
+&lt;li&gt;Từ cửa sổ của app TestAzureScheduler, chọn tab configure và copy Client ID
+&lt;img src=&#34;https://trumhemcut.github.io/images/as03.png&#34; alt=&#34;Azure AD&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Cũng ở trang configure application, bạn kéo xuống dưới đến mục permissions to other applications chọn Windows Azure Service Management API và chọn Access Azure Service Management. Nhấn Save để hoàn tất quá trình tạo Application mới.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;lấy-access-token&#34;&gt;Lấy Access Token&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mở Visual Studio (2013), tạo một Console Project mới, đặt tên là TestAzureScheduler2&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Mở file program.cs, thêm vào hàm bên dưới:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;private static string GetAccessToken()
+{
+var tenantId = &amp;quot;d8ac9062-da58-40c7-87f3-2ddea9fa470f&amp;quot;;
+var clientId = &amp;quot;d5690d98-0aea-4596-88de-24e88c53c5a5&amp;quot;;
+var redirectUri = &amp;quot;http://localhost/testazurescheduler&amp;quot;;
+ 
+var context = new AuthenticationContext(
+    string.Format(
+    &amp;quot;https://login.windows.net/{0}/oauth2/token?api-version=1.0&amp;quot;,
+    tenantId));
+ 
+var result = context.AcquireToken(
+    &amp;quot;https://management.core.windows.net/&amp;quot;,
+    clientId,
+    new Uri(redirectUri));
+ 
+if (result == null)
+    throw new InvalidOperationException(&amp;quot;Failed to obtain the JWT token&amp;quot;);
+ 
+return result.AccessToken;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Trong đó chúng ta sẽ lấy tenantId từ trang Default Directory, chọn View Endpoints
+&lt;img src=&#34;https://trumhemcut.github.io/images/as04.png&#34; alt=&#34;Azure AD&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;gửi-request-lên-azure-scheduler-dùng-access-token&#34;&gt;Gửi request lên Azure Scheduler dùng Access Token&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã có được Token rồi, thì việc gửi request lên Azure Scheduler REST API cũng giống như bài trước , bạn thêm đoạn code sau vào hàm Main&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;static void Main(string[] args)
+{
+  var token = GetAccessToken();
+  
+  var apiVersion = &amp;quot;api-version=2014-04-01&amp;quot;;
+  var uri = string.Format(
+  &amp;quot;https://management.core.windows.net/3a030e09-3eb5-4224-b282-746af502fb55/cloudservices/CS-SoutheastAsia-scheduler/resources/scheduler/~/JobCollections/jc1?{0}&amp;quot;,
+  apiVersion);
+  
+  using (var client = new HttpClient())
+  {
+    client.DefaultRequestHeaders.Add(&amp;quot;Authorization&amp;quot;, &amp;quot;Bearer &amp;quot; + token);
+    client.DefaultRequestHeaders.Add(&amp;quot;x-ms-version&amp;quot;, &amp;quot;2013-03-01&amp;quot;);
+    HttpResponseMessage response = client.GetAsync(uri).Result;
+    if (response.IsSuccessStatusCode)
+    {
+      var result = response.Content.ReadAsStringAsync().Result;
+      Console.WriteLine(result);
+    }
+  }
+  
+  Console.ReadLine();
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Tương tác với Azure Scheduler qua .NET Client</title>
+      <link>https://trumhemcut.github.io/2014/10/27/tuong-tac-voi-azure-scheduler-qua-net-client</link>
+      <pubDate>Mon, 27 Oct 2014 18:00:00 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2014/10/27/tuong-tac-voi-azure-scheduler-qua-net-client</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;
+
+&lt;p&gt;Azure Scheduler giúp chúng ta tạo các Job và thực thi chúng theo cách không thể dễ dàng hơn. Nếu ai đã từng làm Windows Services hoặc các background services thì với Azure Scheduler, có lẽ chúng ta sẽ không còn cần đến chúng nữa 🙂 Hôm nay tôi xin giới thiệu với các bạn cách tương tác với Azure Scheduler qua .NET Client.&lt;/p&gt;
+
+&lt;h2 id=&#34;tạo-certificate-và-import-vào-msdn-subscription&#34;&gt;Tạo Certificate và Import vào MSDN Subscription&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã chuẩn bị Certificate xong rồi, chúng ta bắt đầu tạo một Project, chúng ta sẽ theo các bước sau để lấy thông tin một Certificate trong C#:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mở Visual Studio (2013), nhấn vào File, New, Project&lt;/li&gt;
+&lt;li&gt;Chọn Templates, Visual C#, Console Application. Đặt tên project là TestAzureScheduler, sau đó nhấn OK.
+&lt;img src=&#34;https://trumhemcut.github.io/images/asn01.png&#34; alt=&#34;Visual Studio&#34; /&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Mở file Program.cs, chúng ta thêm vào hàm sau để đọc thông tin Certificate. Để biết thêm chi tiết về hàm này, các bạn đọc thêm thông tin tại &lt;a href=&#34;http://msdn.microsoft.com/library/azure/ee460782.aspx&#34;&gt;http://msdn.microsoft.com/library/azure/ee460782.aspx&lt;/a&gt; (mục Authenticate using a management certificate)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;private static X509Certificate2 GetStoreCertificate(string thumbprint)
+{
+List&amp;lt;StoreLocation&amp;gt; locations = new List&amp;lt;StoreLocation&amp;gt;
+{
+    StoreLocation.CurrentUser, 
+    StoreLocation.LocalMachine
+};
+
+foreach (var location in locations)
+{
+    X509Store store = new X509Store(&amp;quot;My&amp;quot;, location);
+    try
+    {
+        store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+        X509Certificate2Collection certificates = store.Certificates.Find(
+            X509FindType.FindByThumbprint, thumbprint, false);
+        if (certificates.Count == 1)
+        {
+            return certificates[0];
+        }
+    }
+    finally
+    {
+        store.Close();
+    }
+}
+throw new ArgumentException(string.Format(
+    &amp;quot;A Certificate with Thumbprint &#39;{0}&#39; could not be located.&amp;quot;,
+    thumbprint));
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Hàm trên có một thông số là thumbprint, đây chính là thông tin thumbprint của Certificate mà chúng ta đã tạo ra ở bài trước. Để lấy thông tin này, chúng ta nhấn Windows+R, sau đó gõ vào certmgr.msc và nhấn Enter. Cửa sổ Certificates Management sẽ hiển thị lên, chúng ta tiếp tục chọn Personal, Certificates ở cửa sổ phía trái. Khi đó ở cửa sổ phải, sẽ xuất hiện DevTest Certificate như hình dưới.
+&lt;img src=&#34;https://trumhemcut.github.io/images/asn02.png&#34; alt=&#34;Certificates&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Nhấn đôi chuột vào DevTest để hiển thị thông tin chi tiết của Certificate, chọn tab Details, kéo scroll bar xuống dưới cùng thì chúng ta sẽ thấy thông tin của Thumbprint, nhấn vào mục Thumbprint, chúng ta sẽ thấy nội dung thông tin của Thumbprint như hình sau:
+&lt;img src=&#34;https://trumhemcut.github.io/images/asn03.png&#34; alt=&#34;Certificate&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Copy nội dung của Thumbprint, và paste vào hàm Main trong Program.cs như sau:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;static void Main(string[] args)
+{
+var certificate = GetStoreCertificate(&amp;quot;0c 0c 8b 3d 83 f1 16 dd fe 84 a5 c4 96 f7 1a 62 59 f1 d8 fe&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;tạo-request-đến-azure-scheduler-rest-api&#34;&gt;Tạo request đến Azure Scheduler REST API&lt;/h2&gt;
+
+&lt;p&gt;Đến đây thì ta đã chuẩn bị xong vụ Certificate, tiếp theo là sẽ tạo một HttpRequest đến Azure Scheduler REST API. Tiếp tục các bước sau:&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Từ Visual Studio, nhấn chuột phải vào project TestAzureScheduler chọn Manage Nuget Packages…&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Từ cửa sổ Manage Nuget Packages, mục bên trái ta chọn Online, ở cửa sổ tìm kiếm gõ vào HttpClient, sau đó sẽ hiển thị Microsoft HTTP Client Libraries, chọn mục này và nhấn Install, nhấn I Accept để cài library nào vào project, sau đó nhấn Close&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Sau đó, chúng ta sẽ thêm mã để tạo ra một request đến Azure Scheduler REST API như sau:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;static void Main(string[] args)
+{
+var certificate = GetStoreCertificate(&amp;quot;0c 0c 8b 3d 83 f1 16 dd fe 84 a5 c4 96 f7 1a 62 59 f1 d8 fe&amp;quot;);
+ 
+var apiVersion = &amp;quot;api-version=2014-04-01&amp;quot;;
+var uri = string.Format(&amp;quot;https://management.core.windows.net/3a030e09-3eb5-4224-b282-746af502fb55/cloudservices/CS-SoutheastAsia-scheduler/resources/scheduler/~/JobCollections/jc1?{0}&amp;quot;, apiVersion);
+ 
+var handler = new WebRequestHandler();
+handler.ClientCertificates.Add(certificate);
+using (var client = new HttpClient(handler))
+{
+    client.DefaultRequestHeaders.Add(&amp;quot;x-ms-version&amp;quot;, &amp;quot;2013-03-01&amp;quot;);
+    HttpResponseMessage response = client.GetAsync(uri).Result;
+    if (response.IsSuccessStatusCode)
+    {
+        var result = response.Content.ReadAsStringAsync().Result;
+        Console.WriteLine(result);
+    }
+}
+ 
+Console.ReadLine();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;and-run&#34;&gt;AND RUN &amp;hellip;&lt;/h2&gt;
+
+&lt;p&gt;Chúng ta chạy thử chương trình, nó sẽ gửi request đến Azure Scheduler REST API và trả về danh sách các job đang có 🙂
+&lt;img src=&#34;https://trumhemcut.github.io/images/asn04.png&#34; alt=&#34;Program&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Happy coding :)))&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Tương tác với Azure Scheduler qua REST API dùng Fiddler</title>
+      <link>https://trumhemcut.github.io/2014/10/22/tuong-tac-voi-azure-scheduler-qua-rest-dung-fiddler</link>
+      <pubDate>Wed, 22 Oct 2014 15:00:00 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2014/10/22/tuong-tac-voi-azure-scheduler-qua-rest-dung-fiddler</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu-về-windows-azure-scheduler&#34;&gt;Giới thiệu về Windows Azure Scheduler&lt;/h2&gt;
+
+&lt;p&gt;Azure Scheduler cho phép chúng ta tạo ra các jobs trên cloud để gọi các services bên trong hoặc ngoài Microsoft Azure. Ví dụ như Azure Scheduler có thể gọi các request HTTP/HTTPS enpoints hoặc gửi các message đến Azure Storage Queue. Bạn có thể chạy job ngay lập tức, hoặc theo một lịch nào đó, hoặc vào một thời điểm nào đó ở tương lai.&lt;/p&gt;
+
+&lt;h2 id=&#34;quản-lý-azure-scheduler-bằng-cách-nào&#34;&gt;Quản lý Azure Scheduler bằng cách nào?&lt;/h2&gt;
+
+&lt;p&gt;Bạn có thể quản lý Azure Scheduler bằng các cách sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;REST API&lt;/li&gt;
+&lt;li&gt;.NET Client&lt;/li&gt;
+&lt;li&gt;PowerShell&lt;/li&gt;
+&lt;li&gt;xpat-cli&lt;/li&gt;
+&lt;li&gt;Azure Portal&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Dùng Azure Portal dĩ nhiên là cách đơn giản và trực quan nhất, các bạn có thể login vào Azure Portal rồi tạo Job Collection mới, sau đó tạo các job mới. Hôm nay mình muốn giới thiệu dùng REST API để tạo các job mới.&lt;/p&gt;
+
+&lt;h2 id=&#34;tạo-một-management-certificate-và-import-vào-subscription&#34;&gt;Tạo một Management Certificate và import vào Subscription&lt;/h2&gt;
+
+&lt;p&gt;Để có thể gọi REST API, trước tiên cần phải authenticate các request. Cơ bản có 2 cách để authenticate request REST API, một là dùng Windows Azure AD, hai là dùng management certificate. Bài này tôi xin giới thiệu dùng cách thứ 2. Bạn có thể tham khảo 2 cách này ở &lt;a href=&#34;http://msdn.microsoft.com/library/azure/ee460782.aspx&#34;&gt;http://msdn.microsoft.com/library/azure/ee460782.aspx&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Để import certificate vào Azure Subscription, chúng ta sẽ tạo ra một certificate trước, và phải import vào mục Personal, chi tiết xem tại &lt;a href=&#34;http://msdn.microsoft.com/en-US/library/azure/gg551722.aspx&#34;&gt;http://msdn.microsoft.com/en-US/library/azure/gg551722.aspx&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Để tạo một certificate, làm theo các bước sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mở CMD&lt;/li&gt;
+&lt;li&gt;Gõ lệnh makecert -sky exchange -r -n “CN=DevTest” -pe -a sha1 -len 2048 -ss My “DevTest.cer” . Lệnh này sẽ tạo ra một Certificate là DevTest và lưu trong thư mục Personal của Certificate Management.&lt;/li&gt;
+&lt;li&gt;Nhấn Windows+R rồi gõ vào certmgr.msc để mở Certificate Management&lt;/li&gt;
+&lt;li&gt;Vào thư mục Certificates -&amp;gt; Personal -&amp;gt; Certificates, chúng ta sẽ thấy một certificate tên là DevTest mới vừa tạo.&lt;/li&gt;
+&lt;li&gt;Nhấn chuột phải vào DevTest, chọn All Tasks, sau đó chọn Export, nhấn Next, Next, Next và nhập vào tên file để export. Ví dụ: C:\Users\phihuynh\Desktop\DevTest.cer, sau đó nhấn Next, Finish
+&lt;img src=&#34;https://trumhemcut.github.io/images/asr01.png&#34; alt=&#34;Certificates&#34; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;import-certificate-vào-azure-subscription&#34;&gt;Import certificate vào Azure Subscription&lt;/h2&gt;
+
+&lt;p&gt;Sau khi  đã tạo ra một certificate và export nó ra màn hình desktop, bước kế tiếp là import nó vào Azure Subscription, theo các bước như sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Đăng nhập vào manage.windowsazure.com&lt;/li&gt;
+&lt;li&gt;Chọn mục Settings, nhấn vào Management Certificates, sau đó chọn Upload và chọn file DevTest.cer vừa export ở Desktop và nhấn dấu Checked để upload.
+&lt;img src=&#34;https://trumhemcut.github.io/images/asr02.png&#34; alt=&#34;Upload Certificate&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Sau khi upload thành công sẽ có màn hình như bên dưới:
+&lt;img src=&#34;https://trumhemcut.github.io/images/asr03.png&#34; alt=&#34;Upload Certificate&#34; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;gọi-azure-scheduler-rest-api-dùng-fiddler&#34;&gt;Gọi Azure Scheduler REST API dùng Fiddler&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã chuẩn bị xong certificate, bạn phải copy certificate vào thư mục C:\Users\phihuynh\Documents\Fiddler2 để Fiddler sẽ dùng certificate này để mã hóa các request và gửi lên Azure Scheduler server.&lt;/p&gt;
+
+&lt;p&gt;Để gửi một request lên Azure Scheduler cũng giống như các request bình thường khác, chỉ có 2 điểm cần lưu ý:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;URL Parameter: ?api-version=2014-04-01
+Header: x-ms-version: 2013-03-01
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/asr04.png&#34; alt=&#34;Upload Certificate&#34; /&gt;
+Kết quả trả về như sau
+&lt;img src=&#34;https://trumhemcut.github.io/images/asr05.png&#34; alt=&#34;Upload Certificate&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;kết-luận&#34;&gt;Kết luận&lt;/h2&gt;
+
+&lt;p&gt;Cũng giống như tất cả các REST API Service khác, chúng ta cần chuẩn bị các bước để authenticate trước. Sau đó thì gọi service một cách bình thường.&lt;/p&gt;
 </description>
     </item>
     

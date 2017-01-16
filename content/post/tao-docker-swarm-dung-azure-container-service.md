@@ -2,7 +2,7 @@
 title = "Tạo Docker Swarm Cluster dùng Azure Container Service"
 date = "2016-08-23T16:34:00"
 tags = ["Docker", "Azure", "AzureContainerService", "DockerSwarm"]
-categories = ["DevOps", "Cloud"]
+categories = ["DevOps", "Cloud", "Azure"]
 menu = ""
 banner = "banners/azurecontainerservice.jpg"
 +++

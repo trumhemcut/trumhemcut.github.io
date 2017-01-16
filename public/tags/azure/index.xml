@@ -209,5 +209,288 @@ WARNING: No kernel memory limit support
 </description>
     </item>
     
+    <item>
+      <title>Tương tác với Azure Scheduler dùng Azure Active Directory</title>
+      <link>https://trumhemcut.github.io/2014/10/27/tuong-tac-voi-azure-scheduler-dung-azure-ad</link>
+      <pubDate>Mon, 27 Oct 2014 18:00:00 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2014/10/27/tuong-tac-voi-azure-scheduler-dung-azure-ad</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu-azure-active-directory&#34;&gt;Giới thiệu Azure Active Directory&lt;/h2&gt;
+
+&lt;p&gt;Azure Active Directory (AAD) là một giải pháp cloud mà Microsoft đưa ra để quản lý identity &amp;amp; access một cách toàn diện. Bạn có thể dùng AAD để quản lý users &amp;amp; groups, quyền truy cập vào các app của bạn một cách dễ dàng. Hôm nay tôi sẽ giới thiệu cách truy cập vào Azure Scheduler REST API dùng OAuth 2.0.&lt;/p&gt;
+
+&lt;h2 id=&#34;tạo-app-mới-trong-azure-directory&#34;&gt;Tạo App mới trong Azure Directory&lt;/h2&gt;
+
+&lt;p&gt;Để truy cập vào REST API service của Azure Scheduler, chúng ta phải tạo ra một App trong AAD, sau đó sẽ cấp phép cho App này truy cập vào REST API Services. Thao tác các bước sau để tạo ra một App trong AAD:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Đăng nhập vào Microsoft Azure (manage.windowsazure.com)&lt;/li&gt;
+&lt;li&gt;Từ menu bên trái ở trang chính của Microsoft Azure, chọn mục Active Directory, sau đó chọn Default Directory, sẽ thấy hình như bên dưới:
+&lt;img src=&#34;https://trumhemcut.github.io/images/as01.png&#34; alt=&#34;Azure AD&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Chọn tab Applications, sau đó nhấn nút Add, chọn Add an application my organization is developing&lt;/li&gt;
+&lt;li&gt;Đặt tên cho Application, ví dụ: TestAzureScheduler, chọn NATIVE CLIENT APPLICATION
+&lt;img src=&#34;https://trumhemcut.github.io/images/as02.png&#34; alt=&#34;Azure AD&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Sau đó nhấn biểu tượng Next&lt;/li&gt;
+&lt;li&gt;Nhập vào Redirect URI, ví dụ: &lt;a href=&#34;http://localhost/testazurescheduler&#34;&gt;http://localhost/testazurescheduler&lt;/a&gt;, nhấn OK để hoàn tất tạo app&lt;/li&gt;
+&lt;li&gt;Từ cửa sổ của app TestAzureScheduler, chọn tab configure và copy Client ID
+&lt;img src=&#34;https://trumhemcut.github.io/images/as03.png&#34; alt=&#34;Azure AD&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Cũng ở trang configure application, bạn kéo xuống dưới đến mục permissions to other applications chọn Windows Azure Service Management API và chọn Access Azure Service Management. Nhấn Save để hoàn tất quá trình tạo Application mới.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;lấy-access-token&#34;&gt;Lấy Access Token&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mở Visual Studio (2013), tạo một Console Project mới, đặt tên là TestAzureScheduler2&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Mở file program.cs, thêm vào hàm bên dưới:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;private static string GetAccessToken()
+{
+var tenantId = &amp;quot;d8ac9062-da58-40c7-87f3-2ddea9fa470f&amp;quot;;
+var clientId = &amp;quot;d5690d98-0aea-4596-88de-24e88c53c5a5&amp;quot;;
+var redirectUri = &amp;quot;http://localhost/testazurescheduler&amp;quot;;
+ 
+var context = new AuthenticationContext(
+    string.Format(
+    &amp;quot;https://login.windows.net/{0}/oauth2/token?api-version=1.0&amp;quot;,
+    tenantId));
+ 
+var result = context.AcquireToken(
+    &amp;quot;https://management.core.windows.net/&amp;quot;,
+    clientId,
+    new Uri(redirectUri));
+ 
+if (result == null)
+    throw new InvalidOperationException(&amp;quot;Failed to obtain the JWT token&amp;quot;);
+ 
+return result.AccessToken;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Trong đó chúng ta sẽ lấy tenantId từ trang Default Directory, chọn View Endpoints
+&lt;img src=&#34;https://trumhemcut.github.io/images/as04.png&#34; alt=&#34;Azure AD&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;gửi-request-lên-azure-scheduler-dùng-access-token&#34;&gt;Gửi request lên Azure Scheduler dùng Access Token&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã có được Token rồi, thì việc gửi request lên Azure Scheduler REST API cũng giống như bài trước , bạn thêm đoạn code sau vào hàm Main&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;static void Main(string[] args)
+{
+  var token = GetAccessToken();
+  
+  var apiVersion = &amp;quot;api-version=2014-04-01&amp;quot;;
+  var uri = string.Format(
+  &amp;quot;https://management.core.windows.net/3a030e09-3eb5-4224-b282-746af502fb55/cloudservices/CS-SoutheastAsia-scheduler/resources/scheduler/~/JobCollections/jc1?{0}&amp;quot;,
+  apiVersion);
+  
+  using (var client = new HttpClient())
+  {
+    client.DefaultRequestHeaders.Add(&amp;quot;Authorization&amp;quot;, &amp;quot;Bearer &amp;quot; + token);
+    client.DefaultRequestHeaders.Add(&amp;quot;x-ms-version&amp;quot;, &amp;quot;2013-03-01&amp;quot;);
+    HttpResponseMessage response = client.GetAsync(uri).Result;
+    if (response.IsSuccessStatusCode)
+    {
+      var result = response.Content.ReadAsStringAsync().Result;
+      Console.WriteLine(result);
+    }
+  }
+  
+  Console.ReadLine();
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Tương tác với Azure Scheduler qua .NET Client</title>
+      <link>https://trumhemcut.github.io/2014/10/27/tuong-tac-voi-azure-scheduler-qua-net-client</link>
+      <pubDate>Mon, 27 Oct 2014 18:00:00 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2014/10/27/tuong-tac-voi-azure-scheduler-qua-net-client</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;
+
+&lt;p&gt;Azure Scheduler giúp chúng ta tạo các Job và thực thi chúng theo cách không thể dễ dàng hơn. Nếu ai đã từng làm Windows Services hoặc các background services thì với Azure Scheduler, có lẽ chúng ta sẽ không còn cần đến chúng nữa 🙂 Hôm nay tôi xin giới thiệu với các bạn cách tương tác với Azure Scheduler qua .NET Client.&lt;/p&gt;
+
+&lt;h2 id=&#34;tạo-certificate-và-import-vào-msdn-subscription&#34;&gt;Tạo Certificate và Import vào MSDN Subscription&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã chuẩn bị Certificate xong rồi, chúng ta bắt đầu tạo một Project, chúng ta sẽ theo các bước sau để lấy thông tin một Certificate trong C#:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mở Visual Studio (2013), nhấn vào File, New, Project&lt;/li&gt;
+&lt;li&gt;Chọn Templates, Visual C#, Console Application. Đặt tên project là TestAzureScheduler, sau đó nhấn OK.
+&lt;img src=&#34;https://trumhemcut.github.io/images/asn01.png&#34; alt=&#34;Visual Studio&#34; /&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Mở file Program.cs, chúng ta thêm vào hàm sau để đọc thông tin Certificate. Để biết thêm chi tiết về hàm này, các bạn đọc thêm thông tin tại &lt;a href=&#34;http://msdn.microsoft.com/library/azure/ee460782.aspx&#34;&gt;http://msdn.microsoft.com/library/azure/ee460782.aspx&lt;/a&gt; (mục Authenticate using a management certificate)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;private static X509Certificate2 GetStoreCertificate(string thumbprint)
+{
+List&amp;lt;StoreLocation&amp;gt; locations = new List&amp;lt;StoreLocation&amp;gt;
+{
+    StoreLocation.CurrentUser, 
+    StoreLocation.LocalMachine
+};
+
+foreach (var location in locations)
+{
+    X509Store store = new X509Store(&amp;quot;My&amp;quot;, location);
+    try
+    {
+        store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+        X509Certificate2Collection certificates = store.Certificates.Find(
+            X509FindType.FindByThumbprint, thumbprint, false);
+        if (certificates.Count == 1)
+        {
+            return certificates[0];
+        }
+    }
+    finally
+    {
+        store.Close();
+    }
+}
+throw new ArgumentException(string.Format(
+    &amp;quot;A Certificate with Thumbprint &#39;{0}&#39; could not be located.&amp;quot;,
+    thumbprint));
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Hàm trên có một thông số là thumbprint, đây chính là thông tin thumbprint của Certificate mà chúng ta đã tạo ra ở bài trước. Để lấy thông tin này, chúng ta nhấn Windows+R, sau đó gõ vào certmgr.msc và nhấn Enter. Cửa sổ Certificates Management sẽ hiển thị lên, chúng ta tiếp tục chọn Personal, Certificates ở cửa sổ phía trái. Khi đó ở cửa sổ phải, sẽ xuất hiện DevTest Certificate như hình dưới.
+&lt;img src=&#34;https://trumhemcut.github.io/images/asn02.png&#34; alt=&#34;Certificates&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Nhấn đôi chuột vào DevTest để hiển thị thông tin chi tiết của Certificate, chọn tab Details, kéo scroll bar xuống dưới cùng thì chúng ta sẽ thấy thông tin của Thumbprint, nhấn vào mục Thumbprint, chúng ta sẽ thấy nội dung thông tin của Thumbprint như hình sau:
+&lt;img src=&#34;https://trumhemcut.github.io/images/asn03.png&#34; alt=&#34;Certificate&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Copy nội dung của Thumbprint, và paste vào hàm Main trong Program.cs như sau:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;static void Main(string[] args)
+{
+var certificate = GetStoreCertificate(&amp;quot;0c 0c 8b 3d 83 f1 16 dd fe 84 a5 c4 96 f7 1a 62 59 f1 d8 fe&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;tạo-request-đến-azure-scheduler-rest-api&#34;&gt;Tạo request đến Azure Scheduler REST API&lt;/h2&gt;
+
+&lt;p&gt;Đến đây thì ta đã chuẩn bị xong vụ Certificate, tiếp theo là sẽ tạo một HttpRequest đến Azure Scheduler REST API. Tiếp tục các bước sau:&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Từ Visual Studio, nhấn chuột phải vào project TestAzureScheduler chọn Manage Nuget Packages…&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Từ cửa sổ Manage Nuget Packages, mục bên trái ta chọn Online, ở cửa sổ tìm kiếm gõ vào HttpClient, sau đó sẽ hiển thị Microsoft HTTP Client Libraries, chọn mục này và nhấn Install, nhấn I Accept để cài library nào vào project, sau đó nhấn Close&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Sau đó, chúng ta sẽ thêm mã để tạo ra một request đến Azure Scheduler REST API như sau:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;static void Main(string[] args)
+{
+var certificate = GetStoreCertificate(&amp;quot;0c 0c 8b 3d 83 f1 16 dd fe 84 a5 c4 96 f7 1a 62 59 f1 d8 fe&amp;quot;);
+ 
+var apiVersion = &amp;quot;api-version=2014-04-01&amp;quot;;
+var uri = string.Format(&amp;quot;https://management.core.windows.net/3a030e09-3eb5-4224-b282-746af502fb55/cloudservices/CS-SoutheastAsia-scheduler/resources/scheduler/~/JobCollections/jc1?{0}&amp;quot;, apiVersion);
+ 
+var handler = new WebRequestHandler();
+handler.ClientCertificates.Add(certificate);
+using (var client = new HttpClient(handler))
+{
+    client.DefaultRequestHeaders.Add(&amp;quot;x-ms-version&amp;quot;, &amp;quot;2013-03-01&amp;quot;);
+    HttpResponseMessage response = client.GetAsync(uri).Result;
+    if (response.IsSuccessStatusCode)
+    {
+        var result = response.Content.ReadAsStringAsync().Result;
+        Console.WriteLine(result);
+    }
+}
+ 
+Console.ReadLine();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;and-run&#34;&gt;AND RUN &amp;hellip;&lt;/h2&gt;
+
+&lt;p&gt;Chúng ta chạy thử chương trình, nó sẽ gửi request đến Azure Scheduler REST API và trả về danh sách các job đang có 🙂
+&lt;img src=&#34;https://trumhemcut.github.io/images/asn04.png&#34; alt=&#34;Program&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Happy coding :)))&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Tương tác với Azure Scheduler qua REST API dùng Fiddler</title>
+      <link>https://trumhemcut.github.io/2014/10/22/tuong-tac-voi-azure-scheduler-qua-rest-dung-fiddler</link>
+      <pubDate>Wed, 22 Oct 2014 15:00:00 +0000</pubDate>
+      
+      <guid>https://trumhemcut.github.io/2014/10/22/tuong-tac-voi-azure-scheduler-qua-rest-dung-fiddler</guid>
+      <description>
+
+&lt;h2 id=&#34;giới-thiệu-về-windows-azure-scheduler&#34;&gt;Giới thiệu về Windows Azure Scheduler&lt;/h2&gt;
+
+&lt;p&gt;Azure Scheduler cho phép chúng ta tạo ra các jobs trên cloud để gọi các services bên trong hoặc ngoài Microsoft Azure. Ví dụ như Azure Scheduler có thể gọi các request HTTP/HTTPS enpoints hoặc gửi các message đến Azure Storage Queue. Bạn có thể chạy job ngay lập tức, hoặc theo một lịch nào đó, hoặc vào một thời điểm nào đó ở tương lai.&lt;/p&gt;
+
+&lt;h2 id=&#34;quản-lý-azure-scheduler-bằng-cách-nào&#34;&gt;Quản lý Azure Scheduler bằng cách nào?&lt;/h2&gt;
+
+&lt;p&gt;Bạn có thể quản lý Azure Scheduler bằng các cách sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;REST API&lt;/li&gt;
+&lt;li&gt;.NET Client&lt;/li&gt;
+&lt;li&gt;PowerShell&lt;/li&gt;
+&lt;li&gt;xpat-cli&lt;/li&gt;
+&lt;li&gt;Azure Portal&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Dùng Azure Portal dĩ nhiên là cách đơn giản và trực quan nhất, các bạn có thể login vào Azure Portal rồi tạo Job Collection mới, sau đó tạo các job mới. Hôm nay mình muốn giới thiệu dùng REST API để tạo các job mới.&lt;/p&gt;
+
+&lt;h2 id=&#34;tạo-một-management-certificate-và-import-vào-subscription&#34;&gt;Tạo một Management Certificate và import vào Subscription&lt;/h2&gt;
+
+&lt;p&gt;Để có thể gọi REST API, trước tiên cần phải authenticate các request. Cơ bản có 2 cách để authenticate request REST API, một là dùng Windows Azure AD, hai là dùng management certificate. Bài này tôi xin giới thiệu dùng cách thứ 2. Bạn có thể tham khảo 2 cách này ở &lt;a href=&#34;http://msdn.microsoft.com/library/azure/ee460782.aspx&#34;&gt;http://msdn.microsoft.com/library/azure/ee460782.aspx&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Để import certificate vào Azure Subscription, chúng ta sẽ tạo ra một certificate trước, và phải import vào mục Personal, chi tiết xem tại &lt;a href=&#34;http://msdn.microsoft.com/en-US/library/azure/gg551722.aspx&#34;&gt;http://msdn.microsoft.com/en-US/library/azure/gg551722.aspx&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Để tạo một certificate, làm theo các bước sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mở CMD&lt;/li&gt;
+&lt;li&gt;Gõ lệnh makecert -sky exchange -r -n “CN=DevTest” -pe -a sha1 -len 2048 -ss My “DevTest.cer” . Lệnh này sẽ tạo ra một Certificate là DevTest và lưu trong thư mục Personal của Certificate Management.&lt;/li&gt;
+&lt;li&gt;Nhấn Windows+R rồi gõ vào certmgr.msc để mở Certificate Management&lt;/li&gt;
+&lt;li&gt;Vào thư mục Certificates -&amp;gt; Personal -&amp;gt; Certificates, chúng ta sẽ thấy một certificate tên là DevTest mới vừa tạo.&lt;/li&gt;
+&lt;li&gt;Nhấn chuột phải vào DevTest, chọn All Tasks, sau đó chọn Export, nhấn Next, Next, Next và nhập vào tên file để export. Ví dụ: C:\Users\phihuynh\Desktop\DevTest.cer, sau đó nhấn Next, Finish
+&lt;img src=&#34;https://trumhemcut.github.io/images/asr01.png&#34; alt=&#34;Certificates&#34; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;import-certificate-vào-azure-subscription&#34;&gt;Import certificate vào Azure Subscription&lt;/h2&gt;
+
+&lt;p&gt;Sau khi  đã tạo ra một certificate và export nó ra màn hình desktop, bước kế tiếp là import nó vào Azure Subscription, theo các bước như sau:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Đăng nhập vào manage.windowsazure.com&lt;/li&gt;
+&lt;li&gt;Chọn mục Settings, nhấn vào Management Certificates, sau đó chọn Upload và chọn file DevTest.cer vừa export ở Desktop và nhấn dấu Checked để upload.
+&lt;img src=&#34;https://trumhemcut.github.io/images/asr02.png&#34; alt=&#34;Upload Certificate&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Sau khi upload thành công sẽ có màn hình như bên dưới:
+&lt;img src=&#34;https://trumhemcut.github.io/images/asr03.png&#34; alt=&#34;Upload Certificate&#34; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;gọi-azure-scheduler-rest-api-dùng-fiddler&#34;&gt;Gọi Azure Scheduler REST API dùng Fiddler&lt;/h2&gt;
+
+&lt;p&gt;Sau khi đã chuẩn bị xong certificate, bạn phải copy certificate vào thư mục C:\Users\phihuynh\Documents\Fiddler2 để Fiddler sẽ dùng certificate này để mã hóa các request và gửi lên Azure Scheduler server.&lt;/p&gt;
+
+&lt;p&gt;Để gửi một request lên Azure Scheduler cũng giống như các request bình thường khác, chỉ có 2 điểm cần lưu ý:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;URL Parameter: ?api-version=2014-04-01
+Header: x-ms-version: 2013-03-01
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://trumhemcut.github.io/images/asr04.png&#34; alt=&#34;Upload Certificate&#34; /&gt;
+Kết quả trả về như sau
+&lt;img src=&#34;https://trumhemcut.github.io/images/asr05.png&#34; alt=&#34;Upload Certificate&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;kết-luận&#34;&gt;Kết luận&lt;/h2&gt;
+
+&lt;p&gt;Cũng giống như tất cả các REST API Service khác, chúng ta cần chuẩn bị các bước để authenticate trước. Sau đó thì gọi service một cách bình thường.&lt;/p&gt;
+</description>
+    </item>
+    
   </channel>
 </rss>
